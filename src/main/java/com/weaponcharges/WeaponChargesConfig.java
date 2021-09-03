@@ -1,28 +1,3 @@
-/*
- * Copyright (c) 2018, JerwuQu <marcus@ramse.se>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package com.weaponcharges;
 
 import java.awt.Color;
@@ -30,6 +5,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Keybind;
 
 @ConfigGroup(WeaponChargesPlugin.CONFIG_GROUP_NAME)
 public interface WeaponChargesConfig extends Config
@@ -37,7 +13,8 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "chargesTextRegularColor",
 		name = "Charge Text Color",
-		description = "The color to display charge count text in when charges are not low."
+		description = "The color to display charge count text in when charges are not low.",
+		position = 0
 	)
 	default Color chargesTextRegularColor()
 	{
@@ -47,21 +24,12 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "chargesTextLowColor",
 		name = "Low Charge Text Color",
-		description = "The color to display charge count text in when charges are low."
+		description = "The color to display charge count text in when charges are low.",
+		position = 1
 	)
 	default Color chargesTextLowColor()
 	{
 		return Color.RED;
-	}
-
-	@ConfigItem(
-		keyName = WeaponChargesPlugin.DEV_MODE_CONFIG_KEY,
-		name = "log data",
-		description = "fills your logs with stuff, if you're collecting game messages/dialogs that have to do with weapon charges."
-	)
-	default boolean devMode()
-	{
-		return false;
 	}
 
 	enum DisplayWhenNoDefault {
@@ -89,11 +57,34 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "defaultDisplay",
 		name = "Show Charges",
-		description = "When weapons should show their charges, if you haven't specified anything for that weapon in \"" + WEAPON_SPECIFIC_SETTING + "\"."
+		description = "When weapons should show their charges, if you haven't specified anything for that weapon in \"" + WEAPON_SPECIFIC_SETTING + "\".",
+		position = 2
 	)
 	default DisplayWhenNoDefault defaultDisplay()
 	{
 		return DisplayWhenNoDefault.ALWAYS;
+	}
+
+	@ConfigItem(
+		keyName = WeaponChargesPlugin.DEV_MODE_CONFIG_KEY,
+		name = "log data",
+		description = "fills your logs with stuff, if you're collecting game messages/dialogs that have to do with weapon charges.",
+		position = 3
+	)
+	default boolean devMode()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "showOnHotkey",
+		name = "Always show charge when held",
+		description = "When this key is held, show charges on all tracked weapons.",
+		position = 4
+	)
+	default Keybind showOnHotkey()
+	{
+		return Keybind.ALT;
 	}
 
 	enum DisplayWhen {
@@ -106,223 +97,247 @@ public interface WeaponChargesConfig extends Config
 	@ConfigSection(
 		name = "Weapon Specific Config",
 		description = "Specify display and low charge threshold values for specific weapons.",
-		position = 0,
+		position = 5,
 		closedByDefault = true
 	)
 	String WEAPON_SPECIFIC_SETTING = "weaponSpecificConfig";
 
 	@ConfigItem(
-		keyName = "blowpipeDisplay",
+		keyName = "blowpipe_display",
 		name = "Blowpipe",
 		description = "When the Blowpipe should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 0
 	)
-	default DisplayWhen blowpipeDisplay()
+	default WeaponChargesConfig.DisplayWhen blowpipe_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "blowpipeLowChargeThreshold",
+		keyName = "blowpipe_low_charge_threshold",
 		name = "Low (Blowpipe)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low. Calculated as number of shots before the Blowpipe runs out of either scales or darts, assuming the assembler is used.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 1
 	)
-	default int blowpipeLowChargeThreshold()
+	default int blowpipe_LowChargeThreshold()
 	{
 		return 1500;
 	}
 
 	@ConfigItem(
-		keyName = "seasTridentDisplay",
+		keyName = "trident_of_the_seas_display",
 		name = "Seas trident",
 		description = "When the Seas trident should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 2
 	)
-	default DisplayWhen seasTridentDisplay()
+	default WeaponChargesConfig.DisplayWhen trident_of_the_seas_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "seasTridentLowChargeThreshold",
+		keyName = "trident_of_the_seas_low_charge_threshold",
 		name = "Low (Seas trident)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 3
 	)
-	default int seasTridentLowChargeThreshold()
+	default int trident_of_the_seas_LowChargeThreshold()
 	{
 		return 500;
 	}
 
 	@ConfigItem(
-		keyName = "swampTridentDisplay",
+		keyName = "trident_of_the_swamp_display",
 		name = "Swamp trident",
 		description = "When the Swamp trident should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 4
 	)
-	default DisplayWhen swampTridentDisplay()
+	default WeaponChargesConfig.DisplayWhen trident_of_the_swamp_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "swampTridentLowChargeThreshold",
+		keyName = "trident_of_the_swamp_low_charge_threshold",
 		name = "Low (Swamp trident)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 5
 	)
-	default int swampTridentLowChargeThreshold()
+	default int trident_of_the_swamp_LowChargeThreshold()
 	{
 		return 500;
 	}
 
 	@ConfigItem(
-		keyName = "seasTridentEDisplay",
+		keyName = "trident_of_the_seas_e_display",
 		name = "Seas trident (e)",
 		description = "When the Seas trident (e) should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 6
 	)
-	default DisplayWhen seasTridentEDisplay()
+	default WeaponChargesConfig.DisplayWhen trident_of_the_seas_e_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "seasTridentELowChargeThreshold",
+		keyName = "trident_of_the_seas_e_low_charge_threshold",
 		name = "Low (Seas trident (e))",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 7
 	)
-	default int seasTridentELowChargeThreshold()
+	default int trident_of_the_seas_e_LowChargeThreshold()
 	{
 		return 500;
 	}
 
 	@ConfigItem(
-		keyName = "swampTridentEDisplay",
+		keyName = "trident_of_the_swamp_e_display",
 		name = "Swamp trident (e)",
 		description = "When the Swamp trident (e) should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 8
 	)
-	default DisplayWhen swampTridentEDisplay()
+	default WeaponChargesConfig.DisplayWhen trident_of_the_swamp_e_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "swampTridentELowChargeThreshold",
+		keyName = "trident_of_the_swamp_e_low_charge_threshold",
 		name = "Low (Swamp trident (e))",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 9
 	)
-	default int swampTridentELowChargeThreshold()
+	default int trident_of_the_swamp_e_LowChargeThreshold()
 	{
 		return 500;
 	}
 
 	@ConfigItem(
-		keyName = "ibansStaffDisplay",
+		keyName = "ibans_staff_display",
 		name = "Iban's staff",
 		description = "When the Iban's staff should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 10
 	)
-	default DisplayWhen ibansStaffDisplay()
+	default WeaponChargesConfig.DisplayWhen ibans_staff_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "ibansStaffLowChargeThreshold",
+		keyName = "ibans_staff_low_charge_threshold",
 		name = "Low (Iban's staff)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 11
 	)
-	default int ibansStaffLowChargeThreshold()
+	default int ibans_staff_LowChargeThreshold()
 	{
 		return 250;
 	}
 
 	@ConfigItem(
-		keyName = "crystalHalberdDisplay",
+		keyName = "crystal_halberd_display",
 		name = "Crystal halberd",
 		description = "When the Crystal halberd should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 12
 	)
-	default DisplayWhen crystalHalberdDisplay()
+	default WeaponChargesConfig.DisplayWhen crystal_halberd_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "crystalHalberdLowChargeThreshold",
+		keyName = "crystal_halberd_low_charge_threshold",
 		name = "Low (Crystal halberd)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 13
 	)
-	default int crystalHalberdLowChargeThreshold()
+	default int crystal_halberd_LowChargeThreshold()
 	{
 		return 25;
 	}
 
 	@ConfigItem(
-		keyName = "abyssalTentacleDisplay",
+		keyName = "abyssal_tentacle_display",
 		name = "Abyssal tentacle",
 		description = "When the Abyssal tentacle should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 14
 	)
-	default DisplayWhen abyssalTentacleDisplay()
+	default WeaponChargesConfig.DisplayWhen abyssal_tentacle_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "abyssalTentacleLowChargeThreshold",
+		keyName = "abyssal_tentacle_low_charge_threshold",
 		name = "Low (Abyssal tentacle)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 15
 	)
-	default int abyssalTentacleLowChargeThreshold()
+	default int abyssal_tentacle_LowChargeThreshold()
 	{
 		return 500;
 	}
 
 	@ConfigItem(
-		keyName = "tomeOfFireDisplay",
+		keyName = "tome_of_fire_display",
 		name = "Tome of fire",
 		description = "When the Tome of fire should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 16
 	)
-	default DisplayWhen tomeOfFireDisplay()
+	default WeaponChargesConfig.DisplayWhen tome_of_fire_Display()
 	{
-		return DisplayWhen.USE_DEFAULT;
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
 	@ConfigItem(
-		keyName = "tomeOfFireLowChargeThreshold",
+		keyName = "tome_of_fire_low_charge_threshold",
 		name = "Low (Tome of fire)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 17
 	)
-	default int tomeOfFireLowChargeThreshold()
+	default int tome_of_fire_LowChargeThreshold()
+	{
+		return 500;
+	}
+
+	@ConfigItem(
+		keyName = "scythe_of_vitur_display",
+		name = "Scythe of vitur",
+		description = "When the Scythe of vitur should show the charge counter.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 18
+	)
+	default WeaponChargesConfig.DisplayWhen scythe_of_vitur_Display()
+	{
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
+	}
+
+	@ConfigItem(
+		keyName = "scythe_of_vitur_low_charge_threshold",
+		name = "Low (Scythe of vitur)",
+		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 19
+	)
+	default int scythe_of_vitur_LowChargeThreshold()
 	{
 		return 500;
 	}

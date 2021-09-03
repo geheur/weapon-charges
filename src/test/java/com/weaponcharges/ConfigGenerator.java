@@ -7,41 +7,46 @@ public class ConfigGenerator
 	{
 		String s = "";
 		s += generateConfig("blowpipe", "Blowpipe", default_description + " Calculated as number of shots before the Blowpipe runs out of either scales or darts, assuming the assembler is used.", 1500);
-		s += generateConfig("seasTrident", "Seas trident", default_description, 500);
-		s += generateConfig("swampTrident", "Swamp trident", default_description, 500);
-		s += generateConfig("seasTridentE", "Seas trident (e)", default_description, 500);
-		s += generateConfig("swampTridentE", "Swamp trident (e)", default_description, 500);
-		s += generateConfig("ibansStaff", "Iban's staff", default_description, 250);
-		s += generateConfig("crystalHalberd", "Crystal halberd", default_description, 25);
-		s += generateConfig("abyssalTentacle", "Abyssal tentacle", default_description, 500);
-		s += generateConfig("tomeOfFire", "Tome of fire", default_description, 500);
+		s += generateConfig(ChargedWeapon.TRIDENT_OF_THE_SEAS.getConfigKeyName(), "Seas trident", default_description, 500);
+		s += generateConfig(ChargedWeapon.TRIDENT_OF_THE_SWAMP.getConfigKeyName(), "Swamp trident", default_description, 500);
+		s += generateConfig(ChargedWeapon.TRIDENT_OF_THE_SEAS_E.getConfigKeyName(), "Seas trident (e)", default_description, 500);
+		s += generateConfig(ChargedWeapon.TRIDENT_OF_THE_SWAMP_E.getConfigKeyName(), "Swamp trident (e)", default_description, 500);
+		s += generateConfig(ChargedWeapon.IBANS_STAFF.getConfigKeyName(), "Iban's staff", default_description, 250);
+		s += generateConfig(ChargedWeapon.CRYSTAL_HALBERD.getConfigKeyName(), "Crystal halberd", default_description, 25);
+		s += generateConfig(ChargedWeapon.ABYSSAL_TENTACLE.getConfigKeyName(), "Abyssal tentacle", default_description, 500);
+		s += generateConfig(ChargedWeapon.TOME_OF_FIRE.getConfigKeyName(), "Tome of fire", default_description, 500);
+		s += generateConfig(ChargedWeapon.SCYTHE_OF_VITUR.getConfigKeyName(), "Scythe of vitur", default_description, 500);
 		System.out.println(s);
 	}
 
 	static String default_description = "Number of charges considered \\\"low\\\". Set to -1 to never show charges as being low.";
 
+	private static String generateConfig(ChargedWeapon chargedWeapon, String prettyName, String descriptionOverride, int lowChargeDefault) {
+		return generateConfig(chargedWeapon.getConfigKeyName(), prettyName, descriptionOverride, lowChargeDefault);
+	}
+
 	private static String generateConfig(String configKeyPrefix, String prettyName, String descriptionOverride, int lowChargeDefault) {
 		return
 			"\t@ConfigItem(" + "\n" +
-			"\t\tkeyName = \"" + configKeyPrefix + "Display\"," + "\n" +
+			"\t\tkeyName = \"" + configKeyPrefix + "_display\"," + "\n" +
 			"\t\tname = \"" + prettyName + "\"," + "\n" +
 			"\t\tdescription = \"When the " + prettyName + " should show the charge counter.\"," + "\n" +
 			"\t\tsection = WEAPON_SPECIFIC_SETTING," + "\n" +
 			"\t\tposition = " + i++ + "\n" +
 		"\t)" + "\n" +
-		"\tdefault WeaponChargesConfig.DisplayWhen " + configKeyPrefix + "Display()" + "\n" +
+		"\tdefault WeaponChargesConfig.DisplayWhen " + configKeyPrefix + "_Display()" + "\n" +
 		"\t{" + "\n" +
 			"\t\treturn WeaponChargesConfig.DisplayWhen.USE_DEFAULT;" + "\n" +
 		"\t}" + "\n" +
 		"" + "\n" +
 		"\t@ConfigItem(" + "\n" +
-			"\t\tkeyName = \"" + configKeyPrefix + "LowChargeThreshold\"," + "\n" +
+			"\t\tkeyName = \"" + configKeyPrefix + "_low_charge_threshold\"," + "\n" +
 			"\t\tname = \"Low (" + prettyName + ")\"," + "\n" +
 			"\t\tdescription = \"" + descriptionOverride + "\"," + "\n" +
 			"\t\tsection = WEAPON_SPECIFIC_SETTING," + "\n" +
 			"\t\tposition = " + i++ + "\n" +
 		"\t)" + "\n" +
-		"\tdefault int " + configKeyPrefix + "LowChargeThreshold()" + "\n" +
+		"\tdefault int " + configKeyPrefix + "_LowChargeThreshold()" + "\n" +
 		"\t{" + "\n" +
 			"\t\treturn " + lowChargeDefault + ";" + "\n" +
 		"\t}" + "\n" +

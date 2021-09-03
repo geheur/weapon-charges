@@ -1,16 +1,41 @@
+/*
+ * Copyright (c) 2018, Sir Girion <https://github.com/sirgirion>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.weaponcharges;
 
 import com.google.inject.Provides;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
-import net.runelite.api.AnimationID;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
@@ -24,6 +49,7 @@ import net.runelite.api.VarPlayer;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ClientTick;
+import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.VarbitChanged;
@@ -36,10 +62,10 @@ import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.input.KeyListener;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import com.weaponcharges.NpcDialogTracker.NpcDialogState.NpcDialogType;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.Text;
@@ -53,13 +79,14 @@ import net.runelite.client.util.Text;
 // could also do this for stuff like ibans, but in reverse. You can't charge those, but you might want to know how
 // many runes to bring so that you don't run out of runes before charges.
 @Slf4j
-public class WeaponChargesPlugin extends Plugin
+public class WeaponChargesPlugin extends Plugin implements KeyListener
 {
 	public static final String CONFIG_GROUP_NAME = "weaponCharges";
 	public static final String DEV_MODE_CONFIG_KEY = "logData";
 	private static final int BLOWPIPE_ATTACK_ANIMATION = 5061;
 
-	private ChargedWeapon rechargedWeapon;
+	ChargedWeapon lastUsedOnWeapon;
+	ChargedWeapon lastUnchargeClickedWeapon;
 
 	@Inject
 	Client client;
@@ -73,9 +100,9 @@ public class WeaponChargesPlugin extends Plugin
 	@Inject
 	private WeaponChargesConfig config;
 
-	@Inject
-	private InfoBoxManager infoBoxManager;
-
+//	@Inject
+//	private InfoBoxManager infoBoxManager;
+//
 	@Inject
 	private ClientThread clientThread;
 
@@ -100,95 +127,61 @@ public class WeaponChargesPlugin extends Plugin
 	}
 
 	@Override
-	protected void startUp() throws Exception
+	protected void startUp()
 	{
 		overlayManager.add(itemOverlay);
 		if (config.devMode()) enableDevMode();
 		npcDialogTracker.reset();
 		eventBus.register(npcDialogTracker);
 		keyManager.registerKeyListener(npcDialogTracker);
+		keyManager.registerKeyListener(this);
 		npcDialogTracker.setStateChangedListener(this::npcDialogStateChanged);
 		npcDialogTracker.setOptionSelectedListener(this::optionSelected);
 	}
 
-	private void npcDialogStateChanged(NpcDialogTracker.NpcDialogState npcDialogState)
-	{
-		if (devtools != null && config.devMode()) devtools.npcDialogStateChanged(npcDialogState);
-
-		// TODO if you can calculate the total charges available in the inventory you could get an accurate count on the "add how many charges" dialog, because max charges - max charges addable = current charges.
-
-		if (npcDialogState.type == NpcDialogType.SPRITE) {
-			/*
-			(skippable) 2021-08-28 04:00:20 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - dialog state changed: NpcDialogState{SPRITE, text='You add a charge to the weapon.<br>New total: 2016'}
-			2021-08-29 18:08:48 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 368: dialog state changed: NpcDialogState{SPRITE, text='Your weapon is already fully charged.'}
-			2021-08-29 18:13:57 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 882: dialog state changed: NpcDialogState{SPRITE, text='You uncharge your weapon.'}
-			 */
-			Matcher matcher = Pattern.compile("You add [\\S]+ [\\S]+ to the weapon.<br>New total: ([\\d,]+)").matcher(npcDialogState.text);
-			if (matcher.find()) {
-				String chargeCountString = matcher.group(1).replaceAll(",", "");
-				int charges = Integer.parseInt(chargeCountString);
-				ChargedWeapon chargedWeapon = getChargedWeaponFromId(npcDialogState.spriteDialogItemId);
-				if (chargedWeapon != null)
-				{
-					setCharges(chargedWeapon, charges);
-				}
-			} else if (npcDialogState.text.equals("Your weapon is already fully charged.")) {
-				ChargedWeapon chargedWeapon = getChargedWeaponFromId(npcDialogState.spriteDialogItemId);
-				if (chargedWeapon != null)
-				{
-					setCharges(chargedWeapon, chargedWeapon.rechargeAmount);
-				}
-			} else if (npcDialogState.text.equals("You uncharge your weapon.")) { // This one is entirely redundant, I think.
-				ChargedWeapon chargedWeapon = getChargedWeaponFromId(npcDialogState.spriteDialogItemId);
-				if (chargedWeapon != null)
-				{
-					setCharges(chargedWeapon, 0);
-				}
-			}
-		}
-	}
-
-	private static final Pattern CHARGES_PATTERN = Pattern.compile("How many charges would you like to add\\? \\(0 - ([\\d,]+)\\)");
-
-	private void optionSelected(NpcDialogTracker.NpcDialogState npcDialogState, String optionSelected)
-	{
-		if (devtools != null && config.devMode()) devtools.optionSelected(npcDialogState, optionSelected);
-
-		// I don't think adding a single charge by using the items on the weapon is going to be trackable if the user
-		// skips the sprite dialog.
-		if (npcDialogState.type == NpcDialogType.INPUT && rechargedWeapon != null) {
-			Matcher matcher = CHARGES_PATTERN.matcher(npcDialogState.name);
-			if (matcher.find()) {
-				String chargeCountString = matcher.group(1).replaceAll(",", "");
-				int maxChargeCount = Integer.parseInt(chargeCountString);
-				int chargesEntered;
-				try
-				{
-					chargesEntered = Integer.parseInt(optionSelected.replaceAll("k", "000").replaceAll("m", "000000").replaceAll("b", "000000000"));
-				} catch (NumberFormatException e) {
-					// can happen if the input is empty for example.
-					return;
-				}
-
-				if (chargesEntered > maxChargeCount) chargesEntered = maxChargeCount;
-
-				addCharges(rechargedWeapon, chargesEntered, true);
-			}
-		} else if (npcDialogState.type == NpcDialogType.OPTIONS) {
-			if ((npcDialogState.text.equals("Really uncharge the trident?") || npcDialogState.text.equals("You will NOT get the coins back.")) && optionSelected.equals("Okay, uncharge it.")) {
-				// TODO I don't think rechargedWeapon is guaranteed to have the right value here.
-				setCharges(rechargedWeapon, 0);
-			}
-		}
-	}
-
 	@Override
-	protected void shutDown() throws Exception
+	protected void shutDown()
 	{
 		overlayManager.remove(itemOverlay);
 		disableDevMode();
 		eventBus.unregister(npcDialogTracker);
 		keyManager.unregisterKeyListener(npcDialogTracker);
+		keyManager.unregisterKeyListener(this);
+	}
+
+	void npcDialogStateChanged(NpcDialogTracker.NpcDialogState npcDialogState)
+	{
+		if (devtools != null && config.devMode()) devtools.npcDialogStateChanged(npcDialogState);
+
+		// TODO if you can calculate the total charges available in the inventory you could get an accurate count on the "add how many charges" dialog, because max charges - max charges addable = current charges.
+
+		for (ChargesDialogHandler nonUniqueDialogHandler : ChargedWeapon.getNonUniqueDialogHandlers())
+		{
+			nonUniqueDialogHandler.handleDialog(npcDialogState, this);
+		}
+	}
+
+//	private static final Pattern CHARGES_PATTERN = Pattern.compile("How many charges would you like to add\\? \\(0 - ([\\d,]+)\\)");
+//
+	void optionSelected(NpcDialogTracker.NpcDialogState npcDialogState, String optionSelected)
+	{
+		if (devtools != null && config.devMode()) devtools.optionSelected(npcDialogState, optionSelected);
+
+		// I don't think adding a single charge by using the items on the weapon is going to be trackable if the user
+		// skips the sprite dialog.
+
+		for (ChargesDialogHandler nonUniqueDialogHandler : ChargedWeapon.getNonUniqueDialogHandlers())
+		{
+			nonUniqueDialogHandler.handleDialogOptionSelected(npcDialogState, optionSelected, this);
+		}
+
+		for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
+		{
+			for (ChargesDialogHandler dialogHandler : chargedWeapon.getDialogHandlers())
+			{
+				dialogHandler.handleDialogOptionSelected(npcDialogState, optionSelected, this);
+			}
+		}
 	}
 
 	@Subscribe
@@ -211,19 +204,6 @@ public class WeaponChargesPlugin extends Plugin
 	private void disableDevMode()
 	{
 		if (devtools != null) eventBus.unregister(devtools);
-	}
-
-	ChargedWeapon getChargedWeaponFromId(int itemId)
-	{
-		for (ChargedWeapon weapon : ChargedWeapon.values())
-		{
-			if (weapon.getItemIds().contains(itemId))
-			{
-				return weapon;
-			}
-		}
-
-		return null;
 	}
 
 	// There are two lists to keep a list of checked weapons not just in the last tick, but in the last 2. I do this because
@@ -259,11 +239,21 @@ public class WeaponChargesPlugin extends Plugin
 					}
 				}
 			}
+		} else if (event.getMenuOption().equalsIgnoreCase("uncharge")) {
+			for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
+			{
+				if (chargedWeapon.getItemIds().contains(event.getId()) && chargedWeapon.getCheckChargesRegexes().isEmpty())
+				{
+					if (config.devMode()) log.info("setting lastUnchargeClickedWeapon to " + chargedWeapon);
+					lastUnchargeClickedWeapon = chargedWeapon;
+					break;
+				}
+			}
 		}
 
-	    if (event.getMenuAction() == MenuAction.ITEM_USE_ON_WIDGET_ITEM) {
-			rechargedWeapon = getChargedWeaponFromId(event.getId());
-			if (config.devMode()) log.info("used item on " + rechargedWeapon + " " + client.getTickCount());
+		if (event.getMenuAction() == MenuAction.ITEM_USE_ON_WIDGET_ITEM) {
+			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(event.getId());
+			if (config.devMode()) log.info("used item on " + lastUsedOnWeapon + " " + client.getTickCount());
 		}
 	}
 
@@ -279,7 +269,7 @@ public class WeaponChargesPlugin extends Plugin
 
 		String message = Text.removeTags(event.getMessage());
 
-		for (ChargedWeapon.ChargesMessage checkMessage : ChargedWeapon.getNonUniqueCheckChargesRegexes())
+		for (ChargesMessage checkMessage : ChargedWeapon.getNonUniqueCheckChargesRegexes())
 		{
 			Matcher matcher = checkMessage.getPattern().matcher(message);
 			if (matcher.find()) {
@@ -293,7 +283,7 @@ public class WeaponChargesPlugin extends Plugin
 			}
 		}
 
-		for (ChargedWeapon.ChargesMessage checkMessage : ChargedWeapon.getNonUniqueUpdateMessageChargesRegexes())
+		for (ChargesMessage checkMessage : ChargedWeapon.getNonUniqueUpdateMessageChargesRegexes())
 		{
 			Matcher matcher = checkMessage.getPattern().matcher(message);
 			if (matcher.find()) {
@@ -315,7 +305,7 @@ public class WeaponChargesPlugin extends Plugin
 		{
 			if (chargedWeapon.getCheckChargesRegexes().isEmpty()) continue;
 
-			for (ChargedWeapon.ChargesMessage checkMessage : chargedWeapon.getCheckChargesRegexes())
+			for (ChargesMessage checkMessage : chargedWeapon.getCheckChargesRegexes())
 			{
 				Matcher matcher = checkMessage.getPattern().matcher(message);
 				if (matcher.find()) {
@@ -324,7 +314,7 @@ public class WeaponChargesPlugin extends Plugin
 				}
 			}
 
-			for (ChargedWeapon.ChargesMessage checkMessage : chargedWeapon.getUpdateMessageChargesRegexes())
+			for (ChargesMessage checkMessage : chargedWeapon.getUpdateMessageChargesRegexes())
 			{
 				Matcher matcher = checkMessage.getPattern().matcher(message);
 				if (matcher.find()) {
@@ -352,7 +342,7 @@ public class WeaponChargesPlugin extends Plugin
 		Item item = itemContainer.getItem(slot.getSlotIdx());
 		if (item == null) return null;
 
-		return getChargedWeaponFromId(item.getId());
+		return ChargedWeapon.getChargedWeaponFromId(item.getId());
 	}
 
 	private void chatMessageBlowpipe(String chatMsg)
@@ -563,11 +553,11 @@ public class WeaponChargesPlugin extends Plugin
 		return Integer.parseInt(configString);
 	}
 
-	private void setCharges(ChargedWeapon weapon, int charges) {
+	public void setCharges(ChargedWeapon weapon, int charges) {
 		setCharges(weapon, charges, true);
 	}
 
-	private void setCharges(ChargedWeapon weapon, int charges, boolean logChange) {
+	public void setCharges(ChargedWeapon weapon, int charges, boolean logChange) {
 		configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, weapon.configKeyName, charges);
 		if (logChange)
 		{
@@ -649,6 +639,38 @@ public class WeaponChargesPlugin extends Plugin
 		setScalesLeft((scalesLeft == null ? 0 : scalesLeft) + change, logChange);
 	}
 
+	@Getter
+	private boolean showChargesKeyIsDown = false;
+
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		if (config.showOnHotkey().matches(e)) {
+			showChargesKeyIsDown = true;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		if (config.showOnHotkey().matches(e)) {
+			showChargesKeyIsDown = false;
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+
+	}
+
+	@Subscribe
+	public void onFocusChanged(FocusChanged focusChanged) {
+		if (!focusChanged.isFocused()) {
+			showChargesKeyIsDown = false;
+		}
+	}
+
 	@RequiredArgsConstructor
 	public enum DartType {
 		BRONZE(ItemID.BRONZE_DART, new Color(0x6e5727), "bronze"),
@@ -677,4 +699,5 @@ public class WeaponChargesPlugin extends Plugin
 			return null;
 		}
 	}
+
 }
