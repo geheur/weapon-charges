@@ -11,10 +11,10 @@ import net.runelite.client.util.Text;
 
 @Getter
 @Builder
-public class NpcDialogStateMatcher
+public class DialogStateMatcher
 {
 	private final boolean isOptionSelected;
-	private final NpcDialogTracker.NpcDialogState.NpcDialogType type;
+	private final DialogTracker.DialogState.DialogType type;
 
 	private final Pattern nameMatch;
 	private final Pattern textMatch;
@@ -23,80 +23,80 @@ public class NpcDialogStateMatcher
 
 	private final Pattern optionMatch;
 
-	public static NpcDialogStateMatcher sprite(Pattern textMatch, Integer itemId)
+	public static DialogStateMatcher sprite(Pattern textMatch, Integer itemId)
 	{
 		return sprite(textMatch, itemId, false);
 	}
 
-	public static NpcDialogStateMatcher spriteOptionSelected(Pattern textMatch, Integer itemId)
+	public static DialogStateMatcher spriteOptionSelected(Pattern textMatch, Integer itemId)
 	{
 		return sprite(textMatch, itemId, true);
 	}
 
-	private static NpcDialogStateMatcher sprite(Pattern textMatch, Integer itemId, boolean isOptionSelected)
+	private static DialogStateMatcher sprite(Pattern textMatch, Integer itemId, boolean isOptionSelected)
 	{
-		return NpcDialogStateMatcher.builder()
-			.type(NpcDialogTracker.NpcDialogState.NpcDialogType.SPRITE)
+		return DialogStateMatcher.builder()
+			.type(DialogTracker.DialogState.DialogType.SPRITE)
 			.isOptionSelected(isOptionSelected)
 			.textMatch(textMatch)
 			.spriteDialogId(itemId)
 			.build();
 	}
 
-	public static NpcDialogStateMatcher player(Pattern textMatch, Pattern nameMatch)
+	public static DialogStateMatcher player(Pattern textMatch, Pattern nameMatch)
 	{
 		return player(textMatch, nameMatch, false);
 	}
 
-	public static NpcDialogStateMatcher playerOptionSelected(Pattern textMatch, Pattern nameMatch)
+	public static DialogStateMatcher playerOptionSelected(Pattern textMatch, Pattern nameMatch)
 	{
 		return player(textMatch, nameMatch, true);
 	}
 
-	private static NpcDialogStateMatcher player(Pattern textMatch, Pattern nameMatch, boolean isOptionSelected)
+	private static DialogStateMatcher player(Pattern textMatch, Pattern nameMatch, boolean isOptionSelected)
 	{
-		return NpcDialogStateMatcher.builder()
-			.type(NpcDialogTracker.NpcDialogState.NpcDialogType.PLAYER)
+		return DialogStateMatcher.builder()
+			.type(DialogTracker.DialogState.DialogType.PLAYER)
 			.isOptionSelected(isOptionSelected)
 			.nameMatch(nameMatch)
 			.textMatch(textMatch)
 			.build();
 	}
 
-	public static NpcDialogStateMatcher npc(Pattern textMatch, Pattern nameMatch)
+	public static DialogStateMatcher npc(Pattern textMatch, Pattern nameMatch)
 	{
 		return npc(textMatch, nameMatch, false);
 	}
 
-	public static NpcDialogStateMatcher npcOptionSelected(Pattern textMatch, Pattern nameMatch)
+	public static DialogStateMatcher npcOptionSelected(Pattern textMatch, Pattern nameMatch)
 	{
 		return npc(textMatch, nameMatch, true);
 	}
 
-	private static NpcDialogStateMatcher npc(Pattern textMatch, Pattern nameMatch, boolean isOptionSelected)
+	private static DialogStateMatcher npc(Pattern textMatch, Pattern nameMatch, boolean isOptionSelected)
 	{
-		return NpcDialogStateMatcher.builder()
-			.type(NpcDialogTracker.NpcDialogState.NpcDialogType.NPC)
+		return DialogStateMatcher.builder()
+			.type(DialogTracker.DialogState.DialogType.NPC)
 			.isOptionSelected(isOptionSelected)
 			.nameMatch(nameMatch)
 			.textMatch(textMatch)
 			.build();
 	}
 
-	public static NpcDialogStateMatcher options(Pattern textMatch, List<Pattern> optionsMatch)
+	public static DialogStateMatcher options(Pattern textMatch, List<Pattern> optionsMatch)
 	{
 		return options(textMatch, optionsMatch, null, false);
 	}
 
-	public static NpcDialogStateMatcher optionsOptionSelected(Pattern textMatch, List<Pattern> optionsMatch, Pattern optionSelectedMatch)
+	public static DialogStateMatcher optionsOptionSelected(Pattern textMatch, List<Pattern> optionsMatch, Pattern optionSelectedMatch)
 	{
 		return options(textMatch, optionsMatch, optionSelectedMatch, true);
 	}
 
-	private static NpcDialogStateMatcher options(Pattern textMatch, List<Pattern> optionsMatch, Pattern optionSelectedMatch, boolean isOptionSelected)
+	private static DialogStateMatcher options(Pattern textMatch, List<Pattern> optionsMatch, Pattern optionSelectedMatch, boolean isOptionSelected)
 	{
-		return NpcDialogStateMatcher.builder()
-			.type(NpcDialogTracker.NpcDialogState.NpcDialogType.OPTIONS)
+		return DialogStateMatcher.builder()
+			.type(DialogTracker.DialogState.DialogType.OPTIONS)
 			.isOptionSelected(isOptionSelected)
 			.textMatch(textMatch)
 			.optionMatches(optionsMatch)
@@ -104,46 +104,46 @@ public class NpcDialogStateMatcher
 			.build();
 	}
 
-	public static NpcDialogStateMatcher input(Pattern textMatch)
+	public static DialogStateMatcher input(Pattern textMatch)
 	{
 		return input(textMatch, null, false);
 	}
 
-	public static NpcDialogStateMatcher inputOptionSelected(Pattern textMatch, Pattern optionSelectedMatcher)
+	public static DialogStateMatcher inputOptionSelected(Pattern textMatch, Pattern optionSelectedMatcher)
 	{
 		return input(textMatch, optionSelectedMatcher, true);
 	}
 
-	private static NpcDialogStateMatcher input(Pattern textMatch, Pattern optionSelectedMatcher, boolean isOptionSelected)
+	private static DialogStateMatcher input(Pattern textMatch, Pattern optionSelectedMatcher, boolean isOptionSelected)
 	{
-		return NpcDialogStateMatcher.builder()
-			.type(NpcDialogTracker.NpcDialogState.NpcDialogType.INPUT)
+		return DialogStateMatcher.builder()
+			.type(DialogTracker.DialogState.DialogType.INPUT)
 			.isOptionSelected(isOptionSelected)
 			.nameMatch(textMatch)
 			.build();
 	}
 
-	public DialogStateMatchers matchDialog(NpcDialogTracker.NpcDialogState npcDialogState)
+	public DialogStateMatchers matchDialog(DialogTracker.DialogState dialogState)
 	{
-		return matchDialog(npcDialogState, false, null);
+		return matchDialog(dialogState, false, null);
 	}
 
-	public DialogStateMatchers matchDialogOptionSelected(NpcDialogTracker.NpcDialogState npcDialogState, String isOptionSelected)
+	public DialogStateMatchers matchDialogOptionSelected(DialogTracker.DialogState dialogState, String isOptionSelected)
 	{
-		return matchDialog(npcDialogState, true, isOptionSelected);
+		return matchDialog(dialogState, true, isOptionSelected);
 	}
 
-	private DialogStateMatchers matchDialog(NpcDialogTracker.NpcDialogState npcDialogState, boolean isOptionSelected, String optionSelected)
+	private DialogStateMatchers matchDialog(DialogTracker.DialogState dialogState, boolean isOptionSelected, String optionSelected)
 	{
 		if (this.isOptionSelected != isOptionSelected)
 		{
 			return null;
 		}
-		if (this.getType() != npcDialogState.type)
+		if (this.getType() != dialogState.type)
 		{
 			return null;
 		}
-		if (this.getSpriteDialogId() != null && this.getSpriteDialogId() != npcDialogState.spriteDialogItemId)
+		if (this.getSpriteDialogId() != null && this.getSpriteDialogId() != dialogState.spriteDialogItemId)
 		{
 			return null;
 		}
@@ -151,11 +151,11 @@ public class NpcDialogStateMatcher
 		Matcher nameMatcher = null;
 		if (this.getNameMatch() != null)
 		{
-			if (npcDialogState.name == null)
+			if (dialogState.name == null)
 			{
 				return null; // argument should never be null, but let's be safe.
 			}
-			nameMatcher = this.getNameMatch().matcher(npcDialogState.name);
+			nameMatcher = this.getNameMatch().matcher(dialogState.name);
 			if (!nameMatcher.find())
 			{
 				return null;
@@ -163,7 +163,7 @@ public class NpcDialogStateMatcher
 		}
 
 		Matcher textMatcher = null;
-		String text = npcDialogState.text;
+		String text = dialogState.text;
 		text = Text.removeTags(text.replaceAll("<br>", " "));
 		if (this.getTextMatch() != null)
 		{
@@ -181,7 +181,7 @@ public class NpcDialogStateMatcher
 		List<Matcher> optionMatchers = new ArrayList<>();
 		if (this.getOptionMatches() != null)
 		{
-			if (this.getOptionMatches().size() != npcDialogState.options.size())
+			if (this.getOptionMatches().size() != dialogState.options.size())
 			{
 				return null;
 			}
@@ -194,7 +194,7 @@ public class NpcDialogStateMatcher
 					continue;
 				}
 
-				String option = npcDialogState.options.get(i);
+				String option = dialogState.options.get(i);
 				if (option == null)
 				{
 					return null;
@@ -222,7 +222,7 @@ public class NpcDialogStateMatcher
 			}
 		}
 
-		return new DialogStateMatchers(nameMatcher, textMatcher, npcDialogState.spriteDialogItemId, optionMatchers, optionMatcher);
+		return new DialogStateMatchers(nameMatcher, textMatcher, dialogState.spriteDialogItemId, optionMatchers, optionMatcher);
 	}
 
 	//		public static NpcDialogStateMatcher noDialog() {

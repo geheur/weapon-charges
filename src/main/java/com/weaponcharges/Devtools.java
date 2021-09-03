@@ -75,13 +75,13 @@ public class Devtools
 		}
 	}
 
-	public void npcDialogStateChanged(NpcDialogTracker.NpcDialogState npcDialogState)
+	public void dialogStateChanged(DialogTracker.DialogState dialogState)
 	{
-		message("dialog state changed: " + npcDialogState);
+		message("dialog state changed: " + dialogState);
 	}
 
-	public void optionSelected(NpcDialogTracker.NpcDialogState npcDialogState, String s)
+	public void optionSelected(DialogTracker.DialogState dialogState, String s)
 	{
-		message("option selected: \"" + s + "\" from " + npcDialogState);
+		message("option selected: \"" + s + "\" from " + dialogState);
 	}
 }

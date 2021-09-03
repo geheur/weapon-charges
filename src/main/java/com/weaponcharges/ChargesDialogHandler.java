@@ -8,37 +8,37 @@ public final class ChargesDialogHandler
 	@FunctionalInterface
 	public interface MatchHandler
 	{
-		void handleDialog(NpcDialogStateMatcher.DialogStateMatchers matchers, NpcDialogTracker.NpcDialogState npcDialogState, String optionSelected, WeaponChargesPlugin plugin);
+		void handleDialog(DialogStateMatcher.DialogStateMatchers matchers, DialogTracker.DialogState dialogState, String optionSelected, WeaponChargesPlugin plugin);
 	}
 
-	private final NpcDialogStateMatcher dialogStateMatcher;
+	private final DialogStateMatcher dialogStateMatcher;
 	private final MatchHandler matchHandler;
 
-	public boolean handleDialog(NpcDialogTracker.NpcDialogState npcDialogState, WeaponChargesPlugin plugin)
+	public boolean handleDialog(DialogTracker.DialogState dialogState, WeaponChargesPlugin plugin)
 	{
-		NpcDialogStateMatcher.DialogStateMatchers matchers = dialogStateMatcher.matchDialog(npcDialogState);
+		DialogStateMatcher.DialogStateMatchers matchers = dialogStateMatcher.matchDialog(dialogState);
 		boolean matched = matchers != null;
 		if (matched)
 		{
-			matchHandler.handleDialog(matchers, npcDialogState, null, plugin);
+			matchHandler.handleDialog(matchers, dialogState, null, plugin);
 		}
 		return matched;
 	}
 
-	public boolean handleDialogOptionSelected(NpcDialogTracker.NpcDialogState npcDialogState, String optionSelected, WeaponChargesPlugin plugin)
+	public boolean handleDialogOptionSelected(DialogTracker.DialogState dialogState, String optionSelected, WeaponChargesPlugin plugin)
 	{
-		NpcDialogStateMatcher.DialogStateMatchers matchers = dialogStateMatcher.matchDialogOptionSelected(npcDialogState, optionSelected);
+		DialogStateMatcher.DialogStateMatchers matchers = dialogStateMatcher.matchDialogOptionSelected(dialogState, optionSelected);
 		boolean matched = matchers != null;
 		if (matched)
 		{
-			matchHandler.handleDialog(matchers, npcDialogState, optionSelected, plugin);
+			matchHandler.handleDialog(matchers, dialogState, optionSelected, plugin);
 		}
 		return matched;
 	}
 
 	public static MatchHandler genericSpriteDialogChargesMessage(boolean chargesAbsolute, int group) {
-		return (matchers, npcDialogState, optionSelected, plugin) -> {
-			if (npcDialogState.spriteDialogItemId == null) throw new IllegalArgumentException("This handler is for sprite dialogs only.");
+		return (matchers, dialogState, optionSelected, plugin) -> {
+			if (dialogState.spriteDialogItemId == null) throw new IllegalArgumentException("This handler is for sprite dialogs only.");
 
 			String chargeCountString = matchers.getTextMatcher().group(group).replaceAll(",", "");
 			int charges = Integer.parseInt(chargeCountString);
@@ -57,8 +57,8 @@ public final class ChargesDialogHandler
 
 	public static MatchHandler genericSpriteDialogUnchargeMessage()
 	{
-		return (matchers, npcDialogState, optionSelected, plugin) -> {
-			if (npcDialogState.spriteDialogItemId == null) throw new IllegalArgumentException("This handler is for sprite dialogs only.");
+		return (matchers, dialogState, optionSelected, plugin) -> {
+			if (dialogState.spriteDialogItemId == null) throw new IllegalArgumentException("This handler is for sprite dialogs only.");
 
 			ChargedWeapon chargedWeapon = ChargedWeapon.getChargedWeaponFromId(matchers.getSpriteDialogId());
 			if (chargedWeapon != null)
@@ -70,8 +70,8 @@ public final class ChargesDialogHandler
 
 	public static MatchHandler genericSpriteDialogFullChargeMessage()
 	{
-		return (matchers, npcDialogState, optionSelected, plugin) -> {
-			if (npcDialogState.spriteDialogItemId == null) throw new IllegalArgumentException("This handler is for sprite dialogs only.");
+		return (matchers, dialogState, optionSelected, plugin) -> {
+			if (dialogState.spriteDialogItemId == null) throw new IllegalArgumentException("This handler is for sprite dialogs only.");
 
 			ChargedWeapon chargedWeapon = ChargedWeapon.getChargedWeaponFromId(matchers.getSpriteDialogId());
 			if (chargedWeapon != null)
@@ -83,7 +83,7 @@ public final class ChargesDialogHandler
 
 	public static MatchHandler genericInputChargeMessage()
 	{
-		return (matchers, npcDialogState, optionSelected, plugin) -> {
+		return (matchers, dialogState, optionSelected, plugin) -> {
 			String chargeCountString = matchers.getNameMatcher().group(1).replaceAll(",", "");
 			int maxChargeCount = Integer.parseInt(chargeCountString);
 			int chargesEntered;

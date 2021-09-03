@@ -17,6 +17,9 @@ import net.runelite.client.util.Text;
 @Getter
 public enum ChargedWeapon
 {
+	/*
+	 * I think my minimum reqs should be: check message >1, periodic update, animation-based reduction, charge, uncharge.
+	 */
 	/* template for data collection:
 		check (full, <full & >1, 1, 0/empty):
 			full: TODO
@@ -72,11 +75,24 @@ public enum ChargedWeapon
 	IBANS_STAFF(
 		Arrays.asList(ItemID.IBANS_STAFF, ItemID.IBANS_STAFF_U),
 		Arrays.asList(708),
-		-1 /*120 for regular, 2500 for (u)*/,
+		2500 /*120 for regular, 2500 for (u)*/, // TODO fix this for regular staff?
 		"ibans_staff",
-		Collections.emptyList(),
-		Collections.emptyList(),
-		Collections.emptyList()
+		Arrays.asList(
+			ChargesMessage.matcherGroupChargeMessage("You have ([\\d,]+) charges left on the staff.", 1),
+			ChargesMessage.staticChargeMessage("You have a charge left on the staff.", 1),
+			ChargesMessage.staticChargeMessage("You have no charges left on the staff.", 0)
+		),
+		Arrays.asList(
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your staff only has ([\\d,]+) charges left.</col>"), 1),
+			ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your staff has run out of charges.</col>"), 0),
+			ChargesMessage.staticChargeMessage("You need to recharge your staff to use this spell.", 0)
+		),
+		Arrays.asList(
+			new ChargesDialogHandler(
+				DialogStateMatcher.sprite(Pattern.compile("You hold the staff above the well and feel the power of Zamorak flow through you."), null),
+				ChargesDialogHandler.genericSpriteDialogFullChargeMessage()
+			)
+		)
 	),
 
 	/* Tridents
@@ -267,9 +283,9 @@ public enum ChargedWeapon
 		),
 		Arrays.asList(
 			new ChargesDialogHandler(
-				NpcDialogStateMatcher.inputOptionSelected(Pattern.compile("How many sets of 100 charges do you wish to apply\\? \\(Up to ([\\d,]+)\\)"), null),
-				(matchers, npcDialogState, optionSelected, plugin) -> {
-					String chargeCountString = matchers.getTextMatcher().group(1).replaceAll(",", "");
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many sets of 100 charges do you wish to apply\\? \\(Up to ([\\d,]+)\\)"), null),
+				(matchers, dialogState, optionSelected, plugin) -> {
+					String chargeCountString = matchers.getNameMatcher().group(1).replaceAll(",", "");
 					int maxChargeCount = Integer.parseInt(chargeCountString);
 					int chargesEntered;
 					try {
@@ -287,11 +303,11 @@ public enum ChargedWeapon
 				}
 			),
 				new ChargesDialogHandler(
-				NpcDialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Scythe of vitur."), null /* TODO find out what this should be */),
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Scythe of vitur."), null /* TODO find out what this should be */),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(false, 1)
 			),
 			new ChargesDialogHandler(
-				NpcDialogStateMatcher.spriteOptionSelected(Pattern.compile("If you uncharge your scythe into the well, ([\\d,]+) charges will be added to the well."), null /* TODO find out what this should be */),
+				DialogStateMatcher.spriteOptionSelected(Pattern.compile("If you uncharge your scythe into the well, ([\\d,]+) charges will be added to the well."), null /* TODO find out what this should be */),
 				ChargesDialogHandler.genericSpriteDialogUnchargeMessage()
 			)
 		)
@@ -320,9 +336,11 @@ public enum ChargedWeapon
 
 		message overlap:
 			TODO
+
+		How to track? either xp drop + hitsplats if it's possible to always see all of your own hitsplats, or xp drop + animation.
 	 */
 //	BLOOD_FURY(),
-	/* template for data collection:
+	/* sang staff
 		check (full, <full & >1, 1, 0/empty):
 			full: TODO
 			>1: TODO
@@ -346,10 +364,26 @@ public enum ChargedWeapon
 		message overlap:
 			TODO
 	 */
-	/* template for data collection:
+	SANGUINESTI_STAFF(
+		Arrays.asList(ItemID.SANGUINESTI_STAFF, ItemID.SANGUINESTI_STAFF_UNCHARGED, ItemID.HOLY_SANGUINESTI_STAFF, ItemID.HOLY_SANGUINESTI_STAFF_UNCHARGED),
+		Arrays.asList(1167),
+		20_000,
+		"sanguinesti_staff",
+		Collections.emptyList(),
+		Collections.emptyList(),
+		Arrays.asList(
+			new ChargesDialogHandler(
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge your staff for all its charges\\? \\(regaining [\\d,]+ blood runes\\)"), null, Pattern.compile("Proceed.")),
+				(matchers, dialogState, optionSelected, plugin) -> {
+					plugin.setCharges(get_sang_circumvent_illegal_self_reference(), 0, true);
+				}
+			)
+		)
+	),
+	/* arclight
 		check (full, <full & >1, 1, 0/empty):
 			full: TODO
-			>1: TODO
+			>1: "Your arclight has 6397 charges left."
 			1: TODO
 			empty: TODO
 
@@ -370,41 +404,25 @@ public enum ChargedWeapon
 		message overlap:
 			TODO
 	 */
-	/* template for data collection:
-		check (full, <full & >1, 1, 0/empty):
-			full: TODO
-			>1: TODO
-			1: TODO
-			empty: TODO
-
-		periodic updates (periodic, empty):
-			periodic: TODO
-			empty: TODO
-			attacking when empty: TODO
-
-		adding (adding by using items on the weapon, adding via right-click option, any other methods):
-			using items: TODO
-			right-click options: TODO
-			other: TODO
-
-		removing (regular removal methods, dropping:
-			regular: TODO
-			dropping: TODO
-
-		message overlap:
-			TODO
-	 */
+	ARCLIGHT(
+		Arrays.asList(ItemID.ARCLIGHT),
+		Arrays.asList(386, 390),
+		10_000,
+		"arclight",
+		Arrays.asList(
+			ChargesMessage.matcherGroupChargeMessage("Your arclight has ([\\d,]+) charges left.", 1)
+		),
+		Collections.emptyList(),
+		Collections.emptyList()
+	),
 	;
 
 	@Getter
 	private static final List<ChargesMessage> nonUniqueCheckChargesRegexes = Arrays.asList(
-		// trident
+		// trident/sang
 		ChargesMessage.matcherGroupChargeMessage("Your weapon has ([\\d,]+) charges.", 1),
 		ChargesMessage.staticChargeMessage("Your weapon has one charge.", 1),
-		ChargesMessage.staticChargeMessage("Your weapon has no charges.", 0),
-
-		// ibans
-		ChargesMessage.matcherGroupChargeMessage("You have ([\\d,]+) charges left on the staff.", 1)
+		ChargesMessage.staticChargeMessage("Your weapon has no charges.", 0)
 	);
 	@Getter
 	private static final List<ChargesMessage> nonUniqueUpdateMessageChargesRegexes = Arrays.asList(
@@ -417,36 +435,36 @@ public enum ChargedWeapon
 	private static final List<ChargesDialogHandler> nonUniqueDialogHandlers = Arrays.asList(
 		// trident
 		new ChargesDialogHandler(
-			NpcDialogStateMatcher.sprite(Pattern.compile("You add [\\S]+ [\\S]+ to the weapon. New total: ([\\d,]+)"), null),
+			DialogStateMatcher.sprite(Pattern.compile("You add [\\S]+ [\\S]+ to the weapon. New total: ([\\d,]+)"), null),
 			ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 		),
 		new ChargesDialogHandler(
-			NpcDialogStateMatcher.sprite(Pattern.compile("Your weapon is already fully charged."), null),
+			DialogStateMatcher.sprite(Pattern.compile("Your weapon is already fully charged."), null),
 			ChargesDialogHandler.genericSpriteDialogFullChargeMessage()
 		),
 		new ChargesDialogHandler( // This one is entirely redundant, I think. Haven't checked (e) tridents though wrt the message they show in the uncharging options dialog.
-			NpcDialogStateMatcher.sprite(Pattern.compile("You uncharge your weapon."), null),
+			DialogStateMatcher.sprite(Pattern.compile("You uncharge your weapon."), null),
 			ChargesDialogHandler.genericSpriteDialogUnchargeMessage()
 		),
 		new ChargesDialogHandler(
-			NpcDialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges would you like to add\\? \\(0 - ([\\d,]+)\\)"), null),
+			DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges would you like to add\\? \\(0 - ([\\d,]+)\\)"), null),
 			ChargesDialogHandler.genericInputChargeMessage()
 		),
 		new ChargesDialogHandler(
-			NpcDialogStateMatcher.optionsOptionSelected(Pattern.compile("You will NOT get the coins back."), null, Pattern.compile("Okay, uncharge it.")),
-			(matchers, npcDialogState, optionSelected, plugin) -> {
+			DialogStateMatcher.optionsOptionSelected(Pattern.compile("You will NOT get the coins back."), null, Pattern.compile("Okay, uncharge it.")),
+			(matchers, dialogState, optionSelected, plugin) -> {
 				plugin.setCharges(plugin.lastUnchargeClickedWeapon, 0);
 			}
 		),
 		new ChargesDialogHandler(
-			NpcDialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the trident?"), null, Pattern.compile("Okay, uncharge it.")),
-			(matchers, npcDialogState, optionSelected, plugin) -> {
+			DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the trident?"), null, Pattern.compile("Okay, uncharge it.")),
+			(matchers, dialogState, optionSelected, plugin) -> {
 				plugin.setCharges(plugin.lastUnchargeClickedWeapon, 0);
 			}
 		),
 		new ChargesDialogHandler(
-			NpcDialogStateMatcher.optionsOptionSelected(Pattern.compile("If you drop it, it will lose all its charges."), null, Pattern.compile("Drop it.")),
-			(matchers, npcDialogState, optionSelected, plugin) -> {
+			DialogStateMatcher.optionsOptionSelected(Pattern.compile("If you drop it, it will lose all its charges."), null, Pattern.compile("Drop it.")),
+			(matchers, dialogState, optionSelected, plugin) -> {
 				plugin.setCharges(plugin.lastUnchargeClickedWeapon, 0);
 			}
 		)
@@ -478,15 +496,16 @@ public enum ChargedWeapon
 		return null;
 	}
 
+	public static final String DISPLAY_CONFIG_KEY_SUFFIX = "_display";
+	public static final String LOW_CHARGE_CONFIG_KEY_SUFFIX = "_low_charge_threshold";
+
 	public DisplayWhen getDisplayWhen(WeaponChargesConfig config) {
-		DisplayWhen displayWhen = invokeMethodWithConfigKey(configKeyName + "_display", config);
-		return displayWhen == null ? DisplayWhen.USE_DEFAULT : displayWhen;
+		return invokeMethodWithConfigKey(configKeyName + DISPLAY_CONFIG_KEY_SUFFIX, config);
 	}
 
 	public int getLowCharge(WeaponChargesConfig config)
 	{
-		Integer lowChargeThreshold = invokeMethodWithConfigKey(configKeyName + "_low_charges_threshold", config);
-		return lowChargeThreshold == null ? 100 : lowChargeThreshold;
+		return invokeMethodWithConfigKey(configKeyName + LOW_CHARGE_CONFIG_KEY_SUFFIX, config);
 	}
 
 	private <T> T invokeMethodWithConfigKey(String key, WeaponChargesConfig config)
@@ -510,11 +529,15 @@ public enum ChargedWeapon
 				}
 			}
 		}
-		return null;
+		throw new IllegalArgumentException("That config key doesn't exist: " + key);
 	}
 
 	private static ChargedWeapon get_scythe_circumvent_illegal_self_reference() {
 		return SCYTHE_OF_VITUR;
+	}
+
+	private static ChargedWeapon get_sang_circumvent_illegal_self_reference() {
+		return SANGUINESTI_STAFF;
 	}
 }
 

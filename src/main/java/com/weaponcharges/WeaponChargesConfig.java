@@ -131,7 +131,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Seas trident",
 		description = "When the Seas trident should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 2
+		position = 0
 	)
 	default WeaponChargesConfig.DisplayWhen trident_of_the_seas_Display()
 	{
@@ -143,7 +143,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Seas trident)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 3
+		position = 1
 	)
 	default int trident_of_the_seas_LowChargeThreshold()
 	{
@@ -155,7 +155,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Swamp trident",
 		description = "When the Swamp trident should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 4
+		position = 2
 	)
 	default WeaponChargesConfig.DisplayWhen trident_of_the_swamp_Display()
 	{
@@ -167,7 +167,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Swamp trident)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 5
+		position = 3
 	)
 	default int trident_of_the_swamp_LowChargeThreshold()
 	{
@@ -179,7 +179,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Seas trident (e)",
 		description = "When the Seas trident (e) should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 6
+		position = 4
 	)
 	default WeaponChargesConfig.DisplayWhen trident_of_the_seas_e_Display()
 	{
@@ -191,7 +191,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Seas trident (e))",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 7
+		position = 5
 	)
 	default int trident_of_the_seas_e_LowChargeThreshold()
 	{
@@ -203,7 +203,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Swamp trident (e)",
 		description = "When the Swamp trident (e) should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 8
+		position = 6
 	)
 	default WeaponChargesConfig.DisplayWhen trident_of_the_swamp_e_Display()
 	{
@@ -215,7 +215,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Swamp trident (e))",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 9
+		position = 7
 	)
 	default int trident_of_the_swamp_e_LowChargeThreshold()
 	{
@@ -227,7 +227,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Iban's staff",
 		description = "When the Iban's staff should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 10
+		position = 8
 	)
 	default WeaponChargesConfig.DisplayWhen ibans_staff_Display()
 	{
@@ -239,7 +239,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Iban's staff)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 11
+		position = 9
 	)
 	default int ibans_staff_LowChargeThreshold()
 	{
@@ -251,7 +251,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Crystal halberd",
 		description = "When the Crystal halberd should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 12
+		position = 10
 	)
 	default WeaponChargesConfig.DisplayWhen crystal_halberd_Display()
 	{
@@ -263,7 +263,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Crystal halberd)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 13
+		position = 11
 	)
 	default int crystal_halberd_LowChargeThreshold()
 	{
@@ -275,7 +275,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Abyssal tentacle",
 		description = "When the Abyssal tentacle should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 14
+		position = 12
 	)
 	default WeaponChargesConfig.DisplayWhen abyssal_tentacle_Display()
 	{
@@ -287,7 +287,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Abyssal tentacle)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 15
+		position = 13
 	)
 	default int abyssal_tentacle_LowChargeThreshold()
 	{
@@ -299,7 +299,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Tome of fire",
 		description = "When the Tome of fire should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 16
+		position = 14
 	)
 	default WeaponChargesConfig.DisplayWhen tome_of_fire_Display()
 	{
@@ -311,7 +311,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Tome of fire)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 17
+		position = 15
 	)
 	default int tome_of_fire_LowChargeThreshold()
 	{
@@ -323,7 +323,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Scythe of vitur",
 		description = "When the Scythe of vitur should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 18
+		position = 16
 	)
 	default WeaponChargesConfig.DisplayWhen scythe_of_vitur_Display()
 	{
@@ -335,9 +335,57 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Scythe of vitur)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 19
+		position = 17
 	)
 	default int scythe_of_vitur_LowChargeThreshold()
+	{
+		return 500;
+	}
+
+	@ConfigItem(
+		keyName = "sanguinesti_staff_display",
+		name = "Sanguinesti staff",
+		description = "When the Sanguinesti staff should show the charge counter.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 18
+	)
+	default WeaponChargesConfig.DisplayWhen sanguinesti_staff_Display()
+	{
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
+	}
+
+	@ConfigItem(
+		keyName = "sanguinesti_staff_low_charge_threshold",
+		name = "Low (Sanguinesti staff)",
+		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 19
+	)
+	default int sanguinesti_staff_LowChargeThreshold()
+	{
+		return 500;
+	}
+
+	@ConfigItem(
+		keyName = "arclight_display",
+		name = "Arclight",
+		description = "When the Arclight should show the charge counter.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 20
+	)
+	default WeaponChargesConfig.DisplayWhen arclight_Display()
+	{
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
+	}
+
+	@ConfigItem(
+		keyName = "arclight_low_charge_threshold",
+		name = "Low (Arclight)",
+		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 21
+	)
+	default int arclight_LowChargeThreshold()
 	{
 		return 500;
 	}

@@ -67,7 +67,6 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
-import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.Text;
 
 @PluginDescriptor(
@@ -116,7 +115,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	private KeyManager keyManager;
 
 	@Inject
-	private NpcDialogTracker npcDialogTracker;
+	private DialogTracker dialogTracker;
 
 	private Devtools devtools;
 
@@ -131,12 +130,12 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	{
 		overlayManager.add(itemOverlay);
 		if (config.devMode()) enableDevMode();
-		npcDialogTracker.reset();
-		eventBus.register(npcDialogTracker);
-		keyManager.registerKeyListener(npcDialogTracker);
+		dialogTracker.reset();
+		eventBus.register(dialogTracker);
+		keyManager.registerKeyListener(dialogTracker);
 		keyManager.registerKeyListener(this);
-		npcDialogTracker.setStateChangedListener(this::npcDialogStateChanged);
-		npcDialogTracker.setOptionSelectedListener(this::optionSelected);
+		dialogTracker.setStateChangedListener(this::dialogStateChanged);
+		dialogTracker.setOptionSelectedListener(this::optionSelected);
 	}
 
 	@Override
@@ -144,42 +143,52 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	{
 		overlayManager.remove(itemOverlay);
 		disableDevMode();
-		eventBus.unregister(npcDialogTracker);
-		keyManager.unregisterKeyListener(npcDialogTracker);
+		eventBus.unregister(dialogTracker);
+		keyManager.unregisterKeyListener(dialogTracker);
 		keyManager.unregisterKeyListener(this);
 	}
 
-	void npcDialogStateChanged(NpcDialogTracker.NpcDialogState npcDialogState)
+	void dialogStateChanged(DialogTracker.DialogState dialogState)
 	{
-		if (devtools != null && config.devMode()) devtools.npcDialogStateChanged(npcDialogState);
+		if (devtools != null && config.devMode()) devtools.dialogStateChanged(dialogState);
 
 		// TODO if you can calculate the total charges available in the inventory you could get an accurate count on the "add how many charges" dialog, because max charges - max charges addable = current charges.
 
 		for (ChargesDialogHandler nonUniqueDialogHandler : ChargedWeapon.getNonUniqueDialogHandlers())
 		{
-			nonUniqueDialogHandler.handleDialog(npcDialogState, this);
+			nonUniqueDialogHandler.handleDialog(dialogState, this);
+		}
+
+		outer_loop:
+		for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
+		{
+			for (ChargesDialogHandler dialogHandler : chargedWeapon.getDialogHandlers())
+			{
+				if (dialogHandler.handleDialog(dialogState, this)) break outer_loop;
+			}
 		}
 	}
 
 //	private static final Pattern CHARGES_PATTERN = Pattern.compile("How many charges would you like to add\\? \\(0 - ([\\d,]+)\\)");
 //
-	void optionSelected(NpcDialogTracker.NpcDialogState npcDialogState, String optionSelected)
+	void optionSelected(DialogTracker.DialogState dialogState, String optionSelected)
 	{
-		if (devtools != null && config.devMode()) devtools.optionSelected(npcDialogState, optionSelected);
+		if (devtools != null && config.devMode()) devtools.optionSelected(dialogState, optionSelected);
 
 		// I don't think adding a single charge by using the items on the weapon is going to be trackable if the user
 		// skips the sprite dialog.
 
 		for (ChargesDialogHandler nonUniqueDialogHandler : ChargedWeapon.getNonUniqueDialogHandlers())
 		{
-			nonUniqueDialogHandler.handleDialogOptionSelected(npcDialogState, optionSelected, this);
+			nonUniqueDialogHandler.handleDialogOptionSelected(dialogState, optionSelected, this);
 		}
 
+		outer_loop:
 		for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
 		{
 			for (ChargesDialogHandler dialogHandler : chargedWeapon.getDialogHandlers())
 			{
-				dialogHandler.handleDialogOptionSelected(npcDialogState, optionSelected, this);
+				if (dialogHandler.handleDialogOptionSelected(dialogState, optionSelected, this)) break outer_loop;
 			}
 		}
 	}
@@ -357,7 +366,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 		if (matcher.find())
 		{
-			System.out.println("matcher: " + matcher.group(1) + " " + matcher.group(2) + " " + matcher.group(3));
 			setDartsLeft(Integer.parseInt(matcher.group(2).replace(",", "")));
 			setScalesLeft(Integer.parseInt(matcher.group(3).replace(",", "")));
 			setDartType(DartType.getDartTypeByName(matcher.group(1)));
@@ -624,10 +632,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	private void setScalesLeft(float scalesLeft, boolean logChange)
 	{
 		configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "blowpipeScales", scalesLeft);
-		if (scalesLeft < 100) {
-			System.out.println("went below 100.");
-			new Exception().printStackTrace(System.out);
-		}
 		if (logChange)
 		{
 			log.info("set scales left to " + scalesLeft + " (" + configManager.getRSProfileKey() + ")");

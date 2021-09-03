@@ -34,7 +34,7 @@ import net.runelite.client.input.KeyListener;
  * double sprite dialog (e.g. removing fang from swamp trident).
  */
 @Slf4j
-public class NpcDialogTracker implements KeyListener
+public class DialogTracker implements KeyListener
 {
     private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE = 4;
     private static final int WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE = 4;
@@ -43,17 +43,17 @@ public class NpcDialogTracker implements KeyListener
     @Inject
     private Client client;
 
-    private Consumer<NpcDialogState> npcDialogStateChanged;
-    private BiConsumer<NpcDialogState, String> npcDialogOptionSelected;
+    private Consumer<DialogState> dialogStateChanged;
+    private BiConsumer<DialogState, String> dialogOptionSelected;
 
-    private NpcDialogState lastNpcDialogState = null;
+    private DialogState lastDialogState = null;
 
-    public void setStateChangedListener(Consumer<NpcDialogState> listener) {
-        npcDialogStateChanged = listener;
+    public void setStateChangedListener(Consumer<DialogState> listener) {
+        dialogStateChanged = listener;
     }
 
-    public void setOptionSelectedListener(BiConsumer<NpcDialogState, String> listener) {
-        npcDialogOptionSelected = listener;
+    public void setOptionSelectedListener(BiConsumer<DialogState, String> listener) {
+        dialogOptionSelected = listener;
     }
 
     /*
@@ -74,20 +74,20 @@ public class NpcDialogTracker implements KeyListener
                 log.debug("dynamic child option was null, index " + dynamicChildIndex + " total children: " + dynamicChildren.length);
                 return; // not sure why this would happen.
             }
-            optionSelected(lastNpcDialogState, dynamicChild.getText());
+            optionSelected(lastDialogState, dynamicChild.getText());
         } else if (groupId == WidgetID.DIALOG_NPC_GROUP_ID && childId == WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE) {
-            optionSelected(lastNpcDialogState, null);
+            optionSelected(lastDialogState, null);
         } else if (groupId == WidgetID.DIALOG_PLAYER_GROUP_ID && childId == WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE) {
-            optionSelected(lastNpcDialogState, null);
+            optionSelected(lastDialogState, null);
         } else if (groupId == WidgetID.DIALOG_SPRITE_GROUP_ID && childId == 0) {
-            optionSelected(lastNpcDialogState, null);
+            optionSelected(lastDialogState, null);
         }
     }
 
-    public NpcDialogState getNpcDialogState() {
-        NpcDialogState.NpcDialogType type = getNpcDialogType();
+    public DialogState getDialogState() {
+        DialogState.DialogType type = getDialogType();
 
-        NpcDialogState state;
+        DialogState state;
         switch (type) {
             case NPC:
             {
@@ -97,7 +97,7 @@ public class NpcDialogTracker implements KeyListener
                 String name = (nameWidget != null) ? nameWidget.getText() : null;
                 String text = (textWidget != null) ? textWidget.getText() : null;
 
-                state = NpcDialogState.npc(name, text);
+                state = DialogState.npc(name, text);
                 break;
             }
             case PLAYER:
@@ -108,7 +108,7 @@ public class NpcDialogTracker implements KeyListener
                 String name = (nameWidget != null) ? nameWidget.getText() : null;
                 String text = (textWidget != null) ? textWidget.getText() : null;
 
-                state = NpcDialogState.player(name, text);
+                state = DialogState.player(name, text);
                 break;
             }
             case OPTIONS:
@@ -128,7 +128,7 @@ public class NpcDialogTracker implements KeyListener
                     text = options.remove(0); // remove "Select an Option".
                 }
 
-                state = NpcDialogState.options(text, options);
+                state = DialogState.options(text, options);
                 break;
             }
             case SPRITE:
@@ -139,7 +139,7 @@ public class NpcDialogTracker implements KeyListener
 				Widget itemWidget = client.getWidget(WidgetInfo.DIALOG_SPRITE_SPRITE);
 				int itemId = (itemWidget != null) ? itemWidget.getItemId() : -1;
 
-				state = NpcDialogState.sprite(text, itemId);
+				state = DialogState.sprite(text, itemId);
                 break;
             }
 			case INPUT:
@@ -148,12 +148,12 @@ public class NpcDialogTracker implements KeyListener
 				String title = (titleWidget != null) ? titleWidget.getText() : null;
 				String input = client.getVar(VarClientStr.INPUT_TEXT);
 
-				state = NpcDialogState.input(title, input);
+				state = DialogState.input(title, input);
 				break;
 			}
 			case NO_DIALOG:
 			{
-				state = NpcDialogState.noDialog();
+				state = DialogState.noDialog();
 				break;
 			}
 			default:
@@ -163,39 +163,39 @@ public class NpcDialogTracker implements KeyListener
 		return state;
     }
 
-    private NpcDialogState.NpcDialogType getNpcDialogType()
+    private DialogState.DialogType getDialogType()
     {
         Widget npcDialog = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, 0);
         if (npcDialog != null && !npcDialog.isHidden())
         {
-            return NpcDialogState.NpcDialogType.NPC;
+            return DialogState.DialogType.NPC;
         }
 
         Widget playerDialog = client.getWidget(WidgetInfo.DIALOG_PLAYER);
         if (playerDialog != null && !playerDialog.isHidden())
         {
-            return NpcDialogState.NpcDialogType.PLAYER;
+            return DialogState.DialogType.PLAYER;
         }
 
         Widget optionsDialog = client.getWidget(WidgetInfo.DIALOG_OPTION);
         if (optionsDialog != null && !optionsDialog.isHidden())
         {
-            return NpcDialogState.NpcDialogType.OPTIONS;
+            return DialogState.DialogType.OPTIONS;
         }
 
         Widget spriteDialog = client.getWidget(WidgetInfo.DIALOG_SPRITE);
         if (spriteDialog != null && !spriteDialog.isHidden())
         {
-            return NpcDialogState.NpcDialogType.SPRITE;
+            return DialogState.DialogType.SPRITE;
         }
 
 		Widget inputDialog = client.getWidget(WidgetInfo.CHATBOX_FULL_INPUT);
 		if (inputDialog != null && !inputDialog.isHidden())
 		{
-			return NpcDialogState.NpcDialogType.INPUT;
+			return DialogState.DialogType.INPUT;
 		}
 
-		return NpcDialogState.NpcDialogType.NO_DIALOG;
+		return DialogState.DialogType.NO_DIALOG;
     }
 
     @Subscribe
@@ -203,13 +203,13 @@ public class NpcDialogTracker implements KeyListener
 //        log.debug("Game tick: {}", client.getTickCount());
         optionSelected = false;
 
-        NpcDialogState npcDialogState = getNpcDialogState();
-        if (!Objects.equals(npcDialogState, lastNpcDialogState)) {
-            log.debug("npc dialog changed: {} previous: {} (game tick: {})", npcDialogState, lastNpcDialogState, client.getTickCount());
+        DialogState dialogState = getDialogState();
+        if (!Objects.equals(dialogState, lastDialogState)) {
+            log.debug("dialog changed: {} previous: {} (game tick: {})", dialogState, lastDialogState, client.getTickCount());
 
-            if (npcDialogStateChanged != null) npcDialogStateChanged.accept(npcDialogState);
+            if (dialogStateChanged != null) dialogStateChanged.accept(dialogState);
         }
-        lastNpcDialogState = npcDialogState;
+        lastDialogState = dialogState;
     }
 
 	@Subscribe
@@ -225,26 +225,26 @@ public class NpcDialogTracker implements KeyListener
                     Widget dynamicChild = w.getDynamicChildren()[i];
                     if ("Please wait...".equals(dynamicChild.getText())) {
                         String option = null;
-                        if (lastNpcDialogState.type == NpcDialogState.NpcDialogType.OPTIONS) {
-                            if (lastNpcDialogState.options != null) {
-                                if (lastNpcDialogState.options.size() > i - 1) { // -1 because we skip "Select an Option".
-                                    option = lastNpcDialogState.options.get(i - 1); // -1 because we skip "Select an Option".
+                        if (lastDialogState.type == DialogState.DialogType.OPTIONS) {
+                            if (lastDialogState.options != null) {
+                                if (lastDialogState.options.size() > i - 1) { // -1 because we skip "Select an Option".
+                                    option = lastDialogState.options.get(i - 1); // -1 because we skip "Select an Option".
                                 }
                             }
                         }
-                        optionSelected(lastNpcDialogState, option);
+                        optionSelected(lastDialogState, option);
                     }
                 }
             }
             w = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE);
             if (w != null && !w.isHidden() && "Please wait...".equals(w.getText()))
             {
-                optionSelected(lastNpcDialogState, null);
+                optionSelected(lastDialogState, null);
             }
             w = client.getWidget(WidgetID.DIALOG_PLAYER_GROUP_ID, WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE);
             if (w != null && !w.isHidden() && "Please wait...".equals(w.getText()))
             {
-                optionSelected(lastNpcDialogState, null);
+                optionSelected(lastDialogState, null);
             }
         } else if (event.getScriptId() == 2869) {
             Widget w = client.getWidget(WidgetInfo.DIALOG_SPRITE);
@@ -253,7 +253,7 @@ public class NpcDialogTracker implements KeyListener
                 Widget dynamicChild = w.getDynamicChildren()[2];
                 if ("Please wait...".equals(dynamicChild.getText()))
                 {
-                    optionSelected(lastNpcDialogState, null);
+                    optionSelected(lastDialogState, null);
                 }
             }
         }
@@ -264,20 +264,20 @@ public class NpcDialogTracker implements KeyListener
      */
     private boolean optionSelected = false;
 
-    private void optionSelected(NpcDialogState state, String option) {
+    private void optionSelected(DialogState state, String option) {
         if (optionSelected) return;
         optionSelected = true;
-        if (state.type == NpcDialogState.NpcDialogType.OPTIONS) {
+        if (state.type == DialogState.DialogType.OPTIONS) {
             log.debug("option selected: \"" + option + "\" " + state);
         } else {
             log.debug("clicked here to continue: " + state);
         }
-        if (npcDialogOptionSelected != null) npcDialogOptionSelected.accept(state, option);
+        if (dialogOptionSelected != null) dialogOptionSelected.accept(state, option);
     }
 
     public void reset()
     {
-        lastNpcDialogState = null;
+        lastDialogState = null;
     }
 
 	@Override
@@ -293,7 +293,7 @@ public class NpcDialogTracker implements KeyListener
 			String inputText = client.getVar(VarClientStr.INPUT_TEXT);
 
 			// idk if this if statement is needed but better safe than sorry.
-			if (lastNpcDialogState.type == NpcDialogState.NpcDialogType.INPUT) optionSelected(lastNpcDialogState, inputText);
+			if (lastDialogState.type == DialogState.DialogType.INPUT) optionSelected(lastDialogState, inputText);
 		}
 	}
 
@@ -304,8 +304,10 @@ public class NpcDialogTracker implements KeyListener
 	}
 
 	@RequiredArgsConstructor
-    public static class NpcDialogState {
-		enum NpcDialogType {
+    public static class DialogState
+	{
+		enum DialogType
+		{
             /**
              * NO_DIALOG does NOT indicate the end of a dialog. For example you can end a dialog with an npc by doing something like checking a kharedst memoirs, without seeing the NO_DIALOG state inbetween.
              */
@@ -318,7 +320,7 @@ public class NpcDialogTracker implements KeyListener
         }
 
         @NonNull
-        final NpcDialogType type;
+        final DialogTracker.DialogState.DialogType type;
 
         // Meaningful only when type is PLAYER or NPC or INPUT.
         @Nullable
@@ -334,33 +336,33 @@ public class NpcDialogTracker implements KeyListener
         @Nullable
         final List<String> options;
 
-        public static NpcDialogState sprite(String text, int itemId) {
-            return new NpcDialogState(NpcDialogType.SPRITE, null, text, itemId, null);
+        public static DialogState sprite(String text, int itemId) {
+            return new DialogState(DialogType.SPRITE, null, text, itemId, null);
         }
 
-        public static NpcDialogState player(String name, String text) {
-            return new NpcDialogState(NpcDialogType.PLAYER, name, text, null, null);
+        public static DialogState player(String name, String text) {
+            return new DialogState(DialogType.PLAYER, name, text, null, null);
         }
 
-        public static NpcDialogState npc(String name, String text) {
-            return new NpcDialogState(NpcDialogType.NPC, name, text, null, null);
+        public static DialogState npc(String name, String text) {
+            return new DialogState(DialogType.NPC, name, text, null, null);
         }
 
-        public static NpcDialogState options(String text, List<String> options) {
-            return new NpcDialogState(NpcDialogType.OPTIONS, null, text, null, options);
+        public static DialogState options(String text, List<String> options) {
+            return new DialogState(DialogType.OPTIONS, null, text, null, options);
         }
 
-        public static NpcDialogState options(String text, String... options) {
-            return new NpcDialogState(NpcDialogType.OPTIONS, null, text, null, Arrays.asList(options));
+        public static DialogState options(String text, String... options) {
+            return new DialogState(DialogType.OPTIONS, null, text, null, Arrays.asList(options));
         }
 
-		public static NpcDialogState input(String title, String input)
+		public static DialogState input(String title, String input)
 		{
-			return new NpcDialogState(NpcDialogType.INPUT, title, input, null, null);
+			return new DialogState(DialogType.INPUT, title, input, null, null);
 		}
 
-		public static NpcDialogState noDialog() {
-            return new NpcDialogState(NpcDialogType.NO_DIALOG, null, null, null, null);
+		public static DialogState noDialog() {
+            return new DialogState(DialogType.NO_DIALOG, null, null, null, null);
         }
 
         @Override
@@ -368,7 +370,7 @@ public class NpcDialogTracker implements KeyListener
         {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            NpcDialogState that = (NpcDialogState) o;
+            DialogState that = (DialogState) o;
             return type == that.type && Objects.equals(text, that.text) && Objects.equals(name, that.name) && Objects.equals(options, that.options);
         }
 
@@ -383,26 +385,26 @@ public class NpcDialogTracker implements KeyListener
         {
             switch (type) {
                 case NO_DIALOG:
-                    return "NpcDialogState{" + type +
+                    return "DialogState{" + type +
                             "}";
                 case PLAYER:
                 case NPC:
-                    return "NpcDialogState{" + type +
+                    return "DialogState{" + type +
                             ", name='" + name + "'" +
                             ", text='" + text + "'" +
                             "}";
                 case SPRITE:
-                    return "NpcDialogState{" + type +
+                    return "DialogState{" + type +
                             ", text='" + text + "'" +
 							", itemId=" + spriteDialogItemId +
 							"}";
                 case OPTIONS:
-                    return "NpcDialogState{" + type +
+                    return "DialogState{" + type +
                             ", text='" + text + "'" +
                             ", options=" + options +
                             "}";
 				case INPUT:
-					return "NpcDialogState{" + type +
+					return "DialogState{" + type +
 						", title='" + name + "'" +
 						", input='" + text + "'" +
 						"}";
