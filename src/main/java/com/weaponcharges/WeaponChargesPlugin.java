@@ -525,7 +525,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			false
 		);
 
-		addScalesLeft(2/3f, false);
+		addScalesLeft(-2/3f, false);
 	}
 
 	@Subscribe
