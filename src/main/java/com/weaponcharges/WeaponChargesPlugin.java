@@ -51,6 +51,7 @@ import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.kit.KitType;
@@ -99,9 +100,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Inject
 	private WeaponChargesConfig config;
 
-//	@Inject
-//	private InfoBoxManager infoBoxManager;
-//
 	@Inject
 	private ClientThread clientThread;
 
@@ -136,6 +134,9 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		keyManager.registerKeyListener(this);
 		dialogTracker.setStateChangedListener(this::dialogStateChanged);
 		dialogTracker.setOptionSelectedListener(this::optionSelected);
+
+		lastLocalPlayerAnimationChangedGameTick = -1;
+		lastLocalPlayerAnimationChanged = -1;
 	}
 
 	@Override
@@ -258,11 +259,25 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 					break;
 				}
 			}
+		} else if (event.getMenuOption().equalsIgnoreCase("unload") && event.getId() == ItemID.TOXIC_BLOWPIPE) {
+			checkBlowpipeUnload = client.getTickCount();
 		}
 
 		if (event.getMenuAction() == MenuAction.ITEM_USE_ON_WIDGET_ITEM) {
 			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(event.getId());
 			if (config.devMode()) log.info("used item on " + lastUsedOnWeapon + " " + client.getTickCount());
+		}
+	}
+
+	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged itemContainerChanged) {
+		if (itemContainerChanged.getContainerId() != InventoryID.INVENTORY.getId()) {
+			return;
+		}
+
+		if (checkBlowpipeUnload == client.getTickCount() || checkBlowpipeUnload + 1 == client.getTickCount()) {
+			setDartsLeft(0);
+			setDartType(DartType.UNKNOWN);
 		}
 	}
 
@@ -354,25 +369,126 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		return ChargedWeapon.getChargedWeaponFromId(item.getId());
 	}
 
+	/* blowpipe:
+	// checking:
+	// 2021-08-29 14:22:09 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 1135: GAMEMESSAGE "Darts: <col=007f00>None</col>. Scales: <col=007f00>99 (0.6%)</col>."
+	// 2021-09-05 13:55:04 [Client] INFO  com.weaponcharges.Devtools - 9: GAMEMESSAGE "Darts: <col=007f00>Adamant dart x 16,383</col>. Scales: <col=007f00>16,383 (100.0%)</col>."
+	// 2021-09-05 13:55:26 [Client] INFO  com.weaponcharges.Devtools - 46: GAMEMESSAGE "Darts: <col=007f00>Adamant dart x 16,383</col>. Scales: <col=007f00>0 (0.0%)</col>."
+
+	// adding charges either uses the check messages, or one of the following:
+	// using scales on full blowpipe: 2021-09-05 13:48:26 [Client] INFO  com.weaponcharges.Devtools - 640: GAMEMESSAGE "The blowpipe can't hold any more scales."
+	// using darts on full blowpipe: 2021-09-05 13:48:25 [Client] INFO  com.weaponcharges.Devtools - 638: GAMEMESSAGE "The blowpipe can't hold any more darts."
+
+	// run out of darts: 2021-08-29 14:19:11 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 841: GAMEMESSAGE "Your blowpipe has run out of darts."
+	// run out of scales: 2021-08-29 14:18:27 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 767: GAMEMESSAGE "Your blowpipe needs to be charged with Zulrah's scales."
+	// run out of both: 2021-09-05 13:45:24 [Client] INFO  com.weaponcharges.Devtools - 336: GAMEMESSAGE "Your blowpipe has run out of scales and darts."
+
+	// (attacking with no darts: 2021-09-05 13:43:43 [Client] INFO  com.weaponcharges.Devtools - 169: GAMEMESSAGE "Your blowpipe contains no darts."
+	// (attacking with no darts or scales (trying to equip blowpipe without EITHER scales or darts in it produces the same message, lol) : 2021-09-05 13:45:43 [Client] INFO  com.weaponcharges.Devtools - 369: GAMEMESSAGE "Your blowpipe needs to be charged with Zulrah's scales and loaded with darts."
+	// (attacking with no scales, same as run out of scales message): 2021-09-05 13:47:42 [Client] INFO  com.weaponcharges.Devtools - 566: GAMEMESSAGE "Your blowpipe needs to be charged with Zulrah's scales."
+
+	// unload
+	// unload with no darts: 2021-09-05 13:59:25 [Client] INFO  com.weaponcharges.Devtools - 443: GAMEMESSAGE "The blowpipe has no darts in it."
+	// unload with darts has no chat message.
+
+	// don't care because when you add charges after it always produces a chat message.
+	// uncharge 2021-09-05 14:40:47 [Client] INFO  com.weaponcharges.Devtools - 481: dialog state changed: DialogState{DESTROY_ITEM, title='Are you sure you want to uncharge it?', itemId=12926, item_name='Toxic blowpipe', text='If you uncharge the blowpipe, all scales and darts will fall out.'}
+	 */
+
+	// check messages.
+	private static final Pattern NO_DARTS_CHECK_PATTERN = Pattern.compile("Darts: None. Scales: ([\\d,]+) \\(\\d+[.]?\\d%\\).");
+	private static final Pattern DARTS_AND_SCALE_CHECK_PATTERN = Pattern.compile("Darts: (\\S*)(?: dart)? x ([\\d,]+). Scales: ([\\d,]+) \\(\\d+[.]?\\d%\\).");
+	private static final Pattern USE_SCALES_ON_FULL_BLOWPIPE_PATTERN = Pattern.compile("The blowpipe can't hold any more scales.");
+	private static final Pattern USE_DARTS_ON_FULL_BLOWPIPE_PATTERN = Pattern.compile("The blowpipe can't hold any more darts.");
+	private static final Pattern UNLOAD_EMPTY_BLOWPIPE_PATTERN = Pattern.compile("The blowpipe has no darts in it.");
+
+	// update messages.
+	private static final Pattern NO_DARTS_PATTERN = Pattern.compile("Your blowpipe has run out of darts.");
+	private static final Pattern NO_SCALES_PATTERN = Pattern.compile("Your blowpipe needs to be charged with Zulrah's scales.");
+	private static final Pattern NO_DARTS_OR_SCALES_PATTERN = Pattern.compile("Your blowpipe has run out of scales and darts.");
+	private static final Pattern NO_DARTS_PATTERN_2 = Pattern.compile("Your blowpipe contains no darts.");
+	private static final Pattern NO_DARTS_OR_SCALES_PATTERN_2 = Pattern.compile("Your blowpipe needs to be charged with Zulrah's scales and loaded with darts.");
+
 	private void chatMessageBlowpipe(String chatMsg)
 	{
-// TODO		2021-08-29 14:19:11 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 841: GAMEMESSAGE "Your blowpipe has run out of darts."
-
-// TODO		2021-08-29 14:18:27 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 767: GAMEMESSAGE "Your blowpipe needs to be charged with Zulrah's scales."
-
-		// TODO messages for using scales/darts on a full blowpipe.
-
-		Matcher matcher = DART_AND_SCALE_PATTERN.matcher(chatMsg);
-
+		Matcher matcher = DARTS_AND_SCALE_CHECK_PATTERN.matcher(chatMsg);
 		if (matcher.find())
 		{
 			setDartsLeft(Integer.parseInt(matcher.group(2).replace(",", "")));
 			setScalesLeft(Integer.parseInt(matcher.group(3).replace(",", "")));
 			setDartType(DartType.getDartTypeByName(matcher.group(1)));
 		}
+
+		matcher = NO_DARTS_CHECK_PATTERN.matcher(chatMsg);
+		if (matcher.find())
+		{
+			setDartsLeft(0);
+			setScalesLeft(Integer.parseInt(matcher.group(1).replace(",", "")));
+			setDartType(DartType.UNKNOWN);
+		}
+
+		matcher = USE_SCALES_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
+		if (matcher.find()) {
+			setScalesLeft(MAX_SCALES);
+		}
+
+		matcher = USE_DARTS_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
+		if (matcher.find()) {
+			setDartsLeft(MAX_DARTS);
+		}
+
+		matcher = UNLOAD_EMPTY_BLOWPIPE_PATTERN.matcher(chatMsg);
+		if (matcher.find()) {
+			setDartsLeft(0);
+			setDartType(DartType.UNKNOWN);
+		}
+
+		matcher = NO_DARTS_PATTERN.matcher(chatMsg);
+		if (matcher.find()) {
+			delayChargeUpdateUntilAfterAnimations.add(() -> {
+				setDartsLeft(0);
+				setDartType(DartType.UNKNOWN);
+			});
+		}
+
+		matcher = NO_SCALES_PATTERN.matcher(chatMsg);
+		if (matcher.find())
+		{
+			delayChargeUpdateUntilAfterAnimations.add(() -> setScalesLeft(0));
+		}
+
+		matcher = NO_DARTS_OR_SCALES_PATTERN.matcher(chatMsg);
+		if (matcher.find())
+		{
+			delayChargeUpdateUntilAfterAnimations.add(() -> {
+				setScalesLeft(0);
+				setDartsLeft(0);
+				setDartType(DartType.UNKNOWN);
+			});
+		}
+
+		matcher = NO_DARTS_PATTERN_2.matcher(chatMsg);
+		if (matcher.find())
+		{
+			delayChargeUpdateUntilAfterAnimations.add(() -> {
+				setDartsLeft(0);
+				setDartType(DartType.UNKNOWN);
+			});
+		}
+
+		matcher = NO_DARTS_OR_SCALES_PATTERN_2.matcher(chatMsg);
+		if (matcher.find())
+		{
+			delayChargeUpdateUntilAfterAnimations.add(() -> {
+				setScalesLeft(0);
+				setDartsLeft(0);
+				setDartType(DartType.UNKNOWN);
+			});
+		}
 	}
 
 	private int checkTomeOfFire = -1; // TODO make this boolean.
+	private int checkBlowpipeUnload = -1;
 
 	@Subscribe
 	public void onClientTick(ClientTick clientTick)
@@ -399,7 +515,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	private int lastLocalPlayerAnimationChangedGameTick = -1;
-	// I record the animation id so that animation changing plugins change the animation between onAnimationChanged and onGameTick.
+	// I record the animation id so that animation changing plugins that change the animation (e.g. weapon animation replacer) can't interfere.
 	private int lastLocalPlayerAnimationChanged = -1;
 
 	@Subscribe(priority = 10.0f) // I want to get ahead of those pesky animation modifying plugins.
@@ -412,30 +528,16 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		lastLocalPlayerAnimationChanged = actor.getAnimation();
 	}
 
-	private int ticks = 0;
-	private int ticksInAnimation;
-	private int attackStyleVarbit = -1;
-	// TODO 2021-08-29 14:22:09 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 1135: GAMEMESSAGE "Darts: <col=007f00>None</col>. Scales: <col=007f00>99 (0.6%)</col>."
-	private static final Pattern DART_AND_SCALE_PATTERN = Pattern.compile("Darts: (\\S*)(?: dart)? x ([\\d,]+). Scales: ([\\d,]+) \\(\\d+[.]?\\d%\\).");
-
 	private static final int TICKS_RAPID_PVM = 2;
 	private static final int TICKS_RAPID_PVP = 3;
 	private static final int TICKS_NORMAL_PVM = 3;
 	private static final int TICKS_NORMAL_PVP = 4;
 	public static final int MAX_SCALES = 16383;
+	public static final int MAX_DARTS = 16383;
 
-//	private static int blowpipeHits = 0;
-//	private static int blowpipeHitsBySound = 0;
-//
-//	@Subscribe
-//	public void onSoundEffectPlayed(SoundEffectPlayed soundEffectPlayed)
-//	{
-//		if (soundEffectPlayed.getSoundId() == 2696) {
-//			blowpipeHitsBySound++;
-//			System.out.println(client.getTickCount() + " blowpipe hits (by sound): " + blowpipeHits + " " + blowpipeHitsBySound);
-//		}
-//	}
-//
+	private int ticks = 0;
+	private int ticksInAnimation;
+	private int attackStyleVarbit = -1;
 	private int lastAnimationStart = 0;
 
 	@Subscribe
@@ -447,6 +549,11 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		// Runelite's order is: onChatMessage, onAnimationChanged, onGameTick.
 		// charge update messages must also be delayed due to equipment slot info not being current in onChatMessage.
 		if (lastLocalPlayerAnimationChangedGameTick == client.getTickCount()) checkAnimation();
+
+		if (lastLocalPlayerAnimationChanged == BLOWPIPE_ATTACK_ANIMATION)
+		{
+			blowpipeOnGameTick();
+		}
 
 		if (!delayChargeUpdateUntilAfterAnimations.isEmpty()) {
 			for (Runnable runnable : delayChargeUpdateUntilAfterAnimations)
@@ -462,14 +569,10 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		lastWeaponChecked2.clear();
 		lastWeaponChecked2 = lastWeaponChecked;
 		lastWeaponChecked = new ArrayList<>();
+	}
 
-		Player player = client.getLocalPlayer();
-
-		if (player.getAnimation() != BLOWPIPE_ATTACK_ANIMATION)
-		{
-			return;
-		}
-
+	private void blowpipeOnGameTick()
+	{
 		if (ticks == 0) {
 			lastAnimationStart = client.getTickCount();
 		} else {
@@ -537,6 +640,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 			if (attackStyleVarbit == 0 || attackStyleVarbit == 3)
 			{
+				// TODO will this check run only when changing attack style, or also in pvp?
 				ticksInAnimation = client.getLocalPlayer().getInteracting() instanceof Player ? TICKS_NORMAL_PVP : TICKS_NORMAL_PVM;
 			}
 			else if (attackStyleVarbit == 1)
@@ -585,7 +689,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		return Float.parseFloat(configString);
 	}
 
-	private void setDartsLeft(float dartsLeft)
+	void setDartsLeft(float dartsLeft)
 	{
 		setDartsLeft(dartsLeft, true);
 	}
@@ -607,11 +711,11 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	public DartType getDartType()
 	{
 		String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "blowpipeDartType");
-		if (configString == null) return null;
+		if (configString == null) return DartType.UNKNOWN;
 		return DartType.valueOf(configString);
 	}
 
-	private void setDartType(DartType dartType)
+	void setDartType(DartType dartType)
 	{
 		configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "blowpipeDartType", dartType);
 		log.info("set dart type to " + dartType + " (" + configManager.getRSProfileKey() + ")");
@@ -624,7 +728,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		return Float.parseFloat(configString);
 	}
 
-	private void setScalesLeft(float scalesLeft)
+	void setScalesLeft(float scalesLeft)
 	{
 		setScalesLeft(scalesLeft, true);
 	}
@@ -677,6 +781,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	@RequiredArgsConstructor
 	public enum DartType {
+		UNKNOWN(-1, Color.LIGHT_GRAY, null),
 		BRONZE(ItemID.BRONZE_DART, new Color(0x6e5727), "bronze"),
 		IRON(ItemID.IRON_DART, new Color(0x52504c), "iron"),
 		STEEL(ItemID.STEEL_DART, new Color(0x7a7873), "steel"),
@@ -696,7 +801,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			group = group.toLowerCase();
 			for (DartType dartType : DartType.values())
 			{
-				if (dartType.checkBlowpipeMessageName.equals(group)) {
+				if (dartType.checkBlowpipeMessageName != null && dartType.checkBlowpipeMessageName.equals(group)) {
 					return dartType;
 				}
 			}

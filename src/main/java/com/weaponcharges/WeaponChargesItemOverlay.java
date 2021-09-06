@@ -104,6 +104,9 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				} else {
 					float scalesLeftPercent = scalesLeft / WeaponChargesPlugin.MAX_SCALES;
 					topText.setText(String.format("%d%%", (int) (scalesLeftPercent * 100)));
+					if (String.format("%d%%", (int) (scalesLeftPercent * 100)).equals(String.format("%d%%", 0)) && scalesLeft > 0) {
+						topText.setText("1%");
+					}
 					if (blowpipeChargesLow(scalesLeft, dartsLeft1)) topText.setColor(config.chargesTextLowColor());
 				}
 			}

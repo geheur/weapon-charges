@@ -6,6 +6,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
+import com.weaponcharges.WeaponChargesPlugin.DartType;
 import java.util.HashMap;
 import java.util.Map;
 import net.runelite.api.ChatMessageType;
@@ -14,6 +15,7 @@ import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
+import net.runelite.api.ItemID;
 import net.runelite.api.Player;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
@@ -99,8 +101,7 @@ public class WeaponChargesTest
 		Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
 
 		Player localPlayer = Mockito.mock(Player.class);
-		doAnswer(invocation -> animationId).when(localPlayer).getAnimation();
-		doReturn(localPlayer).when(client).getLocalPlayer();
+//		doReturn(localPlayer).when(client).getLocalPlayer();
 
 		doAnswer(invocation -> {
 			InventoryID inventoryId = invocation.getArgument(0, InventoryID.class);
@@ -161,8 +162,73 @@ public class WeaponChargesTest
 		checkSanguinestiStaff();
 
 		checkArclight();
+		
+		checkBlowpipe();
+	}
 
-		checkWeaponSpecificMessage(ChargedWeapon.CRYSTAL_HALBERD, "Your crystal halberd has 278 charges remaining.", 278);
+	private void checkBlowpipe()
+	{
+		// TODO some of these unnecessarily check (menu option) the blowpipe.
+
+		checkBlowpipeMessage("Darts: <col=007f00>None</col>. Scales: <col=007f00>99 (0.6%)</col>.", 99, 0, DartType.UNKNOWN);
+		checkBlowpipeMessage("Darts: <col=007f00>Adamant dart x 16,383</col>. Scales: <col=007f00>16,383 (100.0%)</col>.", 16383, 16383, DartType.ADAMANT);
+		checkBlowpipeMessage("Darts: <col=007f00>Adamant dart x 16,383</col>. Scales: <col=007f00>0 (0.0%)</col>.", 0, 16383, DartType.ADAMANT);
+
+		checkBlowpipeMessage("The blowpipe can't hold any more scales.", WeaponChargesPlugin.MAX_SCALES, null, null);
+		checkBlowpipeMessage("The blowpipe can't hold any more darts.", null, WeaponChargesPlugin.MAX_DARTS, null);
+
+		checkBlowpipeMessage("Your blowpipe has run out of darts.", null, 0, DartType.UNKNOWN);
+		checkBlowpipeMessage("Your blowpipe needs to be charged with Zulrah's scales.", 0, null, null);
+		checkBlowpipeMessage("Your blowpipe has run out of scales and darts.", 0, 0, DartType.UNKNOWN);
+
+		checkBlowpipeMessage("Your blowpipe contains no darts.", null, 0, DartType.UNKNOWN);
+		checkBlowpipeMessage("Your blowpipe needs to be charged with Zulrah's scales and loaded with darts.", 0, 0, DartType.UNKNOWN);
+
+		checkBlowpipeMessage("The blowpipe has no darts in it.", null, 0, DartType.UNKNOWN);
+
+		// unload with darts has no chat message. TODO
+
+		// uncharge 2021-09-05 14:40:47 [Client] INFO  com.weaponcharges.Devtools - 481: dialog state changed: DialogState{DESTROY_ITEM, title='Are you sure you want to uncharge it?', itemId=12926, item_name='Toxic blowpipe', text='If you uncharge the blowpipe, all scales and darts will fall out.'}
+	}
+
+	// TODO not testing SPAM.
+
+	private void checkBlowpipeMessage(String message, Integer scalesExpected, Integer dartsExpected, DartType dartType)
+	{
+		checkBlowpipeMessage(message, scalesExpected, dartsExpected, dartType, true);
+	}
+
+	private void blowpipeMessage(String message, Integer scalesExpected, Integer dartsExpected, DartType dartType)
+	{
+		checkBlowpipeMessage(message, scalesExpected, dartsExpected, dartType, false);
+	}
+
+	private void checkBlowpipeMessage(String message, Integer scalesExpected, Integer dartsExpected, DartType dartType, boolean checkBlowpipe)
+	{
+		if ((scalesExpected != null && scalesExpected == 1000) || (dartsExpected != null && dartsExpected == 1000) || dartType == DartType.BRONZE) {
+			throw new IllegalArgumentException("Cannot have identical expected to the defaults.");
+		}
+		plugin.setScalesLeft(1000);
+		plugin.setDartsLeft(1000);
+		plugin.setDartType(DartType.BRONZE);
+
+		if (checkBlowpipe)
+		{
+			MenuOptionClicked event = new MenuOptionClicked();
+			event.setMenuOption("Check");
+			event.setId(ItemID.TOXIC_BLOWPIPE);
+			plugin.onMenuOptionClicked(event);
+		}
+
+		gameMessage(message);
+		plugin.onGameTick(new GameTick());
+
+		if (scalesExpected != null) assertEquals(Float.valueOf(scalesExpected), plugin.getScalesLeft());
+		else assertEquals(Float.valueOf(1000), plugin.getScalesLeft());
+		if (dartsExpected != null) assertEquals(Float.valueOf(dartsExpected), plugin.getDartsLeft());
+		else assertEquals(Float.valueOf(1000), plugin.getDartsLeft());
+		if (dartType != null) assertEquals(dartType, plugin.getDartType());
+		else assertEquals(DartType.BRONZE, plugin.getDartType());
 	}
 
 	private void checkArclight()
