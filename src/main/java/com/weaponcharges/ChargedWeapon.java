@@ -337,7 +337,7 @@ public enum ChargedWeapon
 	/* blood fury
 		check (full, <full & >1, 1, 0/empty):
 			full: "Your Amulet of blood fury will work for 30,000 more hits." TODO unimplemented, copied from screenshot
-			>1: "Your Amulet of blood fury will work for 10,000 more hits." TODO unimplemented, copied from screenshot
+			>1: GAMEMESSAGE "Your Amulet of blood fury will work for 9,016 more hits." TODO unimplemented
 			1: TODO
 			empty: TODO
 
@@ -580,6 +580,7 @@ public enum ChargedWeapon
 	thammarons
 	viggoras
 	Crystal bow
+	GAMEMESSAGE "Your crystal bow has 2,250 charges remaining."
 	saeldor
 	fbow
 	blessed sara sword
@@ -590,6 +591,9 @@ public enum ChargedWeapon
 
 	crystal armour?
 	crystal shield?
+	GAMEMESSAGE "Your crystal shield has 2,369 charges remaining."
 	crystal tools?
+	GAMEMESSAGE "Your crystal harpoon has 3,957 charges remaining."
+	GAMEMESSAGE "Your saw has 8 charges left." //crystal saw
 	barrows armour (maybe just show 100/75/50/25).
 	 */
