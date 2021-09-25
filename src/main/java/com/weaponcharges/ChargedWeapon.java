@@ -375,27 +375,32 @@ public enum ChargedWeapon
 //	BLOOD_FURY(),
 	/* sang staff
 		check (full, <full & >1, 1, 0/empty):
-			full: TODO
-			>1: TODO
-			1: TODO
-			empty: TODO
+			full: GAMEMESSAGE "Your Sanguinesti staff is already fully charged."
+			>1: GAMEMESSAGE "Your Sanguinesti staff has 1,000 charges remaining."
+			1: GAMEMESSAGE "Your Sanguinesti staff has 1 charges remaining."
+			empty: no option when uncharged
 
 		periodic updates (periodic, empty):
-			periodic: TODO
-			empty: TODO
-			attacking when empty: TODO
+			periodic: GAMEMESSAGE "Your Sanguinesti staff has 200 charges remaining."
+			low: "<col=ef1020>Your Sanguinesti staff only has 100 charges left!</col>"
+			empty: GAMEMESSAGE "Your Sanguinesti staff has run out of charges."
+			attacking when empty: GAMEMESSAGE "Your sanguinesti staff has no charges! You need to charge it with blood runes."
 
 		adding (adding by using items on the weapon, adding via right-click option, any other methods):
-			using items: TODO
-			right-click options: TODO
-			other: TODO
+			using items:
+			right-click options:
+			DialogState{INPUT, title='How many charges do you want to apply? (Up to 1,033)', input='1'}
+			DialogState{SPRITE, text='You apply 1 charges to your Sanguinesti staff.', itemId=22323}
+			DialogState{SPRITE, text='You apply an additional 33 charges to your Sanguinesti<br>staff. It now has 1,033 charges in total.', itemId=22323}
+			other:
 
 		removing (regular removal methods, dropping:
-			regular: TODO
-			dropping: TODO
+			regular: DialogState{OPTIONS, text='Uncharge your staff for all its charges? (regaining 3 blood runes)', options=[Proceed., Cancel.]}
+				receipt: DialogState{SPRITE, text='You uncharge your Sanguinesti staff, regaining 3 blood<br>runes in the process.', itemId=22481}
+			dropping: not droppable while charged
 
 		message overlap:
-			TODO
+			none afaik
 	 */
 	SANGUINESTI_STAFF(
 		Arrays.asList(ItemID.SANGUINESTI_STAFF, ItemID.HOLY_SANGUINESTI_STAFF),
@@ -403,14 +408,29 @@ public enum ChargedWeapon
 		Arrays.asList(1167),
 		20_000,
 		"sanguinesti_staff",
-		Collections.emptyList(),
-		Collections.emptyList(),
+		Arrays.asList(
+			ChargesMessage.staticChargeMessage("Your Sanguinesti staff is already fully charged.", 20000)
+		),
+		Arrays.asList(
+			ChargesMessage.matcherGroupChargeMessage("Your Sanguinesti staff has ([\\d,]+) charges remaining.", 1),
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your Sanguinesti staff only has ([\\d,]+) charges left!</col>"), 1),
+			ChargesMessage.staticChargeMessage("Your Sanguinesti staff has run out of charges.", 0)
+			// ChargesMessage.staticChargeMessage("Your sanguinesti staff has no charges! You need to charge it with blood runes.", 0)
+		),
 		Arrays.asList(
 			new ChargesDialogHandler(
 				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge your staff for all its charges\\? \\(regaining [\\d,]+ blood runes\\)"), null, Pattern.compile("Proceed.")),
 				(matchers, dialogState, optionSelected, plugin) -> {
 					plugin.setCharges(get_sang_circumvent_illegal_self_reference(), 0, true);
 				}
+			),
+			new ChargesDialogHandler(
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Sanguinesti staff."), null),
+				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
+			),
+			new ChargesDialogHandler(
+				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your Sanguinesti staff. It now has ([\\d,]+) charges in total."), null),
+				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 			)
 		)
 	),
