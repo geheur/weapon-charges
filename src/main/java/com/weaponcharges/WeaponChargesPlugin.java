@@ -87,6 +87,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	ChargedWeapon lastUsedOnWeapon;
 	ChargedWeapon lastUnchargeClickedWeapon;
+	private int lastItemUsed;
 
 	@Inject
 	Client client;
@@ -263,9 +264,18 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			checkBlowpipeUnload = client.getTickCount();
 		}
 
+		if (event.getMenuAction() == MenuAction.ITEM_USE) {
+			lastItemUsed = event.getId();
+			if (config.devMode()) log.info("using item {}", lastItemUsed);
+		}
+
 		if (event.getMenuAction() == MenuAction.ITEM_USE_ON_WIDGET_ITEM) {
-			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(event.getId());
-			if (config.devMode()) log.info("used item on " + lastUsedOnWeapon + " " + client.getTickCount());
+			int itemUsedOn = event.getId();
+			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(lastItemUsed);
+			if (lastUsedOnWeapon == null)
+				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedOn);
+			if (config.devMode()) log.info("last used-on weapon: {}", lastUsedOnWeapon);
+			if (config.devMode()) log.info("used {} on {} {}", lastItemUsed, lastUsedOnWeapon, client.getTickCount());
 		}
 	}
 
@@ -300,8 +310,10 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				ChargedWeapon chargedWeapon = removeLastWeaponChecked();
 				if (chargedWeapon != null) {
 					setCharges(chargedWeapon, checkMessage.getChargesLeft(matcher));
+				} else if (lastUsedOnWeapon != null) {
+					setCharges(lastUsedOnWeapon, checkMessage.getChargesLeft(matcher));
 				} else {
-					log.warn("saw check message without having seen an item checked: \"" + message + "\"");
+					log.warn("saw check message without having seen a charged weapon checked or used: \"" + message + "\"" );
 				}
 				break;
 			}
@@ -700,7 +712,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	public void setCharges(ChargedWeapon weapon, int charges, boolean logChange) {
-		configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, weapon.configKeyName, charges);
+		configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, weapon.configKeyName, Math.max(charges, 0));
 		if (logChange)
 		{
 			log.info("set charges for " + weapon + " to " + charges + " (" + configManager.getRSProfileKey() + ")");
