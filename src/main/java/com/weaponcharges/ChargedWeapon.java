@@ -73,7 +73,8 @@ public enum ChargedWeapon
 			(u) and non-(u) probably both use the same messages. TODO
 	 */
 	IBANS_STAFF(
-		Arrays.asList(ItemID.IBANS_STAFF, ItemID.IBANS_STAFF_U),
+		Arrays.asList(ItemID.IBANS_STAFF),
+		Arrays.asList(ItemID.IBANS_STAFF_U),
 		Arrays.asList(708),
 		2500 /*120 for regular, 2500 for (u)*/, // TODO fix this for regular staff?
 		"ibans_staff",
@@ -130,7 +131,8 @@ public enum ChargedWeapon
 		message overlap: all 4 tridents use the same messages.
 	 */
 	TRIDENT_OF_THE_SEAS(
-		Arrays.asList(ItemID.TRIDENT_OF_THE_SEAS, ItemID.UNCHARGED_TRIDENT),
+		Arrays.asList(ItemID.TRIDENT_OF_THE_SEAS),
+		Arrays.asList(ItemID.UNCHARGED_TRIDENT),
 		Arrays.asList(1167),
 		2500,
 		"trident_of_the_seas",
@@ -139,7 +141,8 @@ public enum ChargedWeapon
 		Collections.emptyList()
 	),
 	TRIDENT_OF_THE_SWAMP(
-		Arrays.asList(ItemID.TRIDENT_OF_THE_SWAMP, ItemID.UNCHARGED_TOXIC_TRIDENT),
+		Arrays.asList(ItemID.TRIDENT_OF_THE_SWAMP),
+		Arrays.asList(ItemID.UNCHARGED_TOXIC_TRIDENT),
 		Arrays.asList(1167),
 		2500,
 		"trident_of_the_swamp",
@@ -148,7 +151,8 @@ public enum ChargedWeapon
 		Collections.emptyList()
 	),
 	TRIDENT_OF_THE_SEAS_E(
-		Arrays.asList(ItemID.TRIDENT_OF_THE_SEAS_E,	ItemID.UNCHARGED_TRIDENT_E),
+		Arrays.asList(ItemID.TRIDENT_OF_THE_SEAS_E),
+		Arrays.asList(ItemID.UNCHARGED_TRIDENT_E),
 		Arrays.asList(1167),
 		10_000,
 		"trident_of_the_seas_e",
@@ -157,7 +161,8 @@ public enum ChargedWeapon
 		Collections.emptyList()
 	),
 	TRIDENT_OF_THE_SWAMP_E(
-		Arrays.asList(ItemID.TRIDENT_OF_THE_SWAMP_E, ItemID.UNCHARGED_TOXIC_TRIDENT_E),
+		Arrays.asList(ItemID.TRIDENT_OF_THE_SWAMP_E),
+		Arrays.asList(ItemID.UNCHARGED_TOXIC_TRIDENT_E),
 		Arrays.asList(1167),
 		10_000,
 		"trident_of_the_swamp_e",
@@ -168,6 +173,7 @@ public enum ChargedWeapon
 
 	ABYSSAL_TENTACLE(
 		Arrays.asList(ItemID.ABYSSAL_TENTACLE),
+		Collections.emptyList(),
 		Arrays.asList(1658),
 		10_000,
 		"abyssal_tentacle",
@@ -198,6 +204,7 @@ public enum ChargedWeapon
 	 */
 	CRYSTAL_HALBERD(
 		Arrays.asList(ItemID.CRYSTAL_HALBERD),
+		Collections.emptyList(), // TODO add proper empty halberd ID oh God help me
 		Arrays.asList(428, 440, 1203),
 		10_000/*TODO is this correct?*/,
 		"crystal_halberd",
@@ -232,6 +239,7 @@ public enum ChargedWeapon
 	 */
 	TOME_OF_FIRE(
 		Arrays.asList(ItemID.TOME_OF_FIRE),
+		Arrays.asList(ItemID.TOME_OF_FIRE_EMPTY),
 		Arrays.asList(711, 1162, 727, 1167, 7855),
 		20_000,
 		"tome_of_fire",
@@ -258,6 +266,7 @@ public enum ChargedWeapon
 	 */
 	TOME_OF_WATER(
 			Arrays.asList(ItemID.TOME_OF_WATER),
+			Arrays.asList(ItemID.TOME_OF_WATER_EMPTY),
 			Arrays.asList(1161 /*bind/snare/entangle*/, 1162 /*strike/bolt/blast*/, 1163 /*confuse*/, 1164 /*weaken*/, 1165 /*curse/vulnerability*/, 1167 /*wave*/, 1168 /*enfeeble*/, 1169 /*stun*/, 7855 /*surge*/),
 			20_000,
 			"tome_of_water",
@@ -294,7 +303,9 @@ public enum ChargedWeapon
 			TODO
 	 */
 	SCYTHE_OF_VITUR(
-		Arrays.asList(ItemID.SCYTHE_OF_VITUR), // I do not included the uncharged version as there is a reasonable reason for people to have both a charged and an uncharged scythe. TODO some kind of optional graphic to show when a scythe is uncharged? like a "(u)" that shows up on the item.
+		// TODO some kind of optional graphic to show when a scythe is uncharged? like a "(u)" that shows up on the item.
+		Arrays.asList(ItemID.SCYTHE_OF_VITUR, ItemID.HOLY_SCYTHE_OF_VITUR, ItemID.SANGUINE_SCYTHE_OF_VITUR),
+		Arrays.asList(ItemID.SCYTHE_OF_VITUR_UNCHARGED, ItemID.HOLY_SCYTHE_OF_VITUR_UNCHARGED, ItemID.SANGUINE_SCYTHE_OF_VITUR_UNCHARGED),
 		Arrays.asList(8056),
 		20_000,
 		"scythe_of_vitur",
@@ -387,7 +398,8 @@ public enum ChargedWeapon
 			TODO
 	 */
 	SANGUINESTI_STAFF(
-		Arrays.asList(ItemID.SANGUINESTI_STAFF, ItemID.SANGUINESTI_STAFF_UNCHARGED, ItemID.HOLY_SANGUINESTI_STAFF, ItemID.HOLY_SANGUINESTI_STAFF_UNCHARGED),
+		Arrays.asList(ItemID.SANGUINESTI_STAFF, ItemID.HOLY_SANGUINESTI_STAFF),
+		Arrays.asList(ItemID.SANGUINESTI_STAFF_UNCHARGED, ItemID.HOLY_SANGUINESTI_STAFF_UNCHARGED),
 		Arrays.asList(1167),
 		20_000,
 		"sanguinesti_staff",
@@ -428,6 +440,7 @@ public enum ChargedWeapon
 	 */
 	ARCLIGHT(
 		Arrays.asList(ItemID.ARCLIGHT),
+		Collections.emptyList(),
 		Arrays.asList(386, 390),
 		10_000,
 		"arclight",
@@ -497,6 +510,7 @@ public enum ChargedWeapon
 	);
 
 	public final List<Integer> itemIds;
+	public final List<Integer> unchargedIds;
 	public final List<Integer> animationIds;
 	public final Integer rechargeAmount;
 	public final String configKeyName;
@@ -513,7 +527,7 @@ public enum ChargedWeapon
 	{
 		for (ChargedWeapon weapon : values())
 		{
-			if (weapon.getItemIds().contains(itemId))
+			if (weapon.getItemIds().contains(itemId) || weapon.getUnchargedIds().contains(itemId))
 			{
 				return weapon;
 			}
