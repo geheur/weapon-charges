@@ -413,4 +413,76 @@ public interface WeaponChargesConfig extends Config
 	{
 		return 500;
 	}
+
+	@ConfigItem(
+		keyName = "craws_bow_display",
+		name = "Craw's Bow",
+		description = "When Craw's Bow should show the charge counter.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 24
+	)
+	default WeaponChargesConfig.DisplayWhen craws_bow_Display()
+	{
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
+	}
+
+	@ConfigItem(
+		keyName = "craws_bow_low_charge_threshold",
+		name = "Low (Craw's Bow)",
+		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 25
+	)
+	default int craws_bow_LowChargeThreshold()
+	{
+		return 200;
+	}
+
+	@ConfigItem(
+		keyName = "viggoras_chainmace_display",
+		name = "Viggora's chainmace",
+		description = "When Viggora's chainmace should show the charge counter.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 26
+	)
+	default WeaponChargesConfig.DisplayWhen viggoras_chainmace_Display()
+	{
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
+	}
+
+	@ConfigItem(
+		keyName = "viggoras_chainmace_low_charge_threshold",
+		name = "Low (Viggora's chainmace)",
+		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 27
+	)
+	default int viggoras_chainmace_LowChargeThreshold()
+	{
+		return 200;
+	}
+
+	@ConfigItem(
+		keyName = "thammarons_sceptre_display",
+		name = "Thammaron's sceptre",
+		description = "When Thammaron's sceptre should show the charge counter.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 28
+	)
+	default WeaponChargesConfig.DisplayWhen thammarons_sceptre_Display()
+	{
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
+	}
+
+	@ConfigItem(
+		keyName = "thammarons_sceptre_low_charge_threshold",
+		name = "Low (Thammaron's sceptre)",
+		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 29
+	)
+	default int thammarons_sceptre_LowChargeThreshold()
+	{
+		return 200;
+	}
 }

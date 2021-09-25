@@ -470,14 +470,103 @@ public enum ChargedWeapon
 		Collections.emptyList(),
 		Collections.emptyList()
 	),
+	/* Ether Weapon common
+		check (full, <full & >1, 1, 0/empty):
+			<weapon> is chainmace, sceptre, or bow (THIS CHECK SECTION ONLY)
+			full: "Your <weapon> has 16,000 charges left powering it."
+			>1: "Your <weapon> has 666 charges left powering it."
+			1: "Your <weapon> has 1 charge left powering it."
+			empty: "Your <weapon> has 0 charges left powering it."
+
+		adding (adding by using items on the weapon, adding via right-click option, any other methods):
+			using items:
+				GAMEMESSAGE "You require at least 1000 revenant ether to activate this weapon."
+				GAMEMESSAGE "You use 1000 ether to activate the weapon."
+				GAMEMESSAGE "You add a further 16,000 revenant ether to your weapon, giving it a total of 16,000 charges."
+			right-click options: n/a
+			other: n/a
+
+		periodic updates (periodic, empty):
+			periodic:
+				GAMEMESSAGE "Your weapon has 1,000 charges remaining."
+				GAMEMESSAGE "Your weapon has 500 charges remaining."
+				GAMEMESSAGE "<col=ef1020>Your weapon only has 100 charges left.</col>"
+				GAMEMESSAGE "<col=ef1020>Your weapon only has 50 charges left.</col>"
+			empty: GAMEMESSAGE "<col=ef1020>Your weapon has run out of revenant ether.</col>"
+
+		removing (regular removal methods, dropping:
+			uncharge: widget doesn't show in the logger
+				Are you sure you want to uncharge it?
+				<Weapon> Yes No
+				If you uncharge this weapon, all the revenant ether will be returned to your inventory.
+			dropping: no drop option while charged
+	 */
+
+	/* Craw's bow
+		attacking when empty: GAMEMESSAGE "There is not enough revenant ether left powering your bow."
+
+		message overlap:
+			see Ether Weapon common
+	 */
+	CRAWS(
+			Arrays.asList(ItemID.CRAWS_BOW),
+			Arrays.asList(ItemID.CRAWS_BOW_U),
+			Arrays.asList(426),
+			16_000,
+			"craws_bow",
+			Arrays.asList(
+					ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it.", 1)
+			),
+			Arrays.asList(
+					ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow.", 0)
+			),
+			Collections.emptyList()
+	),
+	/* Vigorra's chainmace
+		message overlap:
+			see Ether Weapon common
+	 */
+	VIGGORAS(
+			Arrays.asList(ItemID.VIGGORAS_CHAINMACE),
+			Arrays.asList(ItemID.VIGGORAS_CHAINMACE_U),
+			Arrays.asList(245, 7200),
+			16_000,
+			"viggoras_chainmace",
+			Arrays.asList(
+					ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it.", 1)
+			),
+			Collections.emptyList(),
+			Collections.emptyList()
+	),
+	/* Thammaron's sceptre
+		message overlap:
+			see Ether Weapon common
+	 */
+	THAMMARONS(
+			Arrays.asList(ItemID.THAMMARONS_SCEPTRE),
+			Arrays.asList(ItemID.THAMMARONS_SCEPTRE_U),
+			Collections.emptyList(),
+			16_000,
+			"thammarons_sceptre",
+			Arrays.asList(
+					ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1)
+			),
+			Collections.emptyList(),
+			Collections.emptyList()
+	),
 	;
 
 	@Getter
 	private static final List<ChargesMessage> nonUniqueCheckChargesRegexes = Arrays.asList(
-		// trident/sang
+		// trident / ether weapons
 		ChargesMessage.matcherGroupChargeMessage("Your weapon has ([\\d,]+) charges.", 1),
+		// trident
 		ChargesMessage.staticChargeMessage("Your weapon has one charge.", 1),
 		ChargesMessage.staticChargeMessage("Your weapon has no charges.", 0),
+		// ether weapons
+		//ChargesMessage.staticChargeMessage("You require at least 1000 revenant ether to activate this weapon.", 0),
+		ChargesMessage.staticChargeMessage("You use 1000 ether to activate the weapon.", 0),
+		ChargesMessage.matcherGroupChargeMessage("You add (a further )?([\\d,]+) revenant ether to your weapon, giving it a total of ([\\d,]+) charges?.", 3),
 		// elemental tomes
 		ChargesMessage.matcherGroupChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds ([\\d,]+) charges.", 2),
 		ChargesMessage.staticChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds one charge.", 1),
@@ -487,7 +576,10 @@ public enum ChargedWeapon
 	private static final List<ChargesMessage> nonUniqueUpdateMessageChargesRegexes = Arrays.asList(
 		// trident
 		ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your trident only has ([\\d,]+) charges left!</col>"), 1),
-		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your trident has run out of charges.</col>"), 0)
+		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your trident has run out of charges.</col>"), 0),
+		// ether weapons
+		ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your weapon only has ([\\d,]+) charges left.</col>"), 1),
+		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your weapon has run out of revenant ether.</col>"), 0)
 	);
 
 	@Getter
