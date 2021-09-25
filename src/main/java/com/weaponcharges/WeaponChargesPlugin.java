@@ -488,6 +488,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	private int checkTomeOfFire = -1; // TODO make this boolean.
+	private boolean checkTomeOfWater = false;
 	private int checkBlowpipeUnload = -1;
 
 	@Subscribe
@@ -512,6 +513,33 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			}
 		}
 		checkTomeOfFire--;
+
+		if (checkTomeOfWater) {
+			int graphic = client.getLocalPlayer().getGraphic();
+			if (
+					graphic == 177 || //bind/snare/entangle
+					graphic == 102 || //curse spells
+					graphic == 105 ||
+					graphic == 108 ||
+					graphic == 167 ||
+					graphic == 170 ||
+					graphic == 173 ||
+					graphic ==  93 || //water spells
+					graphic == 120 ||
+					graphic == 135 ||
+					graphic == 161 ||
+					graphic == 1458
+			) {
+				// The tome of water has only one charge update message and it's for emptying, so the nonzero check
+				// prevents double charge reduction due to the 1 client tick delay.
+				Integer charges = getCharges(ChargedWeapon.TOME_OF_WATER);
+				if (charges != 0)
+				{
+					setCharges(ChargedWeapon.TOME_OF_WATER, (charges == null ? 0 : charges) + -1, false);
+				}
+			}
+			checkTomeOfWater = false;
+		}
 	}
 
 	private int lastLocalPlayerAnimationChangedGameTick = -1;
@@ -611,6 +639,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			{
 				if (chargedWeapon == ChargedWeapon.TOME_OF_FIRE) {
 					checkTomeOfFire = 1;
+				} else if (chargedWeapon == ChargedWeapon.TOME_OF_WATER) {
+					checkTomeOfWater = true;
 				} else {
 					addCharges(chargedWeapon, -1, false);
 				}

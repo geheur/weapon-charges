@@ -226,7 +226,7 @@ public enum ChargedWeapon
 			2021-08-26 16:36:44 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - GAMEMESSAGE "You empty your book of pages."
 			"You remove 299 pages from the book. Your tome currently holds one charge."
 
-		message overlap: probably overlaps with the tome of water.
+		message overlap: definitely overlaps with the tome of water.
 
 		The tome of fire needs an additional check for fire spells being cast, which is done in onClientTick by checking for a gfx value.
 	 */
@@ -235,15 +235,37 @@ public enum ChargedWeapon
 		Arrays.asList(711, 1162, 727, 1167, 7855),
 		20_000,
 		"tome_of_fire",
-		Arrays.asList(
-			ChargesMessage.staticChargeMessage("You empty your book of pages.", 0),
-			ChargesMessage.staticChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds one charge.", 1),
-			ChargesMessage.matcherGroupChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds ([\\d,]+) charges.", 2)
-		),
+		Collections.emptyList(),
 		Arrays.asList(
 			ChargesMessage.staticChargeMessage("Your Tome of Fire is now empty.", 0)
 		),
 		Collections.emptyList()
+	),
+	/* Tome of water:
+		checking:
+			same as ToF
+
+		periodic updates:
+			"Your Tome of Water is now empty."
+
+		adding:
+		removing:
+			same as ToF
+
+		message overlap: definitely overlaps with the Tome of fire.
+
+		The Tome of water needs an additional check for water and curse spells being cast, which is done in onClientTick by checking for a gfx value.
+	 */
+	TOME_OF_WATER(
+			Arrays.asList(ItemID.TOME_OF_WATER),
+			Arrays.asList(1161 /*bind/snare/entangle*/, 1162 /*strike/bolt/blast*/, 1163 /*confuse*/, 1164 /*weaken*/, 1165 /*curse/vulnerability*/, 1167 /*wave*/, 1168 /*enfeeble*/, 1169 /*stun*/, 7855 /*surge*/),
+			20_000,
+			"tome_of_water",
+			Collections.emptyList(),
+			Arrays.asList(
+					ChargesMessage.staticChargeMessage("Your Tome of Water is now empty.", 0)
+			),
+			Collections.emptyList()
 	),
 	/* scythe
 		check (full, <full & >1, 1, 0/empty):
@@ -422,7 +444,11 @@ public enum ChargedWeapon
 		// trident/sang
 		ChargesMessage.matcherGroupChargeMessage("Your weapon has ([\\d,]+) charges.", 1),
 		ChargesMessage.staticChargeMessage("Your weapon has one charge.", 1),
-		ChargesMessage.staticChargeMessage("Your weapon has no charges.", 0)
+		ChargesMessage.staticChargeMessage("Your weapon has no charges.", 0),
+		// elemental tomes
+		ChargesMessage.matcherGroupChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds ([\\d,]+) charges.", 2),
+		ChargesMessage.staticChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds one charge.", 1),
+		ChargesMessage.staticChargeMessage("You empty your book of pages.", 0)
 	);
 	@Getter
 	private static final List<ChargesMessage> nonUniqueUpdateMessageChargesRegexes = Arrays.asList(

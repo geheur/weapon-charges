@@ -319,11 +319,35 @@ public interface WeaponChargesConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "tome_of_water_display",
+		name = "Tome of water",
+		description = "When the Tome of water should show the charge counter.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 16
+	)
+	default WeaponChargesConfig.DisplayWhen tome_of_water_Display()
+	{
+		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
+	}
+
+	@ConfigItem(
+		keyName = "tome_of_water_low_charge_threshold",
+		name = "Low (Tome of water)",
+		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		section = WEAPON_SPECIFIC_SETTING,
+		position = 17
+	)
+	default int tome_of_water_LowChargeThreshold()
+	{
+		return 500;
+	}
+
+	@ConfigItem(
 		keyName = "scythe_of_vitur_display",
 		name = "Scythe of vitur",
 		description = "When the Scythe of vitur should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 16
+		position = 18
 	)
 	default WeaponChargesConfig.DisplayWhen scythe_of_vitur_Display()
 	{
@@ -335,7 +359,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Scythe of vitur)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 17
+		position = 19
 	)
 	default int scythe_of_vitur_LowChargeThreshold()
 	{
@@ -347,7 +371,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Sanguinesti staff",
 		description = "When the Sanguinesti staff should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 18
+		position = 20
 	)
 	default WeaponChargesConfig.DisplayWhen sanguinesti_staff_Display()
 	{
@@ -359,7 +383,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Sanguinesti staff)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 19
+		position = 21
 	)
 	default int sanguinesti_staff_LowChargeThreshold()
 	{
@@ -371,7 +395,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Arclight",
 		description = "When the Arclight should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 20
+		position = 22
 	)
 	default WeaponChargesConfig.DisplayWhen arclight_Display()
 	{
@@ -383,7 +407,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Arclight)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 21
+		position = 23
 	)
 	default int arclight_LowChargeThreshold()
 	{
