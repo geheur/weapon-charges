@@ -410,6 +410,7 @@ public enum ChargedWeapon
 		"sanguinesti_staff",
 		Arrays.asList(
 			ChargesMessage.staticChargeMessage("Your Sanguinesti staff is already fully charged.", 20000)
+			// Some check messages omitted because they are the same as update messages.
 		),
 		Arrays.asList(
 			ChargesMessage.matcherGroupChargeMessage("Your Sanguinesti staff has ([\\d,]+) charges remaining.", 1),
@@ -423,6 +424,10 @@ public enum ChargedWeapon
 				(matchers, dialogState, optionSelected, plugin) -> {
 					plugin.setCharges(get_sang_circumvent_illegal_self_reference(), 0, true);
 				}
+			),
+			new ChargesDialogHandler(
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to apply\\? \\(Up to ([\\d,]+)\\)"), null),
+				ChargesDialogHandler.genericInputChargeMessage()
 			),
 			new ChargesDialogHandler(
 				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Sanguinesti staff."), null),

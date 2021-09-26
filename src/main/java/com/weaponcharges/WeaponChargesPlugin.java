@@ -85,6 +85,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	public static final String DEV_MODE_CONFIG_KEY = "logData";
 	private static final int BLOWPIPE_ATTACK_ANIMATION = 5061;
 
+	// TODO rename. This is used for when an item is used on a weapon, when a weapon is used on an item, and when "pages" is clicked.
 	ChargedWeapon lastUsedOnWeapon;
 	ChargedWeapon lastUnchargeClickedWeapon;
 	private int lastItemUsed;
@@ -226,7 +227,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
-		if (config.devMode()) log.info("menu option clicked");
 	    if (event.getMenuOption().equalsIgnoreCase("check")) {
 	    	// TODO investigate shift-click.
 			if (config.devMode()) log.info("clicked \"check\" on " + event.getMenuTarget());
@@ -281,9 +281,17 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			int itemUsedOn = event.getId();
 			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(lastItemUsed);
 			if (lastUsedOnWeapon == null)
+			{
 				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedOn);
-			if (config.devMode()) log.info("last used-on weapon: {}", lastUsedOnWeapon);
-			if (config.devMode()) log.info("used {} on {} {}", lastItemUsed, lastUsedOnWeapon, client.getTickCount());
+				if (lastUsedOnWeapon != null)
+				{
+					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastItemUsed, lastUsedOnWeapon);
+				} else {
+					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastItemUsed, itemUsedOn);
+				}
+			} else {
+				if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastUsedOnWeapon, lastItemUsed);
+			}
 		}
 	}
 
@@ -316,6 +324,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			Matcher matcher = checkMessage.getPattern().matcher(message);
 			if (matcher.find()) {
 				ChargedWeapon chargedWeapon = removeLastWeaponChecked();
+				// TODO possible to mess stuff up by checking a weapon immediately after the tome of water/fire dialog?
 				if (chargedWeapon != null) {
 					setCharges(chargedWeapon, checkMessage.getChargesLeft(matcher));
 				} else if (lastUsedOnWeapon != null) {
@@ -508,14 +517,14 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		}
 	}
 
-	private int checkTomeOfFire = -1; // TODO make this boolean.
+	private boolean checkTomeOfFire = false;
 	private boolean checkTomeOfWater = false;
 	private int checkBlowpipeUnload = -1;
 
 	@Subscribe
 	public void onClientTick(ClientTick clientTick)
 	{
-		if (checkTomeOfFire == 0) {
+		if (checkTomeOfFire) {
 			int graphic = client.getLocalPlayer().getGraphic();
 			if (
 					graphic == 99 ||
@@ -524,16 +533,10 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 					graphic == 155 ||
 					graphic == 1464
 			) {
-				// The tome of fire has only one charge update message and it's for emptying, so the nonzero check
-				// prevents double charge reduction due to the 1 client tick delay.
-				Integer charges = getCharges(ChargedWeapon.TOME_OF_FIRE);
-				if (charges != 0)
-				{
-					setCharges(ChargedWeapon.TOME_OF_FIRE, (charges == null ? 0 : charges) + -1, false);
-				}
+				addCharges(ChargedWeapon.TOME_OF_FIRE, -1, false);
 			}
 		}
-		checkTomeOfFire--;
+		checkTomeOfFire = false;
 
 		if (checkTomeOfWater) {
 			int graphic = client.getLocalPlayer().getGraphic();
@@ -551,13 +554,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 					graphic == 161 ||
 					graphic == 1458
 			) {
-				// The tome of water has only one charge update message and it's for emptying, so the nonzero check
-				// prevents double charge reduction due to the 1 client tick delay.
-				Integer charges = getCharges(ChargedWeapon.TOME_OF_WATER);
-				if (charges != 0)
-				{
-					setCharges(ChargedWeapon.TOME_OF_WATER, (charges == null ? 0 : charges) + -1, false);
-				}
+				addCharges(ChargedWeapon.TOME_OF_WATER, -1, false);
 			}
 			checkTomeOfWater = false;
 		}
@@ -659,7 +656,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 					chargedWeapon.animationIds.contains(lastLocalPlayerAnimationChanged))
 			{
 				if (chargedWeapon == ChargedWeapon.TOME_OF_FIRE) {
-					checkTomeOfFire = 1;
+					checkTomeOfFire = true;
 				} else if (chargedWeapon == ChargedWeapon.TOME_OF_WATER) {
 					checkTomeOfWater = true;
 				} else {
