@@ -26,19 +26,7 @@ scythe
 
     periodic update message
 
-sang staff
-
-    periodic update message
-
-    charging/uncharging.
-
 arclight
-
-    periodic update message
-
-    charging/uncharging.
-
-chainmace
 
     periodic update message
 
@@ -50,8 +38,6 @@ blood fury
 
     charging/uncharging.
 
-tome of water
-
 crystal armor, crystal shield
 
 blessed sara sword
@@ -61,9 +47,5 @@ Crystal bow
 saeldor
 
 fbow
-
-Craws
-
-thammarons
 
 Anything else I missed.
