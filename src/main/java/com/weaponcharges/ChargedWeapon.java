@@ -415,7 +415,7 @@ public enum ChargedWeapon
 			ChargesMessage.matcherGroupChargeMessage("Your Sanguinesti staff has ([\\d,]+) charges remaining.", 1),
 			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your Sanguinesti staff only has ([\\d,]+) charges left!</col>"), 1),
 			ChargesMessage.staticChargeMessage("Your Sanguinesti staff has run out of charges.", 0)
-			// ChargesMessage.staticChargeMessage("Your sanguinesti staff has no charges! You need to charge it with blood runes.", 0)
+			// ChargesMessage.staticChargeMessage("Your sanguinesti staff has no charges! You need to charge it with blood runes.", 0) // (sic) sang is not capitalized. bug report sent to os team
 		),
 		Arrays.asList(
 			new ChargesDialogHandler(

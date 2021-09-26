@@ -226,6 +226,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
+		if (config.devMode()) log.info("menu option clicked");
 	    if (event.getMenuOption().equalsIgnoreCase("check")) {
 	    	// TODO investigate shift-click.
 			if (config.devMode()) log.info("clicked \"check\" on " + event.getMenuTarget());
@@ -262,6 +263,13 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			}
 		} else if (event.getMenuOption().equalsIgnoreCase("unload") && event.getId() == ItemID.TOXIC_BLOWPIPE) {
 			checkBlowpipeUnload = client.getTickCount();
+		} else if (event.getMenuOption().equalsIgnoreCase("pages")) {
+			if (WidgetInfo.TO_GROUP(event.getParam1()) == WidgetID.EQUIPMENT_GROUP_ID) { // item is equipped.
+				lastUsedOnWeapon = getEquippedChargedWeapon(EquipmentInventorySlot.SHIELD);
+			} else {
+				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(event.getId());
+			}
+			if (config.devMode()) log.info("pages checked. setting last used weapon to {}", lastUsedOnWeapon.toString());
 		}
 
 		if (event.getMenuAction() == MenuAction.ITEM_USE) {
@@ -312,6 +320,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 					setCharges(chargedWeapon, checkMessage.getChargesLeft(matcher));
 				} else if (lastUsedOnWeapon != null) {
 					setCharges(lastUsedOnWeapon, checkMessage.getChargesLeft(matcher));
+					if (config.devMode()) log.info("applying charges to last used-on weapon: {}", lastUsedOnWeapon);
 				} else {
 					log.warn("saw check message without having seen a charged weapon checked or used: \"" + message + "\"" );
 				}
