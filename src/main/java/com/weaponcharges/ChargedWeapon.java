@@ -73,8 +73,8 @@ public enum ChargedWeapon
 			(u) and non-(u) probably both use the same messages. TODO
 	 */
 	IBANS_STAFF(
-		Arrays.asList(ItemID.IBANS_STAFF),
-		Arrays.asList(ItemID.IBANS_STAFF_U),
+		Arrays.asList(ItemID.IBANS_STAFF, ItemID.IBANS_STAFF_U),
+		Collections.emptyList(),
 		Arrays.asList(708),
 		2500 /*120 for regular, 2500 for (u)*/, // TODO fix this for regular staff?
 		"ibans_staff",
