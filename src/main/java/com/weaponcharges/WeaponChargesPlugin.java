@@ -519,7 +519,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	private boolean checkTomeOfFire = false;
 	private boolean checkTomeOfWater = false;
-	private int checkBlowpipeUnload = -1;
+	private int checkBlowpipeUnload = -100;
 
 	@Subscribe
 	public void onClientTick(ClientTick clientTick)
