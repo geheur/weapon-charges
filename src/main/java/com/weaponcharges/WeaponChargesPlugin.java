@@ -243,7 +243,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			} else {
 				for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
 				{
-					if (chargedWeapon.getItemIds().contains(event.getId()) && chargedWeapon.getCheckChargesRegexes().isEmpty())
+					if (chargedWeapon.getItemIds().contains(event.getItemId()) && chargedWeapon.getCheckChargesRegexes().isEmpty())
 					{
 						if (config.devMode()) log.info("adding last weapon checked to " + chargedWeapon);
 						lastWeaponChecked.add(chargedWeapon);
@@ -277,7 +277,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			if (config.devMode()) log.info("using item {}", lastItemUsed);
 		}
 
-		if (event.getMenuAction() == MenuAction.ITEM_USE_ON_WIDGET_ITEM) {
+		if (event.getMenuAction() == MenuAction.ITEM_USE_ON_ITEM) {
 			int itemUsedOn = event.getId();
 			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(lastItemUsed);
 			if (lastUsedOnWeapon == null)
