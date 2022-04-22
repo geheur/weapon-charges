@@ -321,10 +321,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 		for (ChargesMessage checkMessage : ChargedWeapon.getNonUniqueCheckChargesRegexes())
 		{
-			System.out.println("checking '" + checkMessage.getPattern().pattern() + "'");
 			Matcher matcher = checkMessage.getPattern().matcher(message);
 			if (matcher.find()) {
-				System.out.println("matched '" + message + "'");
 				ChargedWeapon chargedWeapon = removeLastWeaponChecked();
 				// TODO possible to mess stuff up by checking a weapon immediately after the tome of water/fire dialog?
 				if (chargedWeapon != null) {
@@ -339,7 +337,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			}
 		}
 
-		System.out.println("here '" + message + "'");
 		for (ChargesMessage checkMessage : ChargedWeapon.getNonUniqueUpdateMessageChargesRegexes())
 		{
 			Matcher matcher = checkMessage.getPattern().matcher(message);
