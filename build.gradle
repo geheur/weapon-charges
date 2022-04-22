@@ -22,9 +22,12 @@ dependencies {
 	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
 	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
 
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.8.0'
-    testCompile group: 'org.mockito', name: 'mockito-inline', version: '3.8.0'
-    testCompile group: 'com.google.inject.extensions', name: 'guice-testlib', version: '4.1.0'
+    testImplementation 'org.projectlombok:lombok:1.18.4'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.4'
+
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.8.0'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.8.0'
+    testImplementation group: 'com.google.inject.extensions', name: 'guice-testlib', version: '4.1.0'
 }
 
 group = 'com.weaponcharges'

@@ -16,6 +16,7 @@ import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.ItemID;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.Player;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
@@ -214,9 +215,10 @@ public class WeaponChargesTest
 
 		if (checkBlowpipe)
 		{
-			MenuOptionClicked event = new MenuOptionClicked();
-			event.setMenuOption("Check");
-			event.setId(ItemID.TOXIC_BLOWPIPE);
+			TestMenuEntry menuEntry = new TestMenuEntry();
+			menuEntry.setOption("Check");
+			menuEntry.setItemId(ItemID.TOXIC_BLOWPIPE);
+			MenuOptionClicked event = new MenuOptionClicked(menuEntry);
 			plugin.onMenuOptionClicked(event);
 		}
 
@@ -385,9 +387,10 @@ public class WeaponChargesTest
 
 	private void checkWeapon(ChargedWeapon chargedWeapon)
 	{
-		MenuOptionClicked event = new MenuOptionClicked();
-		event.setMenuOption("Check");
-		event.setId(chargedWeapon.getItemIds().get(0));
+		TestMenuEntry menuEntry = new TestMenuEntry();
+		menuEntry.setOption("Check");
+		menuEntry.setItemId(chargedWeapon.getItemIds().get(0));
+		MenuOptionClicked event = new MenuOptionClicked(menuEntry);
 		plugin.onMenuOptionClicked(event);
 	}
 
