@@ -50,7 +50,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 			if (chargedWeapon.getItemIds().contains(itemId)) {
 				found = true;
 
-				DisplayWhen displayWhen = chargedWeapon.getDisplayWhen(config);
+				DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(chargedWeapon.getDisplayWhen(config), config.defaultDisplay());
 				Integer charges = plugin.getCharges(chargedWeapon);
 				if (charges == null) {
 					topText.setText("?");
