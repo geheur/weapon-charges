@@ -16,7 +16,6 @@ import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.ItemID;
-import net.runelite.api.MenuEntry;
 import net.runelite.api.Player;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
@@ -38,7 +37,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 
@@ -159,8 +157,11 @@ public class WeaponChargesTest
 //		checkTomeOfFire();
 
 		checkScytheOfVitur();
+		checkSanguineScytheOfVitur();
+		checkHolyScytheOfVitur();
 
 		checkSanguinestiStaff();
+		checkHolySanguinestiStaff();
 
 		checkArclight();
 		
@@ -240,10 +241,18 @@ public class WeaponChargesTest
 
 	private void checkSanguinestiStaff()
 	{
-		// TODO these are wrong.
-//		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your weapon has 2,040 charges.", 2040);
-//		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your weapon has one charge.", 1);
-//		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your weapon has no charges.", 0);
+		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Sanguinesti staff is already fully charged.", 20000);
+		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Sanguinesti staff has 1,000 charges remaining.", 1000);
+		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Sanguinesti staff has 1 charges remaining.", 1);
+
+		optionsDialogSelected(ChargedWeapon.SANGUINESTI_STAFF, "Uncharge your staff for all its charges? (regaining 11,748 blood runes)", "Proceed.", 123, 0, "Proceed.", "Cancel.");
+	}
+
+	private void checkHolySanguinestiStaff()
+	{
+		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Holy sanguinesti staff is already fully charged.", 20000);
+		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Holy sanguinesti staff has 1,000 charges remaining.", 1000);
+		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Holy sanguinesti staff has 1 charges remaining.", 1);
 
 		optionsDialogSelected(ChargedWeapon.SANGUINESTI_STAFF, "Uncharge your staff for all its charges? (regaining 11,748 blood runes)", "Proceed.", 123, 0, "Proceed.", "Cancel.");
 	}
@@ -254,6 +263,30 @@ public class WeaponChargesTest
 
 		inputDialog(ChargedWeapon.SCYTHE_OF_VITUR, "How many sets of 100 charges do you wish to apply? (Up to 173)", "120", 100, 12100);
 		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
+
+		spriteDialogOptionSelected(ChargedWeapon.SCYTHE_OF_VITUR, "If you uncharge your scythe into the well, 17,300<br>charges will be added to the well.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
+		// This one isn't tracked because it is superfluous.
+//		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You uncharge your scythe into the well. It now<br>contains 173 sets of 100 charges.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
+	}
+
+	private void checkSanguineScytheOfVitur()
+	{
+		checkWeaponMessage(ChargedWeapon.SCYTHE_OF_VITUR, "Your Sanguine scythe of vitur has 19,529 charges remaining.", 19529);
+
+		inputDialog(ChargedWeapon.SCYTHE_OF_VITUR, "How many sets of 100 charges do you wish to apply? (Up to 173)", "120", 100, 12100);
+		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Sanguine scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
+
+		spriteDialogOptionSelected(ChargedWeapon.SCYTHE_OF_VITUR, "If you uncharge your scythe into the well, 17,300<br>charges will be added to the well.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
+		// This one isn't tracked because it is superfluous.
+//		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You uncharge your scythe into the well. It now<br>contains 173 sets of 100 charges.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
+	}
+
+	private void checkHolyScytheOfVitur()
+	{
+		checkWeaponMessage(ChargedWeapon.SCYTHE_OF_VITUR, "Your Holy scythe of vitur has 19,529 charges remaining.", 19529);
+
+		inputDialog(ChargedWeapon.SCYTHE_OF_VITUR, "How many sets of 100 charges do you wish to apply? (Up to 173)", "120", 100, 12100);
+		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Holy scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
 
 		spriteDialogOptionSelected(ChargedWeapon.SCYTHE_OF_VITUR, "If you uncharge your scythe into the well, 17,300<br>charges will be added to the well.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
 		// This one isn't tracked because it is superfluous.
@@ -382,6 +415,8 @@ public class WeaponChargesTest
 	{
 		checkWeapon(chargedWeapon);
 		gameMessage(message);
+		gameTick(); // This isn't necessary for normal check messages, but some are identical to update messages so I
+					// didn't include them in the check messages section but instead in the update section.
 		checkCharges(chargedWeapon, charges);
 	}
 

@@ -359,6 +359,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			{
 				Matcher matcher = checkMessage.getPattern().matcher(message);
 				if (matcher.find()) {
+					System.out.println("match 1");
 					setCharges(chargedWeapon, checkMessage.getChargesLeft(matcher));
 					break outer_loop;
 				}
@@ -368,6 +369,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			{
 				Matcher matcher = checkMessage.getPattern().matcher(message);
 				if (matcher.find()) {
+					System.out.println("match 2");
 					delayChargeUpdateUntilAfterAnimations.add(() -> setCharges(chargedWeapon, checkMessage.getChargesLeft(matcher)));
 					break outer_loop;
 				}

@@ -280,6 +280,7 @@ public enum ChargedWeapon
 		check (full, <full & >1, 1, 0/empty):
 			full: TODO
 			>1: "Your Scythe of vitur has 19,529 charges remaining."
+				2022-05-02 14:40:15 [Client] INFO  com.weaponcharges.Devtools - 3388: GAMEMESSAGE "Your Sanguine scythe of vitur has 2,056 charges remaining."
 			1: TODO
 			empty: TODO
 
@@ -310,7 +311,7 @@ public enum ChargedWeapon
 		20_000,
 		"scythe_of_vitur",
 		Arrays.asList(
-			ChargesMessage.matcherGroupChargeMessage("Your Scythe of vitur has ([\\d,]+) charges remaining.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your (Sanguine s|Holy s|S)cythe of vitur has ([\\d,]+) charges remaining.", 2)
 		),
 		Arrays.asList( // TODO one of these would be really good.
 		),
@@ -336,7 +337,7 @@ public enum ChargedWeapon
 				}
 			),
 				new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Scythe of vitur."), null /* TODO find out what this should be */),
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your (Sanguine s|Holy s|S)cythe of vitur."), null /* TODO find out what this should be */),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(false, 1)
 			),
 			new ChargesDialogHandler(
@@ -377,6 +378,7 @@ public enum ChargedWeapon
 		check (full, <full & >1, 1, 0/empty):
 			full: GAMEMESSAGE "Your Sanguinesti staff is already fully charged."
 			>1: GAMEMESSAGE "Your Sanguinesti staff has 1,000 charges remaining."
+				2022-05-02 14:40:16 [Client] INFO  com.weaponcharges.Devtools - 3390: GAMEMESSAGE "Your Holy sanguinesti staff has 144 charges remaining."
 			1: GAMEMESSAGE "Your Sanguinesti staff has 1 charges remaining."
 			empty: no option when uncharged
 
@@ -409,13 +411,13 @@ public enum ChargedWeapon
 		20_000,
 		"sanguinesti_staff",
 		Arrays.asList(
-			ChargesMessage.staticChargeMessage("Your Sanguinesti staff is already fully charged.", 20000)
+			ChargesMessage.staticChargeMessage("Your (Holy s|S)anguinesti staff is already fully charged.", 20000)
 			// Some check messages omitted because they are the same as update messages.
 		),
 		Arrays.asList(
-			ChargesMessage.matcherGroupChargeMessage("Your Sanguinesti staff has ([\\d,]+) charges remaining.", 1),
-			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your Sanguinesti staff only has ([\\d,]+) charges left!</col>"), 1),
-			ChargesMessage.staticChargeMessage("Your Sanguinesti staff has run out of charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your (Holy s|S)anguinesti staff has ([\\d,]+) charges remaining.", 2),
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your (Holy s|S)anguinesti staff only has ([\\d,]+) charges left!</col>"), 2),
+			ChargesMessage.staticChargeMessage("Your (Holy s|S)anguinesti staff has run out of charges.", 0)
 			// ChargesMessage.staticChargeMessage("Your sanguinesti staff has no charges! You need to charge it with blood runes.", 0) // (sic) sang is not capitalized. bug report sent to os team
 		),
 		Arrays.asList(
@@ -430,11 +432,11 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericInputChargeMessage()
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Sanguinesti staff."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your (Holy s|S)anguinesti staff."), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your Sanguinesti staff. It now has ([\\d,]+) charges in total."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your (Holy s|S)anguinesti staff. It now has ([\\d,]+) charges in total."), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 			)
 		)
