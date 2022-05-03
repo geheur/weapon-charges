@@ -23,6 +23,7 @@ import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyListener;
+import net.runelite.client.util.Text;
 
 // Things to test: clicks and keystrokes for click here to continue in NPC, PLAYER, SPRITE, and NPC DIALOG OPTIONS
 // (all 5 options!).
@@ -36,9 +37,9 @@ import net.runelite.client.input.KeyListener;
 @Slf4j
 public class DialogTracker implements KeyListener
 {
-    private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE = 4;
-    private static final int WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE = 4;
-    private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_NAME = 3; // For some reason there is no WidgetInfo for this despite there being an (innaccessible to me) widgetid for this in WidgetID.
+    private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE = 5;
+    private static final int WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE = 5;
+    private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_NAME = 4; // For some reason there is no WidgetInfo for this despite there being an (innaccessible to me) widgetid for this in WidgetID.
 
     @Inject
     private Client client;
@@ -223,7 +224,7 @@ public class DialogTracker implements KeyListener
                 for (int i = 0; i < w.getDynamicChildren().length; i++)
                 {
                     Widget dynamicChild = w.getDynamicChildren()[i];
-                    if ("Please wait...".equals(dynamicChild.getText())) {
+                    if ("Please wait...".equals(Text.removeTags(dynamicChild.getText()))) {
                         String option = null;
                         if (lastDialogState.type == DialogState.DialogType.OPTIONS) {
                             if (lastDialogState.options != null) {
@@ -237,12 +238,12 @@ public class DialogTracker implements KeyListener
                 }
             }
             w = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE);
-            if (w != null && !w.isHidden() && "Please wait...".equals(w.getText()))
+            if (w != null && !w.isHidden() && "Please wait...".equals(Text.removeTags(w.getText())))
             {
                 optionSelected(lastDialogState, null);
             }
             w = client.getWidget(WidgetID.DIALOG_PLAYER_GROUP_ID, WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE);
-            if (w != null && !w.isHidden() && "Please wait...".equals(w.getText()))
+            if (w != null && !w.isHidden() && "Please wait...".equals(Text.removeTags(w.getText())))
             {
                 optionSelected(lastDialogState, null);
             }
@@ -251,7 +252,7 @@ public class DialogTracker implements KeyListener
             if (w != null && !w.isHidden())
             {
                 Widget dynamicChild = w.getDynamicChildren()[2];
-                if ("Please wait...".equals(dynamicChild.getText()))
+                if ("Please wait...".equals(Text.removeTags(dynamicChild.getText())))
                 {
                     optionSelected(lastDialogState, null);
                 }
