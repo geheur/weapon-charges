@@ -88,7 +88,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	// TODO rename. This is used for when an item is used on a weapon, when a weapon is used on an item, and when "pages" is clicked.
 	ChargedWeapon lastUsedOnWeapon;
 	ChargedWeapon lastUnchargeClickedWeapon;
-	private int lastItemUsed;
 
 	@Inject
 	Client client;
@@ -272,25 +271,22 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			if (config.devMode()) log.info("pages checked. setting last used weapon to {}", lastUsedOnWeapon.toString());
 		}
 
-		if (event.getMenuAction() == MenuAction.ITEM_USE) {
-			lastItemUsed = event.getId();
-			if (config.devMode()) log.info("using item {}", lastItemUsed);
-		}
-
-		if (event.getMenuAction() == MenuAction.ITEM_USE_ON_ITEM) {
-			int itemUsedOn = event.getId();
-			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(lastItemUsed);
+		if (event.getMenuAction() == MenuAction.WIDGET_TARGET_ON_WIDGET) {
+			ItemContainer itemContainer = client.getItemContainer(InventoryID.INVENTORY);
+			int itemUsed = itemContainer.getItem(client.getSelectedWidget().getIndex()).getId();
+			int itemUsedOn = itemContainer.getItem(event.getWidget().getIndex()).getId();
+			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsed);
 			if (lastUsedOnWeapon == null)
 			{
 				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedOn);
 				if (lastUsedOnWeapon != null)
 				{
-					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastItemUsed, lastUsedOnWeapon);
+					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsed, lastUsedOnWeapon);
 				} else {
-					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastItemUsed, itemUsedOn);
+					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsed, itemUsedOn);
 				}
 			} else {
-				if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastUsedOnWeapon, lastItemUsed);
+				if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastUsedOnWeapon, itemUsedOn);
 			}
 		}
 	}
