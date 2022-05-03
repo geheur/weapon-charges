@@ -247,7 +247,7 @@ public class DialogTracker implements KeyListener
                 optionSelected(lastDialogState, null);
             }
         } else if (event.getScriptId() == 2869) {
-            Widget w = client.getWidget(WidgetInfo.DIALOG_SPRITE);
+			Widget w = client.getWidget(WidgetInfo.DIALOG_SPRITE);
             if (w != null && !w.isHidden())
             {
                 Widget dynamicChild = w.getDynamicChildren()[2];
@@ -289,11 +289,18 @@ public class DialogTracker implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		if (e.getKeyCode() == KeyEvent.VK_ENTER && client.getVar(VarClientInt.INPUT_TYPE) == 7) {
-			String inputText = client.getVar(VarClientStr.INPUT_TEXT);
+		try
+		{
+			if (e.getKeyCode() == KeyEvent.VK_ENTER && client.getVar(VarClientInt.INPUT_TYPE) == 7)
+			{
+				String inputText = client.getVar(VarClientStr.INPUT_TEXT);
 
-			// idk if this if statement is needed but better safe than sorry.
-			if (lastDialogState.type == DialogState.DialogType.INPUT) optionSelected(lastDialogState, inputText);
+				// idk if this if statement is needed but better safe than sorry.
+				if (lastDialogState.type == DialogState.DialogType.INPUT) optionSelected(lastDialogState, inputText);
+			}
+		} catch (RuntimeException ex) {
+			// Exceptions thrown from here can prevent other keylisteners from receiving the key event.
+			log.error("", ex);
 		}
 	}
 
