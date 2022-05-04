@@ -145,6 +145,8 @@ public class WeaponChargesTest
 
 		checkIbans();
 
+		checkTridentCheckMessages();
+
 		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SEAS);
 		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SWAMP);
 		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SEAS_E);
@@ -166,6 +168,34 @@ public class WeaponChargesTest
 		checkArclight();
 		
 		checkBlowpipe();
+	}
+
+	private void checkTridentCheckMessages()
+	{
+//		2022-05-04 12:37:05 [Client] INFO  com.weaponcharges.Devtools - 354: GAMEMESSAGE "Your Trident of the swamp (e) has 2,000 charges."
+//		2022-05-04 12:38:41 [Client] INFO  com.weaponcharges.Devtools - 514: GAMEMESSAGE "Your Trident of the swamp (e) has one charge."
+//		2022-05-04 12:40:27 [Client] INFO  com.weaponcharges.Devtools - 691: GAMEMESSAGE "Your Trident of the seas (e) has one charge."
+//		2022-05-04 12:40:36 [Client] INFO  com.weaponcharges.Devtools - 706: GAMEMESSAGE "Your Trident of the seas (e) has 1,001 charges."
+//		2022-05-04 07:08:09 [Client] INFO  com.weaponcharges.Devtools - 12: GAMEMESSAGE "Your Trident of the swamp has 6 charges."
+//		2022-05-04 07:09:59 [Client] INFO  com.weaponcharges.Devtools - 196: GAMEMESSAGE "Your Trident of the seas has one charge."
+//		2022-05-04 07:10:55 [Client] INFO  com.weaponcharges.Devtools - 288: GAMEMESSAGE "Your Trident of the seas has 2 charges."
+//		2022-05-04 07:13:15 [Client] INFO  com.weaponcharges.Devtools - 521: GAMEMESSAGE "Your Trident of the seas has 100 charges."
+
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SEAS, "Your Trident of the seas has 2 charges.", 2);
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SEAS, "Your Trident of the seas has one charge.", 1);
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SEAS, "Your Trident of the seas has no charges.", 0);
+
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SWAMP_E, "Your Trident of the swamp (e) has 2,000 charges.", 2000);
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SWAMP_E, "Your Trident of the swamp (e) has one charge.", 1);
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SWAMP_E, "Your Trident of the swamp (e) has no charges.", 0);
+
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SEAS_E, "Your Trident of the seas (e) has 1,001 charges.", 1001);
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SEAS_E, "Your Trident of the seas (e) has one charge.", 1);
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SEAS_E, "Your Trident of the seas (e) has no charges.", 0);
+
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SWAMP, "Your Trident of the swamp has 6 charges.", 6);
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SWAMP, "Your Trident of the swamp has one charge.", 1);
+		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SWAMP, "Your Trident of the swamp has no charges.", 0);
 	}
 
 	private void checkBlowpipe()
@@ -332,11 +362,6 @@ public class WeaponChargesTest
 
 	private void checkTrident(ChargedWeapon chargedWeapon)
 	{
-		checkWeaponMessage(chargedWeapon, "Your weapon has 2,500 charges.", 2500);
-		checkWeaponMessage(chargedWeapon, "Your weapon has 2,040 charges.", 2040);
-		checkWeaponMessage(chargedWeapon, "Your weapon has one charge.", 1);
-		checkWeaponMessage(chargedWeapon, "Your weapon has no charges.", 0);
-
 		equippedWeaponPeriodicUpdate(chargedWeapon, "<col=ef1020>Your trident only has 100 charges left!</col>", 100);
 		equippedWeaponPeriodicUpdate(chargedWeapon, "<col=ef1020>Your trident has run out of charges.</col>", 0);
 		equippedWeaponPeriodicUpdate(chargedWeapon, "The weapon has no charges left. You need death runes, chaos runes, fire runes and Zulrah's scales to charge it.", 0);

@@ -100,10 +100,18 @@ public enum ChargedWeapon
 		Tridents all work the same way, afaik (only tested swap trident and partially seas trident).
 
 		check:
-			2021-08-29 18:47:39 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 4235: GAMEMESSAGE "Your weapon has 2,500 charges."
-			2021-08-27 23:18:30 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - GAMEMESSAGE "Your weapon has 2,040 charges."
-			2021-08-27 22:59:23 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - GAMEMESSAGE "Your weapon has one charge."
-			2021-08-27 23:09:33 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - GAMEMESSAGE "Your weapon has no charges."
+			2022-05-04 12:37:05 [Client] INFO  com.weaponcharges.Devtools - 354: GAMEMESSAGE "Your Trident of the swamp (e) has 2,000 charges."
+			2022-05-04 12:38:41 [Client] INFO  com.weaponcharges.Devtools - 514: GAMEMESSAGE "Your Trident of the swamp (e) has one charge."
+			2022-05-04 12:40:27 [Client] INFO  com.weaponcharges.Devtools - 691: GAMEMESSAGE "Your Trident of the seas (e) has one charge."
+			2022-05-04 12:40:36 [Client] INFO  com.weaponcharges.Devtools - 706: GAMEMESSAGE "Your Trident of the seas (e) has 1,001 charges."
+			2022-05-04 07:08:09 [Client] INFO  com.weaponcharges.Devtools - 12: GAMEMESSAGE "Your Trident of the swamp has 6 charges."
+			2022-05-04 07:09:59 [Client] INFO  com.weaponcharges.Devtools - 196: GAMEMESSAGE "Your Trident of the seas has one charge."
+			2022-05-04 07:10:55 [Client] INFO  com.weaponcharges.Devtools - 288: GAMEMESSAGE "Your Trident of the seas has 2 charges."
+			2022-05-04 07:13:15 [Client] INFO  com.weaponcharges.Devtools - 521: GAMEMESSAGE "Your Trident of the seas has 100 charges."
+
+			// These are useless because the uncharged version has a different item id anyways.
+			2022-05-04 12:36:51 [Client] INFO  com.weaponcharges.Devtools - 332: GAMEMESSAGE "Your Uncharged toxic trident (e) has no charges."
+			2022-05-04 12:40:13 [Client] INFO  com.weaponcharges.Devtools - 667: GAMEMESSAGE "Your Uncharged trident (e) has no charges."
 
 		periodic updates:
 			2021-08-27 23:02:13 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - GAMEMESSAGE "<col=ef1020>Your trident only has 100 charges left!</col>"
@@ -128,7 +136,7 @@ public enum ChargedWeapon
 			dropping: 2021-08-29 19:03:59 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 5862: option selected: "Drop it." from NpcDialogState{OPTIONS, text='If you drop it, it will lose all its charges.', options=[Drop it., No, don't drop it.]} TODO unimplemented
 				(the charge loss happens when you select "Drop it.".
 
-		message overlap: all 4 tridents use the same messages.
+		message overlap: all 4 tridents use the same messages except for the check messages.
 	 */
 	TRIDENT_OF_THE_SEAS(
 		Arrays.asList(ItemID.TRIDENT_OF_THE_SEAS),
@@ -136,7 +144,11 @@ public enum ChargedWeapon
 		Arrays.asList(1167),
 		2500,
 		"trident_of_the_seas",
-		Collections.emptyList(),
+		Arrays.asList(
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas has ([\\d,]+) charges.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas has one charge.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas has no charges.", 0)
+		),
 		Collections.emptyList(),
 		Collections.emptyList()
 	),
@@ -146,7 +158,11 @@ public enum ChargedWeapon
 		Arrays.asList(1167),
 		2500,
 		"trident_of_the_swamp",
-		Collections.emptyList(),
+		Arrays.asList(
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp has ([\\d,]+) charges.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp has one charge.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp has no charges.", 0)
+		),
 		Collections.emptyList(),
 		Collections.emptyList()
 	),
@@ -156,7 +172,11 @@ public enum ChargedWeapon
 		Arrays.asList(1167),
 		10_000,
 		"trident_of_the_seas_e",
-		Collections.emptyList(),
+		Arrays.asList(
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas \\(e\\) has ([\\d,]+) charges.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has one charge.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has no charges.", 0)
+		),
 		Collections.emptyList(),
 		Collections.emptyList()
 	),
@@ -166,7 +186,11 @@ public enum ChargedWeapon
 		Arrays.asList(1167),
 		10_000,
 		"trident_of_the_swamp_e",
-		Collections.emptyList(),
+		Arrays.asList(
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp \\(e\\) has ([\\d,]+) charges.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has one charge.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has no charges.", 0)
+		),
 		Collections.emptyList(),
 		Collections.emptyList()
 	),
@@ -565,12 +589,8 @@ public enum ChargedWeapon
 
 	@Getter
 	private static final List<ChargesMessage> nonUniqueCheckChargesRegexes = Arrays.asList(
-		// trident / ether weapons
-		ChargesMessage.matcherGroupChargeMessage("Your weapon has ([\\d,]+) charges.", 1),
-		// trident
-		ChargesMessage.staticChargeMessage("Your weapon has one charge.", 1),
-		ChargesMessage.staticChargeMessage("Your weapon has no charges.", 0),
 		// ether weapons
+		ChargesMessage.matcherGroupChargeMessage("Your weapon has ([\\d,]+) charges.", 1),
 		//ChargesMessage.staticChargeMessage("You require at least 1000 revenant ether to activate this weapon.", 0),
 		ChargesMessage.staticChargeMessage("You use 1000 ether to activate the weapon.", 0),
 		ChargesMessage.matcherGroupChargeMessage("You add (a further )?([\\d,]+) revenant ether to your weapon, giving it a total of ([\\d,]+) charges?.", 3),
