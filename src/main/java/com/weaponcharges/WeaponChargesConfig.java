@@ -117,7 +117,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "blowpipe_low_charge_threshold",
 		name = "Low (Blowpipe)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low. Calculated as number of shots before the Blowpipe runs out of either scales or darts, assuming the assembler is used.",
+		description = "Number of charges considered \"low\". Calculated as number of shots before the Blowpipe runs out of either scales or darts, assuming the assembler is used.",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = -1
 	)
@@ -141,7 +141,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "trident_of_the_seas_low_charge_threshold",
 		name = "Low (Seas trident)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 1
 	)
@@ -165,7 +165,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "trident_of_the_swamp_low_charge_threshold",
 		name = "Low (Swamp trident)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 3
 	)
@@ -189,7 +189,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "trident_of_the_seas_e_low_charge_threshold",
 		name = "Low (Seas trident (e))",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 5
 	)
@@ -213,7 +213,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "trident_of_the_swamp_e_low_charge_threshold",
 		name = "Low (Swamp trident (e))",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 7
 	)
@@ -237,7 +237,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "ibans_staff_low_charge_threshold",
 		name = "Low (Iban's staff)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 9
 	)
@@ -261,7 +261,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "crystal_halberd_low_charge_threshold",
 		name = "Low (Crystal halberd)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 11
 	)
@@ -285,7 +285,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "abyssal_tentacle_low_charge_threshold",
 		name = "Low (Abyssal tentacle)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 13
 	)
@@ -309,7 +309,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "tome_of_fire_low_charge_threshold",
 		name = "Low (Tome of fire)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 15
 	)
@@ -333,7 +333,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "tome_of_water_low_charge_threshold",
 		name = "Low (Tome of water)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 17
 	)
@@ -357,7 +357,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "scythe_of_vitur_low_charge_threshold",
 		name = "Low (Scythe of vitur)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 19
 	)
@@ -381,7 +381,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "sanguinesti_staff_low_charge_threshold",
 		name = "Low (Sanguinesti staff)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 21
 	)
@@ -405,7 +405,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "arclight_low_charge_threshold",
 		name = "Low (Arclight)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 23
 	)
@@ -429,7 +429,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "craws_bow_low_charge_threshold",
 		name = "Low (Craw's Bow)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 25
 	)
@@ -453,7 +453,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "viggoras_chainmace_low_charge_threshold",
 		name = "Low (Viggora's chainmace)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 27
 	)
@@ -477,7 +477,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigItem(
 		keyName = "thammarons_sceptre_low_charge_threshold",
 		name = "Low (Thammaron's sceptre)",
-		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low.",
+		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
 		position = 29
 	)
