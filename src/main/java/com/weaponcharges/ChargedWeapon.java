@@ -360,10 +360,10 @@ public enum ChargedWeapon
 					plugin.addCharges(get_scythe_circumvent_illegal_self_reference(), chargesEntered * 100, true);
 				}
 			),
-				new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your (Sanguine s|Holy s|S)cythe of vitur."), null /* TODO find out what this should be */),
-				ChargesDialogHandler.genericSpriteDialogChargesMessage(false, 1)
-			),
+//			new ChargesDialogHandler(
+//				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your (Sanguine s|Holy s|S)cythe of vitur."), null /* TODO find out what this should be */),
+//				ChargesDialogHandler.genericSpriteDialogChargesMessage(false, 1)
+//			),
 			new ChargesDialogHandler(
 				DialogStateMatcher.spriteOptionSelected(Pattern.compile("If you uncharge your scythe into the well, ([\\d,]+) charges will be added to the well."), null /* TODO find out what this should be */),
 				ChargesDialogHandler.genericSpriteDialogUnchargeMessage()

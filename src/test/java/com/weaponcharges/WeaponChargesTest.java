@@ -292,7 +292,7 @@ public class WeaponChargesTest
 		checkWeaponMessage(ChargedWeapon.SCYTHE_OF_VITUR, "Your Scythe of vitur has 19,529 charges remaining.", 19529);
 
 		inputDialog(ChargedWeapon.SCYTHE_OF_VITUR, "How many sets of 100 charges do you wish to apply? (Up to 173)", "120", 100, 12100);
-		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
+//		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
 
 		spriteDialogOptionSelected(ChargedWeapon.SCYTHE_OF_VITUR, "If you uncharge your scythe into the well, 17,300<br>charges will be added to the well.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
 		// This one isn't tracked because it is superfluous.
@@ -304,7 +304,7 @@ public class WeaponChargesTest
 		checkWeaponMessage(ChargedWeapon.SCYTHE_OF_VITUR, "Your Sanguine scythe of vitur has 19,529 charges remaining.", 19529);
 
 		inputDialog(ChargedWeapon.SCYTHE_OF_VITUR, "How many sets of 100 charges do you wish to apply? (Up to 173)", "120", 100, 12100);
-		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Sanguine scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
+//		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Sanguine scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
 
 		spriteDialogOptionSelected(ChargedWeapon.SCYTHE_OF_VITUR, "If you uncharge your scythe into the well, 17,300<br>charges will be added to the well.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
 		// This one isn't tracked because it is superfluous.
@@ -316,7 +316,7 @@ public class WeaponChargesTest
 		checkWeaponMessage(ChargedWeapon.SCYTHE_OF_VITUR, "Your Holy scythe of vitur has 19,529 charges remaining.", 19529);
 
 		inputDialog(ChargedWeapon.SCYTHE_OF_VITUR, "How many sets of 100 charges do you wish to apply? (Up to 173)", "120", 100, 12100);
-		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Holy scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
+//		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You apply 17,300 charges to your Holy scythe of vitur.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 17400);
 
 		spriteDialogOptionSelected(ChargedWeapon.SCYTHE_OF_VITUR, "If you uncharge your scythe into the well, 17,300<br>charges will be added to the well.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
 		// This one isn't tracked because it is superfluous.
