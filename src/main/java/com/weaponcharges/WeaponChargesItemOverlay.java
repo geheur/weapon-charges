@@ -1,5 +1,7 @@
 package com.weaponcharges;
 
+import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
+import static com.weaponcharges.WeaponChargesConfig.DisplayWhenNoDefault;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -8,8 +10,6 @@ import javax.inject.Inject;
 import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetItem;
-import static com.weaponcharges.WeaponChargesConfig.*;
-import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 import net.runelite.client.ui.overlay.components.TextComponent;
@@ -47,14 +47,20 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 
 		boolean found = false;
 		for (ChargedWeapon chargedWeapon : ChargedWeapon.values()) {
+			Integer charges = null;
 			if (chargedWeapon.getItemIds().contains(itemId)) {
 				found = true;
+				charges = plugin.getCharges(chargedWeapon);
+			} else if (chargedWeapon.getUnchargedIds().contains(itemId)) {
+				found = true;
+				charges = 0;
+			}
 
-				DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(chargedWeapon.getDisplayWhen(config), config.defaultDisplay());
-				Integer charges = plugin.getCharges(chargedWeapon);
+			if (found) {
 				if (charges == null) {
 					topText.setText("?");
 				} else {
+					DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(chargedWeapon.getDisplayWhen(config), config.defaultDisplay());
 					if (displayWhen == DisplayWhen.NEVER && !plugin.isShowChargesKeyIsDown()) break;
 
 					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(config);
