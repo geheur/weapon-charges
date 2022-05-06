@@ -107,7 +107,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Blowpipe",
 		description = "When the Blowpipe should show the charge counter.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 0
+		position = -2
 	)
 	default WeaponChargesConfig.DisplayWhen blowpipe_Display()
 	{
@@ -119,7 +119,7 @@ public interface WeaponChargesConfig extends Config
 		name = "Low (Blowpipe)",
 		description = "Number of charges considered \"low\". Set to -1 to never show charges as being low. Calculated as number of shots before the Blowpipe runs out of either scales or darts, assuming the assembler is used.",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 1
+		position = -1
 	)
 	default int blowpipe_LowChargeThreshold()
 	{
