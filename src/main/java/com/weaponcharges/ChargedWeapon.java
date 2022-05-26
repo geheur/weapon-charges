@@ -196,7 +196,7 @@ public enum ChargedWeapon
 	),
 
 	ABYSSAL_TENTACLE(
-		Arrays.asList(ItemID.ABYSSAL_TENTACLE),
+		Arrays.asList(ItemID.ABYSSAL_TENTACLE, ItemID.ABYSSAL_TENTACLE_OR),
 		Collections.emptyList(),
 		Arrays.asList(1658),
 		10_000,
