@@ -8,12 +8,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.runelite.api.ItemID;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.util.Text;
 
-@RequiredArgsConstructor
 @Getter
 public enum ChargedWeapon
 {
@@ -72,23 +70,22 @@ public enum ChargedWeapon
 		message overlap:
 			(u) and non-(u) probably both use the same messages. TODO
 	 */
-	IBANS_STAFF(
-		Arrays.asList(ItemID.IBANS_STAFF, ItemID.IBANS_STAFF_U),
-		Collections.emptyList(),
-		Arrays.asList(708),
-		2500 /*120 for regular, 2500 for (u)*/, // TODO fix this for regular staff?
-		"ibans_staff",
-		Arrays.asList(
+	IBANS_STAFF(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.IBANS_STAFF, ItemID.IBANS_STAFF_U)
+		.animationIds(708)
+		.rechargeAmount(2500) /*120 for regular, 2500 for (u)*/ // TODO fix this for regular staff?
+		.configKeyName("ibans_staff")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("You have ([\\d,]+) charges left on the staff.", 1),
 			ChargesMessage.staticChargeMessage("You have a charge left on the staff.", 1),
 			ChargesMessage.staticChargeMessage("You have no charges left on the staff.", 0)
-		),
-		Arrays.asList(
+		)
+		.updateMessageChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your staff only has ([\\d,]+) charges left.</col>"), 1),
 			ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your staff has run out of charges.</col>"), 0),
 			ChargesMessage.staticChargeMessage("You need to recharge your staff to use this spell.", 0)
-		),
-		Arrays.asList(
+		)
+		.dialogHandlers(
 			new ChargesDialogHandler(
 				DialogStateMatcher.sprite(Pattern.compile("You hold the staff above the well and feel the power of Zamorak flow through you."), null),
 				ChargesDialogHandler.genericSpriteDialogFullChargeMessage()
@@ -138,74 +135,63 @@ public enum ChargedWeapon
 
 		message overlap: all 4 tridents use the same messages except for the check messages.
 	 */
-	TRIDENT_OF_THE_SEAS(
-		Arrays.asList(ItemID.TRIDENT_OF_THE_SEAS),
-		Arrays.asList(ItemID.UNCHARGED_TRIDENT),
-		Arrays.asList(1167),
-		2500,
-		"trident_of_the_seas",
-		Arrays.asList(
+	TRIDENT_OF_THE_SEAS(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.TRIDENT_OF_THE_SEAS)
+		.unchargedItemIds(ItemID.UNCHARGED_TRIDENT)
+		.animationIds(1167)
+		.rechargeAmount(2500)
+		.configKeyName("trident_of_the_seas")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas has ([\\d,]+) charges.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the seas has one charge.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the seas has no charges.", 0)
-		),
-		Collections.emptyList(),
-		Collections.emptyList()
+		)
 	),
-	TRIDENT_OF_THE_SWAMP(
-		Arrays.asList(ItemID.TRIDENT_OF_THE_SWAMP),
-		Arrays.asList(ItemID.UNCHARGED_TOXIC_TRIDENT),
-		Arrays.asList(1167),
-		2500,
-		"trident_of_the_swamp",
-		Arrays.asList(
+	TRIDENT_OF_THE_SWAMP(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.TRIDENT_OF_THE_SWAMP)
+		.unchargedItemIds(ItemID.UNCHARGED_TOXIC_TRIDENT)
+		.animationIds(1167)
+		.rechargeAmount(2500)
+		.configKeyName("trident_of_the_swamp")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp has ([\\d,]+) charges.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the swamp has one charge.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the swamp has no charges.", 0)
-		),
-		Collections.emptyList(),
-		Collections.emptyList()
+		)
 	),
-	TRIDENT_OF_THE_SEAS_E(
-		Arrays.asList(ItemID.TRIDENT_OF_THE_SEAS_E),
-		Arrays.asList(ItemID.UNCHARGED_TRIDENT_E),
-		Arrays.asList(1167),
-		10_000,
-		"trident_of_the_seas_e",
-		Arrays.asList(
+	TRIDENT_OF_THE_SEAS_E(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.TRIDENT_OF_THE_SEAS_E)
+		.unchargedItemIds(ItemID.UNCHARGED_TRIDENT_E)
+		.animationIds(1167)
+		.rechargeAmount(10_000)
+		.configKeyName("trident_of_the_seas_e")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas \\(e\\) has ([\\d,]+) charges.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has one charge.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has no charges.", 0)
-		),
-		Collections.emptyList(),
-		Collections.emptyList()
+		)
 	),
-	TRIDENT_OF_THE_SWAMP_E(
-		Arrays.asList(ItemID.TRIDENT_OF_THE_SWAMP_E),
-		Arrays.asList(ItemID.UNCHARGED_TOXIC_TRIDENT_E),
-		Arrays.asList(1167),
-		10_000,
-		"trident_of_the_swamp_e",
-		Arrays.asList(
+	TRIDENT_OF_THE_SWAMP_E(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.TRIDENT_OF_THE_SWAMP_E)
+		.unchargedItemIds(ItemID.UNCHARGED_TOXIC_TRIDENT_E)
+		.animationIds(1167)
+		.rechargeAmount(10_000)
+		.configKeyName("trident_of_the_swamp_e")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp \\(e\\) has ([\\d,]+) charges.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has one charge.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has no charges.", 0)
-		),
-		Collections.emptyList(),
-		Collections.emptyList()
+		)
 	),
 
-	ABYSSAL_TENTACLE(
-		Arrays.asList(ItemID.ABYSSAL_TENTACLE, ItemID.ABYSSAL_TENTACLE_OR),
-		Collections.emptyList(),
-		Arrays.asList(1658),
-		10_000,
-		"abyssal_tentacle",
-		Arrays.asList(
+	ABYSSAL_TENTACLE(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.ABYSSAL_TENTACLE, ItemID.ABYSSAL_TENTACLE_OR)
+		.animationIds(1658)
+		.rechargeAmount(10_000)
+		.configKeyName("abyssal_tentacle")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your abyssal tentacle can perform ([\\d,]+) more attacks.", 1)
-		),
-		Collections.emptyList(),
-		Collections.emptyList()
+		)
 	),
 	/* chally
 		checking:
@@ -226,17 +212,15 @@ public enum ChargedWeapon
 
 		message overlap: none that I'm aware of.
 	 */
-	CRYSTAL_HALBERD(
-		Arrays.asList(ItemID.CRYSTAL_HALBERD),
-		Collections.emptyList(), // TODO add proper empty halberd ID oh God help me
-		Arrays.asList(428, 440, 1203),
-		10_000/*TODO is this correct?*/,
-		"crystal_halberd",
-		Arrays.asList(
+	CRYSTAL_HALBERD(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.CRYSTAL_HALBERD)
+		.unchargedItemIds() // TODO add proper empty halberd ID oh God help me
+		.animationIds(428, 440, 1203)
+		.rechargeAmount(10_000/*TODO is this correct?*/)
+		.configKeyName("crystal_halberd")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your crystal halberd has ([\\d,]+) charges remaining.", 1)
-		),
-		Collections.emptyList(),
-		Collections.emptyList()
+		)
 	),
 
 	/* Tome of fire:
@@ -261,17 +245,15 @@ public enum ChargedWeapon
 
 		The tome of fire needs an additional check for fire spells being cast, which is done in onClientTick by checking for a gfx value.
 	 */
-	TOME_OF_FIRE(
-		Arrays.asList(ItemID.TOME_OF_FIRE),
-		Arrays.asList(ItemID.TOME_OF_FIRE_EMPTY),
-		Arrays.asList(711, 1162, 727, 1167, 7855),
-		20_000,
-		"tome_of_fire",
-		Collections.emptyList(),
-		Arrays.asList(
+	TOME_OF_FIRE(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.TOME_OF_FIRE)
+		.unchargedItemIds(ItemID.TOME_OF_FIRE_EMPTY)
+		.animationIds(711, 1162, 727, 1167, 7855)
+		.rechargeAmount(20_000)
+		.configKeyName("tome_of_fire")
+		.updateMessageChargesRegexes(
 			ChargesMessage.staticChargeMessage("Your Tome of Fire is now empty.", 0)
-		),
-		Collections.emptyList()
+		)
 	),
 	/* Tome of water:
 		checking:
@@ -288,17 +270,15 @@ public enum ChargedWeapon
 
 		The Tome of water needs an additional check for water and curse spells being cast, which is done in onClientTick by checking for a gfx value.
 	 */
-	TOME_OF_WATER(
-			Arrays.asList(ItemID.TOME_OF_WATER),
-			Arrays.asList(ItemID.TOME_OF_WATER_EMPTY),
-			Arrays.asList(1161 /*bind/snare/entangle*/, 1162 /*strike/bolt/blast*/, 1163 /*confuse*/, 1164 /*weaken*/, 1165 /*curse/vulnerability*/, 1167 /*wave*/, 1168 /*enfeeble*/, 1169 /*stun*/, 7855 /*surge*/),
-			20_000,
-			"tome_of_water",
-			Collections.emptyList(),
-			Arrays.asList(
-					ChargesMessage.staticChargeMessage("Your Tome of Water is now empty.", 0)
-			),
-			Collections.emptyList()
+	TOME_OF_WATER(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.TOME_OF_WATER)
+		.unchargedItemIds(ItemID.TOME_OF_WATER_EMPTY)
+		.animationIds(1161 /*bind/snare/entangle*/, 1162 /*strike/bolt/blast*/, 1163 /*confuse*/, 1164 /*weaken*/, 1165 /*curse/vulnerability*/, 1167 /*wave*/, 1168 /*enfeeble*/, 1169 /*stun*/, 7855 /*surge*/)
+		.rechargeAmount(20_000)
+		.configKeyName("tome_of_water")
+		.updateMessageChargesRegexes(
+			ChargesMessage.staticChargeMessage("Your Tome of Water is now empty.", 0)
+		)
 	),
 	/* scythe
 		check (full, <full & >1, 1, 0/empty):
@@ -327,19 +307,19 @@ public enum ChargedWeapon
 		message overlap:
 			TODO
 	 */
-	SCYTHE_OF_VITUR(
+	SCYTHE_OF_VITUR(new ChargedWeaponBuilder()
 		// TODO some kind of optional graphic to show when a scythe is uncharged? like a "(u)" that shows up on the item.
-		Arrays.asList(ItemID.SCYTHE_OF_VITUR, ItemID.HOLY_SCYTHE_OF_VITUR, ItemID.SANGUINE_SCYTHE_OF_VITUR),
-		Arrays.asList(ItemID.SCYTHE_OF_VITUR_UNCHARGED, ItemID.HOLY_SCYTHE_OF_VITUR_UNCHARGED, ItemID.SANGUINE_SCYTHE_OF_VITUR_UNCHARGED),
-		Arrays.asList(8056),
-		20_000,
-		"scythe_of_vitur",
-		Arrays.asList(
+		.chargedItemIds(ItemID.SCYTHE_OF_VITUR, ItemID.HOLY_SCYTHE_OF_VITUR, ItemID.SANGUINE_SCYTHE_OF_VITUR)
+		.unchargedItemIds(ItemID.SCYTHE_OF_VITUR_UNCHARGED, ItemID.HOLY_SCYTHE_OF_VITUR_UNCHARGED, ItemID.SANGUINE_SCYTHE_OF_VITUR_UNCHARGED)
+		.animationIds(8056)
+		.rechargeAmount(20_000)
+		.configKeyName("scythe_of_vitur")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your (Sanguine s|Holy s|S)cythe of vitur has ([\\d,]+) charges remaining.", 2)
-		),
-		Arrays.asList( // TODO one of these would be really good.
-		),
-		Arrays.asList(
+		)
+		.updateMessageChargesRegexes( // TODO one of these would be really good.
+		)
+		.dialogHandlers(
 			new ChargesDialogHandler(
 				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many sets of 100 charges do you wish to apply\\? \\(Up to ([\\d,]+)\\)"), null),
 				(matchers, dialogState, optionSelected, plugin) -> {
@@ -428,23 +408,23 @@ public enum ChargedWeapon
 		message overlap:
 			none afaik
 	 */
-	SANGUINESTI_STAFF(
-		Arrays.asList(ItemID.SANGUINESTI_STAFF, ItemID.HOLY_SANGUINESTI_STAFF),
-		Arrays.asList(ItemID.SANGUINESTI_STAFF_UNCHARGED, ItemID.HOLY_SANGUINESTI_STAFF_UNCHARGED),
-		Arrays.asList(1167),
-		20_000,
-		"sanguinesti_staff",
-		Arrays.asList(
+	SANGUINESTI_STAFF(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.SANGUINESTI_STAFF, ItemID.HOLY_SANGUINESTI_STAFF)
+		.unchargedItemIds(ItemID.SANGUINESTI_STAFF_UNCHARGED, ItemID.HOLY_SANGUINESTI_STAFF_UNCHARGED)
+		.animationIds(1167)
+		.rechargeAmount(20_000)
+		.configKeyName("sanguinesti_staff")
+		.checkChargesRegexes(
 			ChargesMessage.staticChargeMessage("Your (Holy s|S)anguinesti staff is already fully charged.", 20000)
 			// Some check messages omitted because they are the same as update messages.
-		),
-		Arrays.asList(
+		)
+		.updateMessageChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your (Holy s|S)anguinesti staff has ([\\d,]+) charges remaining.", 2),
 			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your (Holy s|S)anguinesti staff only has ([\\d,]+) charges left!</col>"), 2),
 			ChargesMessage.staticChargeMessage("Your (Holy s|S)anguinesti staff has run out of charges.", 0)
 			// ChargesMessage.staticChargeMessage("Your sanguinesti staff has no charges! You need to charge it with blood runes.", 0) // (sic) sang is not capitalized. bug report sent to os team
-		),
-		Arrays.asList(
+		)
+		.dialogHandlers(
 			new ChargesDialogHandler(
 				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge your staff for all its charges\\? \\(regaining [\\d,]+ blood runes\\)"), null, Pattern.compile("Proceed.")),
 				(matchers, dialogState, optionSelected, plugin) -> {
@@ -489,17 +469,14 @@ public enum ChargedWeapon
 		message overlap:
 			TODO
 	 */
-	ARCLIGHT(
-		Arrays.asList(ItemID.ARCLIGHT),
-		Collections.emptyList(),
-		Arrays.asList(386, 390),
-		10_000,
-		"arclight",
-		Arrays.asList(
+	ARCLIGHT(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.ARCLIGHT)
+		.animationIds(386, 390)
+		.rechargeAmount(10_000)
+		.configKeyName("arclight")
+		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your arclight has ([\\d,]+) charges left.", 1)
-		),
-		Collections.emptyList(),
-		Collections.emptyList()
+		)
 	),
 	/* Ether Weapon common
 		check (full, <full & >1, 1, 0/empty):
@@ -539,51 +516,45 @@ public enum ChargedWeapon
 		message overlap:
 			see Ether Weapon common
 	 */
-	CRAWS(
-			Arrays.asList(ItemID.CRAWS_BOW),
-			Arrays.asList(ItemID.CRAWS_BOW_U),
-			Arrays.asList(426),
-			16_000,
-			"craws_bow",
-			Arrays.asList(
-					ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it.", 1)
-			),
-			Arrays.asList(
-					ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow.", 0)
-			),
-			Collections.emptyList()
+	CRAWS(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.CRAWS_BOW)
+		.unchargedItemIds(ItemID.CRAWS_BOW_U)
+		.animationIds(426)
+		.rechargeAmount(16_000)
+		.configKeyName("craws_bow")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it.", 1)
+		)
+		.updateMessageChargesRegexes(
+			ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow.", 0)
+		)
 	),
 	/* Vigorra's chainmace
 		message overlap:
 			see Ether Weapon common
 	 */
-	VIGGORAS(
-			Arrays.asList(ItemID.VIGGORAS_CHAINMACE),
-			Arrays.asList(ItemID.VIGGORAS_CHAINMACE_U),
-			Arrays.asList(245, 7200),
-			16_000,
-			"viggoras_chainmace",
-			Arrays.asList(
-					ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it.", 1)
-			),
-			Collections.emptyList(),
-			Collections.emptyList()
+	VIGGORAS(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.VIGGORAS_CHAINMACE)
+		.unchargedItemIds(ItemID.VIGGORAS_CHAINMACE_U)
+		.animationIds(245, 7200)
+		.rechargeAmount(16_000)
+		.configKeyName("viggoras_chainmace")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it.", 1)
+		)
 	),
 	/* Thammaron's sceptre
 		message overlap:
 			see Ether Weapon common
 	 */
-	THAMMARONS(
-			Arrays.asList(ItemID.THAMMARONS_SCEPTRE),
-			Arrays.asList(ItemID.THAMMARONS_SCEPTRE_U),
-			Collections.emptyList(),
-			16_000,
-			"thammarons_sceptre",
-			Arrays.asList(
-					ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1)
-			),
-			Collections.emptyList(),
-			Collections.emptyList()
+	THAMMARONS(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.THAMMARONS_SCEPTRE)
+		.unchargedItemIds(ItemID.THAMMARONS_SCEPTRE_U)
+		.rechargeAmount(16_000)
+		.configKeyName("thammarons_sceptre")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1)
+		)
 	),
 	;
 
@@ -648,6 +619,49 @@ public enum ChargedWeapon
 		)
 	);
 
+	private static class ChargedWeaponBuilder {
+		List<Integer> chargedItemIds = Collections.emptyList();
+		public ChargedWeaponBuilder chargedItemIds(Integer... chargedItemIds) {
+			this.chargedItemIds = Arrays.asList(chargedItemIds);
+			return this;
+		}
+		List<Integer> unchargedItemIds = Collections.emptyList();
+		public ChargedWeaponBuilder unchargedItemIds(Integer... unchargedItemIds) {
+			this.unchargedItemIds = Arrays.asList(unchargedItemIds);
+			return this;
+		}
+		List<Integer> animationIds = Collections.emptyList();
+		public ChargedWeaponBuilder animationIds(Integer... animationIds) {
+			this.animationIds = Arrays.asList(animationIds);
+			return this;
+		}
+		Integer rechargeAmount;
+		public ChargedWeaponBuilder rechargeAmount(Integer rechargeAmount) {
+			this.rechargeAmount = rechargeAmount;
+			return this;
+		}
+		String configKeyName;
+		public ChargedWeaponBuilder configKeyName(String configKeyName) {
+			this.configKeyName = configKeyName;
+			return this;
+		}
+		List<ChargesMessage> checkChargesRegexes = Collections.emptyList();
+		public ChargedWeaponBuilder checkChargesRegexes(ChargesMessage... checkChargesRegexes) {
+			this.checkChargesRegexes = Arrays.asList(checkChargesRegexes);
+			return this;
+		}
+		List<ChargesMessage> updateMessageChargesRegexes = Collections.emptyList();
+		public ChargedWeaponBuilder updateMessageChargesRegexes(ChargesMessage... updateMessageChargesRegexes) {
+			this.updateMessageChargesRegexes = Arrays.asList(updateMessageChargesRegexes);
+			return this;
+		}
+		List<ChargesDialogHandler> dialogHandlers = Collections.emptyList();
+		public ChargedWeaponBuilder dialogHandlers(ChargesDialogHandler... dialogHandlers) {
+			this.dialogHandlers = Arrays.asList(dialogHandlers);
+			return this;
+		}
+	}
+
 	public final List<Integer> itemIds;
 	public final List<Integer> unchargedIds;
 	public final List<Integer> animationIds;
@@ -661,6 +675,17 @@ public enum ChargedWeapon
 	private final List<ChargesMessage> checkChargesRegexes;
 	private final List<ChargesMessage> updateMessageChargesRegexes;
 	private final List<ChargesDialogHandler> dialogHandlers;
+
+	ChargedWeapon(ChargedWeaponBuilder builder) {
+		this.itemIds = builder.chargedItemIds;
+		this.unchargedIds = builder.unchargedItemIds;
+		this.animationIds = builder.animationIds;
+		this.rechargeAmount = builder.rechargeAmount;
+		this.configKeyName = builder.configKeyName;
+		this.checkChargesRegexes = builder.checkChargesRegexes;
+		this.updateMessageChargesRegexes = builder.updateMessageChargesRegexes;
+		this.dialogHandlers = builder.dialogHandlers;
+	}
 
 	public static ChargedWeapon getChargedWeaponFromId(int itemId)
 	{
