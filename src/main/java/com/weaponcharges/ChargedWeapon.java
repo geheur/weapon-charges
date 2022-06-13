@@ -15,6 +15,7 @@ import net.runelite.client.util.Text;
 @Getter
 public enum ChargedWeapon
 {
+	// many weapons are handled specially in ways not found in this file.
 	/*
 	 * I think my minimum reqs should be: check message >1, periodic update, animation-based reduction, charge, uncharge.
 	 */
@@ -556,6 +557,72 @@ public enum ChargedWeapon
 			ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1)
 		)
 	),
+	/*
+	check:
+2022-06-12 20:17:48 [Client] INFO  com.weaponcharges.Devtools - 939: GAMEMESSAGE "Your crystal bow has 299 charges remaining."
+	update:
+		there may be no message; I didn't see one at 100 charges.
+	 */
+	CRYSTAL_BOW(new ChargedWeaponBuilder() // crystal bow, for ctrl-f
+		.chargedItemIds(ItemID.CRYSTAL_BOW)
+		.animationIds(426)
+		.configKeyName("crystal_bow")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your crystal bow has ([\\d,]+) charges remaining.", 1)
+		)
+	),
+	/*
+	check:
+2022-06-07 12:47:57 [Client] INFO  com.weaponcharges.Devtools - 76: GAMEMESSAGE "Your bow of Faerdhinen has 180 charges remaining."
+	update:
+2022-06-07 18:53:09 [Client] INFO  com.weaponcharges.Devtools - 3353: GAMEMESSAGE "<col=ff0000>Your bow of Faerdhinen has 100 charges remaining.</col>"
+	 */
+	BOW_OF_FAERDHINEN(new ChargedWeaponBuilder() // bofa bowfa, for ctrl-f :)
+		.chargedItemIds(ItemID.BOW_OF_FAERDHINEN)
+		.unchargedItemIds(ItemID.BOW_OF_FAERDHINEN_INACTIVE)
+		.animationIds(426)
+		.configKeyName("bow_of_faerdhinen")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your bow of Faerdhinen has ([\\d,]+) charges remaining.", 1)
+		)
+		.updateMessageChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ff0000>Your bow of Faerdhinen has ([\\d,]+) charges remaining.</col>"), 1)
+		)
+	),
+	/*
+	crystal armor
+	check:
+2022-06-07 12:47:59 [Client] INFO  com.weaponcharges.Devtools - 78: GAMEMESSAGE "Your crystal helm has 1,011 charges remaining."
+2022-06-07 12:47:59 [Client] INFO  com.weaponcharges.Devtools - 79: GAMEMESSAGE "Your crystal body has 996 charges remaining."
+2022-06-07 12:48:00 [Client] INFO  com.weaponcharges.Devtools - 81: GAMEMESSAGE "Your crystal legs has 982 charges remaining."
+	 */
+	CRYSTAL_HELM(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.CRYSTAL_HELM)
+		.unchargedItemIds(ItemID.CRYSTAL_HELM_INACTIVE)
+		.configKeyName("crystal_helm")
+		.settingsConfigKey("crystal_armour")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your crystal helm has ([\\d,]+) charges remaining.", 1)
+		)
+	),
+	CRYSTAL_BODY(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.CRYSTAL_BODY)
+		.unchargedItemIds(ItemID.CRYSTAL_BODY_INACTIVE)
+		.configKeyName("crystal_body")
+		.settingsConfigKey("crystal_armour")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your crystal body has ([\\d,]+) charges remaining.", 1)
+		)
+	),
+	CRYSTAL_LEGS(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.CRYSTAL_LEGS)
+		.unchargedItemIds(ItemID.CRYSTAL_LEGS_INACTIVE)
+		.configKeyName("crystal_legs")
+		.settingsConfigKey("crystal_armour")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your crystal legs has ([\\d,]+) charges remaining.", 1)
+		)
+	),
 	;
 
 	@Getter
@@ -645,6 +712,14 @@ public enum ChargedWeapon
 			this.configKeyName = configKeyName;
 			return this;
 		}
+		String settingsConfigKey;
+		/**
+		 * If set, it is used in place of configKeyName when accessing config for the item (low charges and display when).
+		 */
+		public ChargedWeaponBuilder settingsConfigKey(String settingsConfigKey) {
+			this.settingsConfigKey = settingsConfigKey;
+			return this;
+		}
 		List<ChargesMessage> checkChargesRegexes = Collections.emptyList();
 		public ChargedWeaponBuilder checkChargesRegexes(ChargesMessage... checkChargesRegexes) {
 			this.checkChargesRegexes = Arrays.asList(checkChargesRegexes);
@@ -667,6 +742,7 @@ public enum ChargedWeapon
 	public final List<Integer> animationIds;
 	public final Integer rechargeAmount;
 	public final String configKeyName;
+	public final String settingsConfigKey;
 	// check messages are those produced by menu actions like "Check". update messages are those produced by the weapon
 	// being used (e.g. those that notify you it's empty, or has 100 charges left, etc.).
 	// These must be kept separate because the check messages [seem to always] have the charges of the weapon before
@@ -682,6 +758,7 @@ public enum ChargedWeapon
 		this.animationIds = builder.animationIds;
 		this.rechargeAmount = builder.rechargeAmount;
 		this.configKeyName = builder.configKeyName;
+		this.settingsConfigKey = builder.settingsConfigKey == null ? builder.configKeyName : builder.settingsConfigKey;
 		this.checkChargesRegexes = builder.checkChargesRegexes;
 		this.updateMessageChargesRegexes = builder.updateMessageChargesRegexes;
 		this.dialogHandlers = builder.dialogHandlers;
@@ -704,12 +781,12 @@ public enum ChargedWeapon
 	public static final String LOW_CHARGE_CONFIG_KEY_SUFFIX = "_low_charge_threshold";
 
 	public DisplayWhen getDisplayWhen(WeaponChargesConfig config) {
-		return invokeMethodWithConfigKey(configKeyName + DISPLAY_CONFIG_KEY_SUFFIX, config);
+		return invokeMethodWithConfigKey(settingsConfigKey + DISPLAY_CONFIG_KEY_SUFFIX, config);
 	}
 
 	public int getLowCharge(WeaponChargesConfig config)
 	{
-		return invokeMethodWithConfigKey(configKeyName + LOW_CHARGE_CONFIG_KEY_SUFFIX, config);
+		return invokeMethodWithConfigKey(settingsConfigKey + LOW_CHARGE_CONFIG_KEY_SUFFIX, config);
 	}
 
 	private <T> T invokeMethodWithConfigKey(String key, WeaponChargesConfig config)

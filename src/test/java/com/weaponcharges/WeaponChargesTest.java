@@ -153,6 +153,10 @@ public class WeaponChargesTest
 		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SWAMP_E);
 
 		checkCrystalHalberd();
+		checkCrystalBow();
+		checkBowOfFaerdhinen();
+		checkCrystalArmour();
+
 
 		checkAbyssalTentacle();
 
@@ -168,6 +172,31 @@ public class WeaponChargesTest
 		checkArclight();
 		
 		checkBlowpipe();
+	}
+
+	private void checkCrystalArmour()
+	{
+//		2022-06-07 12:47:59 [Client] INFO  com.weaponcharges.Devtools - 78: GAMEMESSAGE "Your crystal helm has 1,011 charges remaining."
+//		2022-06-07 12:47:59 [Client] INFO  com.weaponcharges.Devtools - 79: GAMEMESSAGE "Your crystal body has 996 charges remaining."
+//		2022-06-07 12:48:00 [Client] INFO  com.weaponcharges.Devtools - 81: GAMEMESSAGE "Your crystal legs has 982 charges remaining."
+		checkWeaponMessage(ChargedWeapon.CRYSTAL_HELM, "Your crystal helm has 1,011 charges remaining.", 1011);
+		checkWeaponMessage(ChargedWeapon.CRYSTAL_BODY, "Your crystal body has 996 charges remaining.", 996);
+		checkWeaponMessage(ChargedWeapon.CRYSTAL_LEGS, "Your crystal legs has 982 charges remaining.", 982);
+
+	}
+
+	private void checkBowOfFaerdhinen()
+	{
+//		2022-06-07 12:47:57 [Client] INFO  com.weaponcharges.Devtools - 76: GAMEMESSAGE "Your bow of Faerdhinen has 180 charges remaining."
+		checkWeaponMessage(ChargedWeapon.BOW_OF_FAERDHINEN, "Your bow of Faerdhinen has 180 charges remaining.", 180);
+//		2022-06-07 18:53:09 [Client] INFO  com.weaponcharges.Devtools - 3353: GAMEMESSAGE "<col=ff0000>Your bow of Faerdhinen has 100 charges remaining.</col>"
+		equippedWeaponPeriodicUpdate(ChargedWeapon.BOW_OF_FAERDHINEN, "<col=ff0000>Your bow of Faerdhinen has 100 charges remaining.</col>", 100);
+	}
+
+	private void checkCrystalBow()
+	{
+//		2022-06-12 20:17:48 [Client] INFO  com.weaponcharges.Devtools - 939: GAMEMESSAGE "Your crystal bow has 299 charges remaining."
+		checkWeaponMessage(ChargedWeapon.CRYSTAL_BOW, "Your crystal bow has 299 charges remaining.", 299);
 	}
 
 	private void checkTridentCheckMessages()

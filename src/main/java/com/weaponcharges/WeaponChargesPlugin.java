@@ -39,6 +39,7 @@ import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
+import net.runelite.api.Hitsplat;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
@@ -51,6 +52,7 @@ import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.VarbitChanged;
@@ -210,6 +212,17 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	{
 		if (devtools == null) devtools = new Devtools(this);
 		eventBus.register(devtools);
+	}
+
+	@Subscribe
+	public void onHitsplatApplied(HitsplatApplied e) {
+		if (e.getActor() != client.getLocalPlayer() || e.getHitsplat().getHitsplatType() != Hitsplat.HitsplatType.DAMAGE_ME) return;
+		ChargedWeapon crystalHelm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
+		if (crystalHelm != null) addCharges(crystalHelm, -1, false);
+		ChargedWeapon crystalBody = getEquippedChargedWeapon(EquipmentInventorySlot.BODY);
+		if (crystalBody != null) addCharges(crystalBody, -1, false);
+		ChargedWeapon crystalLegs = getEquippedChargedWeapon(EquipmentInventorySlot.LEGS);
+		if (crystalLegs != null) addCharges(crystalLegs, -1, false);
 	}
 
 	private void disableDevMode()
