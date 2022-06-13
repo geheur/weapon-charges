@@ -625,6 +625,8 @@ public enum ChargedWeapon
 	),
 	;
 
+	public static final List<ChargedWeapon> CRYSTAL_SHARD_RECHARGABLE_ITEMS = Arrays.asList(CRYSTAL_BOW, CRYSTAL_HELM, CRYSTAL_BODY, CRYSTAL_LEGS, BOW_OF_FAERDHINEN, CRYSTAL_HALBERD);
+
 	@Getter
 	private static final List<ChargesMessage> nonUniqueCheckChargesRegexes = Arrays.asList(
 		// ether weapons
@@ -683,6 +685,12 @@ public enum ChargedWeapon
 			(matchers, dialogState, optionSelected, plugin) -> {
 				plugin.setCharges(plugin.lastUnchargeClickedWeapon, 0);
 			}
+		),
+		// Crystal shard recharging.
+//		2022-06-13 09:38:09 [Client] INFO  com.weaponcharges.Devtools - 25: dialog state changed: DialogState{INPUT, title='How many shards do you wish to add? (0 - 5)', input=''}
+		new ChargesDialogHandler(
+			DialogStateMatcher.inputOptionSelected(Pattern.compile("How many shards do you wish to add\\? \\(0 - ([\\d,]+)\\)"), null),
+			ChargesDialogHandler.genericInputChargeMessage(100)
 		)
 	);
 

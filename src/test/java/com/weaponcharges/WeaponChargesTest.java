@@ -156,7 +156,7 @@ public class WeaponChargesTest
 		checkCrystalBow();
 		checkBowOfFaerdhinen();
 		checkCrystalArmour();
-
+		checkCrystalShardRecharging();
 
 		checkAbyssalTentacle();
 
@@ -172,6 +172,18 @@ public class WeaponChargesTest
 		checkArclight();
 		
 		checkBlowpipe();
+	}
+
+	private void checkCrystalShardRecharging()
+	{
+//		2022-06-13 09:38:09 [Client] INFO  com.weaponcharges.Devtools - 25: dialog state changed: DialogState{INPUT, title='How many shards do you wish to add? (0 - 5)', input=''}
+		inputDialog(ChargedWeapon.CRYSTAL_BOW, "How many shards do you wish to add? (0 - 5)", "2", 100, 300);
+		inputDialog(ChargedWeapon.CRYSTAL_BOW, "How many shards do you wish to add? (0 - 5)", "12", 100, 600);
+		inputDialog(ChargedWeapon.BOW_OF_FAERDHINEN, "How many shards do you wish to add? (0 - 5)", "2", 100, 300);
+		inputDialog(ChargedWeapon.CRYSTAL_HELM, "How many shards do you wish to add? (0 - 5)", "2", 100, 300);
+		inputDialog(ChargedWeapon.CRYSTAL_BODY, "How many shards do you wish to add? (0 - 5)", "2", 100, 300);
+		inputDialog(ChargedWeapon.CRYSTAL_LEGS, "How many shards do you wish to add? (0 - 5)", "2", 100, 300);
+		inputDialog(ChargedWeapon.CRYSTAL_HALBERD, "How many shards do you wish to add? (0 - 5)", "2", 100, 300);
 	}
 
 	private void checkCrystalArmour()
@@ -434,7 +446,7 @@ public class WeaponChargesTest
 
 	private void inputDialog(ChargedWeapon chargedWeapon, String title, String input, int initialCharges, int charges)
 	{
-		if (initialCharges == 0) throw new RuntimeException();
+		if (initialCharges == 0) throw new RuntimeException("if initialCharges is 0 you can't differentiate between a set and an add.");
 		plugin.lastUsedOnWeapon = chargedWeapon;
 		plugin.setCharges(chargedWeapon, initialCharges);
 		plugin.optionSelected(DialogTracker.DialogState.input(title, input), input);

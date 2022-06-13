@@ -286,21 +286,32 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 		if (event.getMenuAction() == MenuAction.WIDGET_TARGET_ON_WIDGET) {
 			ItemContainer itemContainer = client.getItemContainer(InventoryID.INVENTORY);
-			int itemUsed = itemContainer.getItem(client.getSelectedWidget().getIndex()).getId();
-			int itemUsedOn = itemContainer.getItem(event.getWidget().getIndex()).getId();
-			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsed);
+			Item itemUsed = itemContainer.getItem(client.getSelectedWidget().getIndex());
+			int itemUsedId = itemUsed.getId();
+			Item itemUsedOn = itemContainer.getItem(event.getWidget().getIndex());
+			int itemUsedOnId = itemUsedOn.getId();
+			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedId);
 			if (lastUsedOnWeapon == null)
 			{
-				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedOn);
+				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedOnId);
 				if (lastUsedOnWeapon != null)
 				{
-					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsed, lastUsedOnWeapon);
+					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsedId, lastUsedOnWeapon);
+					checkSingleCrystalShardUse(itemUsed, itemUsedId);
 				} else {
-					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsed, itemUsedOn);
+					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsedId, itemUsedOnId);
 				}
 			} else {
-				if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastUsedOnWeapon, itemUsedOn);
+				if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastUsedOnWeapon, itemUsedOnId);
+				checkSingleCrystalShardUse(itemUsedOn, itemUsedOnId);
 			}
+		}
+	}
+
+	private void checkSingleCrystalShardUse(Item itemUsed, int itemUsedId)
+	{
+		if (itemUsedId == ItemID.CRYSTAL_SHARD && itemUsed.getQuantity() == 1 && ChargedWeapon.CRYSTAL_SHARD_RECHARGABLE_ITEMS.contains(lastUsedOnWeapon)) {
+			checkSingleCrystalShardUse = client.getTickCount();
 		}
 	}
 
@@ -313,6 +324,10 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		if (checkBlowpipeUnload == client.getTickCount() || checkBlowpipeUnload + 1 == client.getTickCount()) {
 			setDartsLeft(0);
 			setDartType(DartType.UNKNOWN);
+		}
+
+		if (checkSingleCrystalShardUse == client.getTickCount() || checkSingleCrystalShardUse + 1 == client.getTickCount()) {
+			addCharges(lastUsedOnWeapon, 100, false);
 		}
 	}
 
@@ -529,6 +544,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	private boolean checkTomeOfFire = false;
 	private boolean checkTomeOfWater = false;
 	private int checkBlowpipeUnload = -100;
+	private int checkSingleCrystalShardUse = -100;
 
 	@Subscribe
 	public void onClientTick(ClientTick clientTick)
