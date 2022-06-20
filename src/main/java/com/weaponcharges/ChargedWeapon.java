@@ -623,6 +623,52 @@ public enum ChargedWeapon
 			ChargesMessage.matcherGroupChargeMessage("Your crystal legs has ([\\d,]+) charges remaining.", 1)
 		)
 	),
+	/* Serpentine Helmet:
+    notes:
+        Number = ([\\d,]+)
+        Percent = \\(\\d+[.]?\\d%\\)
+
+    check (full, <full & >1, 1, 0/empty):
+        full: 2022-06-20 15:31:21 [Client] INFO  com.weaponcharges.Devtools - 562: GAMEMESSAGE "Scales: <col=007f00>11,000 (100.0%)</col>"
+        >1: 2022-06-20 15:32:14 [Client] INFO  com.weaponcharges.Devtools - 650: GAMEMESSAGE "Scales: <col=007f00>5 (0.1%)</col>"
+        1: 2022-06-20 15:33:02 [Client] INFO  com.weaponcharges.Devtools - 730: GAMEMESSAGE "Scales: <col=007f00>1 (0.1%)</col>"
+        empty: None
+
+    periodic updates (periodic, empty):
+        periodic: TODO
+        empty: TODO
+        attacking when empty: TODO
+
+    adding (adding by using items on the weapon, adding via right-click option, any other methods):
+        using items: 2022-06-20 15:40:12 [Client] INFO  com.weaponcharges.Devtools - 1438: GAMEMESSAGE "Scales: <col=007f00>5 (0.1%)</col>"
+        right-click options: None
+        other: None
+
+    removing (regular removal methods, dropping):
+        regular: None
+        dropping: None
+
+    message overlap:
+        TODO
+	*/
+	SERPENTINE_HELM(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.SERPENTINE_HELM)
+		.unchargedItemIds(ItemID.SERPENTINE_HELM_UNCHARGED)
+		.rechargeAmount(11_000)
+		.configKeyName("serpentine_helm")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Scales: <col=007f00>([\\d,]+) (\\(\\d+[.]?\\d%\\))</col>", 1)
+		)
+		.updateMessageChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("Scales: <col=007f00>([\\d,]+) (\\(\\d+[.]?\\d%\\))</col>"), 1)
+		)
+		.dialogHandlers(
+			new ChargesDialogHandler(
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("How many scales would you like to use? (0 - ([\\d,]+))"), null),
+				ChargesDialogHandler.genericInputChargeMessage()
+			)
+		)
+	),
 	;
 
 	public static final List<ChargedWeapon> CRYSTAL_SHARD_RECHARGABLE_ITEMS = Arrays.asList(CRYSTAL_BOW, CRYSTAL_HELM, CRYSTAL_BODY, CRYSTAL_LEGS, BOW_OF_FAERDHINEN, CRYSTAL_HALBERD);
