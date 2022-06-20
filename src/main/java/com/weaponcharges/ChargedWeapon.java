@@ -652,8 +652,8 @@ public enum ChargedWeapon
         TODO
 	*/
 	SERPENTINE_HELM(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.SERPENTINE_HELM)
-		.unchargedItemIds(ItemID.SERPENTINE_HELM_UNCHARGED)
+		.chargedItemIds(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM)
+		.unchargedItemIds(ItemID.SERPENTINE_HELM_UNCHARGED, ItemID.TANZANITE_HELM_UNCHARGED, ItemID.MAGMA_HELM_UNCHARGED)
 		.rechargeAmount(11_000)
 		.configKeyName("serpentine_helm")
 		.checkChargesRegexes(
