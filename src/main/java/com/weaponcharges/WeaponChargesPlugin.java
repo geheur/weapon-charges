@@ -214,9 +214,31 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		eventBus.register(devtools);
 	}
 
+	private int lastAttackTick = 0;
+	private int serpCombatBegan = 0;
+
 	@Subscribe
 	public void onHitsplatApplied(HitsplatApplied e) {
-		if (e.getActor() != client.getLocalPlayer() || e.getHitsplat().getHitsplatType() != Hitsplat.HitsplatType.DAMAGE_ME) return;
+		// Easily Identify the Hit Type
+		Hitsplat.HitsplatType hitType = e.getHitsplat().getHitsplatType()
+		// Serpentine Helmet Logic
+		ChargedWeapon serpHelm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
+		if (hitType != Hitsplat.HitsplatType.VENOM || hitType != Hitsplat.HitsplatType.POISON || hitType != Hitsplat.HitsplatType.HEAL || hitType != Hitsplat.HitsplatType.DISEASE)  {
+			if (serpCombatBegan == 0) serpCombatBegan = client.getTickCount()
+			lastAttackTick = client.getTickCount()
+			if (lastAttackTick - serpCombatBegan >= 90 && lastAttackTick - serpCombatBegan <= 100) {
+				if (serpHelm != null) addCharges(serpHelm, -10, false)
+				serpCombatBegan = 0;
+				lastAttackTick = 0;
+			}
+			if (lastAttackTick - serpCombatBegan >= 101) {
+				// Assume we finished combat previously before 0 ticks
+				serpCombatBegan = client.getTickCount()
+				lastAttackTick = client.getTickCount()
+			}
+		}
+		// Crystal Armor Logic
+		if (e.getActor() != client.getLocalPlayer() || hitType != Hitsplat.HitsplatType.DAMAGE_ME || hitType != Hitsplat.HitsplatType.HEAL) return;
 		ChargedWeapon crystalHelm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
 		if (crystalHelm != null) addCharges(crystalHelm, -1, false);
 		ChargedWeapon crystalBody = getEquippedChargedWeapon(EquipmentInventorySlot.BODY);
