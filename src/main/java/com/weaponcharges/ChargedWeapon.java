@@ -659,9 +659,6 @@ public enum ChargedWeapon
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Scales: <col=007f00>([\\d,]+) (\\(\\d+[.]?\\d%\\))</col>", 1)
 		)
-		.updateMessageChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("Scales: <col=007f00>([\\d,]+) (\\(\\d+[.]?\\d%\\))</col>"), 1)
-		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
 				DialogStateMatcher.optionsOptionSelected(Pattern.compile("How many scales would you like to use? (0 - ([\\d,]+))"), null),
