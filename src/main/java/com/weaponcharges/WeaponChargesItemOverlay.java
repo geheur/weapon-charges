@@ -121,12 +121,14 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 
 		if (itemId == ItemID.SERPENTINE_HELM || itemId == ItemID.TANZANITE_HELM || itemId == ItemID.MAGMA_HELM) {
 			DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(config.serpentine_helm_Display(), config.defaultDisplay());
+			Integer charges = null;
+			ChargedWeapon chargedWeapon = ChargedWeapon.SERPENTINE_HELM;
+			charges = plugin.getCharges(chargedWeapon);
 			if (charges == null)
 			{
 				bottomText.setText("??.?%");
 			} else {
 				if (displayWhen == DisplayWhen.NEVER && !plugin.isShowChargesKeyIsDown()) return;
-				if (!plugin.isShowChargesKeyIsDown()) return;
 				float scalesLeftPercent = charges / chargedWeapon.rechargeAmount;
 				bottomText.setText(String.format("%d%%", (int) (scalesLeftPercent * 100)));
 				if (String.format("%d%%", (int) (scalesLeftPercent * 100)).equals(String.format("%d%%", 0)) && charges > 0) {
