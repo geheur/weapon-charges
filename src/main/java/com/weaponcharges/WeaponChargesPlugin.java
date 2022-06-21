@@ -224,7 +224,10 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		// Serpentine Helmet Logic
 		ChargedWeapon serpHelm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
 		if (hitType != Hitsplat.HitsplatType.VENOM || hitType != Hitsplat.HitsplatType.POISON || hitType != Hitsplat.HitsplatType.HEAL || hitType != Hitsplat.HitsplatType.DISEASE)  {
-			if (serpCombatBegan == 0) serpCombatBegan = client.getTickCount()
+			if (serpCombatBegan == 0) {
+				serpCombatBegan = client.getTickCount()
+				addCharges(serpHelm, -10, false)
+			}
 			lastAttackTick = client.getTickCount()
 			if (lastAttackTick - serpCombatBegan >= 90 && lastAttackTick - serpCombatBegan <= 100) {
 				if (serpHelm != null) addCharges(serpHelm, -10, false)
@@ -233,6 +236,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			}
 			if (lastAttackTick - serpCombatBegan >= 101) {
 				// Assume we finished combat previously before 0 ticks
+				addCharges(serpHelm, -10, false)
 				serpCombatBegan = client.getTickCount()
 				lastAttackTick = client.getTickCount()
 			}
