@@ -666,7 +666,7 @@ public enum ChargedWeapon
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("How many scales would you like to use? (0 - ([\\d,]+))"), null),
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many scales would you like to use? (0 - ([\\d,]+))"), null),
 				ChargesDialogHandler.genericInputChargeMessage()
 			)
 		)
