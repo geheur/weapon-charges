@@ -636,7 +636,7 @@ public enum ChargedWeapon
 
     periodic updates (periodic, empty):
         periodic: TODO
-        empty: TODO
+        empty: 2022-06-20 18:19:29 [Client] INFO  com.weaponcharges.Devtools - 8380: GAMEMESSAGE "Your serpentine helm has run out of Zulrah's scales."
         attacking when empty: TODO
 
     adding (adding by using items on the weapon, adding via right-click option, any other methods):
@@ -658,6 +658,11 @@ public enum ChargedWeapon
 		.configKeyName("serpentine_helm")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Scales: <col=007f00>([\\d,]+) (\\(\\d+[.]?\\d%\\))</col>", 1)
+		)
+		.updateMessageChargesRegexes(
+			ChargesMessage.staticChargeMessage("Your serpentine helm has run out of Zulrah's scales.", 0),
+			ChargesMessage.staticChargeMessage("Your tanzanite helm has run out of Zulrah's scales.", 0),
+			ChargesMessage.staticChargeMessage("Your magma helm has run out of Zulrah's scales.", 0)
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
