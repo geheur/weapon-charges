@@ -108,7 +108,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				if (scalesLeft == null) {
 					topText.setText("??.?%");
 				} else {
-					float scalesLeftPercent = scalesLeft / WeaponChargesPlugin.MAX_SCALES_SERP;
+					float scalesLeftPercent = scalesLeft / WeaponChargesPlugin.MAX_SCALES;
 					topText.setText(String.format("%d%%", (int) (scalesLeftPercent * 100)));
 					if (String.format("%d%%", (int) (scalesLeftPercent * 100)).equals(String.format("%d%%", 0)) && scalesLeft > 0) {
 						topText.setText("1%");
@@ -119,7 +119,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 			found = true;
 		}
 
-		if (itemId == ItemID.SERPENTINE_HELM || itemId == ItemID.TANZANITE_HELM || itemID == ItemID.MAGMA_HELM) {
+		if (itemId == ItemID.SERPENTINE_HELM || itemId == ItemID.TANZANITE_HELM || itemId == ItemID.MAGMA_HELM) {
 			DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(config.serpentine_helm_Display(), config.defaultDisplay());
 			if (charges == null)
 			{
