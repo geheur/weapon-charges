@@ -214,8 +214,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		eventBus.register(devtools);
 	}
 
-	private int lastAttackTick = 0;
-	private int serpCombatBegan = 0;
+	private int lastDegradedHitsplatTick = -1000;
 
 	@Subscribe
 	public void onHitsplatApplied(HitsplatApplied e) {
