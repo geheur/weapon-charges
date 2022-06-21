@@ -1,11 +1,14 @@
 package com.weaponcharges;
 
 import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
+import com.weaponcharges.WeaponChargesConfig.SerpModes;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhenNoDefault;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import javax.inject.Inject;
 import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetID;
