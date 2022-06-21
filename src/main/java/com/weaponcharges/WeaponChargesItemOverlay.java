@@ -129,15 +129,29 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				bottomText.setText("??.?%");
 			} else {
 				if (displayWhen == DisplayWhen.NEVER && !plugin.isShowChargesKeyIsDown()) return;
-				if (config.serpentine_helm_DisplayMode() == SerpModes.SCALES || config.serpentine_helm_DisplayMode() == SerpModes.BOTH) {
+				NumberFormat df = new DecimalFormat("##0.0");
+				if (config.serpentine_helm_DisplayMode() == SerpModes.SCALES) {
 					topText.setText(charges.toString());
-				}
-				if (config.serpentine_helm_DisplayMode() == SerpModes.PERCENT || config.serpentine_helm_DisplayMode() == SerpModes.BOTH) {
-					float scalesLeftPercent = charges / chargedWeapon.rechargeAmount;
-					bottomText.setText(String.format("%d%%", (int) (scalesLeftPercent * 100)));
-					if (String.format("%d%%", (int) (scalesLeftPercent * 100)).equals(String.format("%d%%", 0)) && charges > 0) {
-						bottomText.setText("1%");
+				} else if (config.serpentine_helm_DisplayMode() == SerpModes.PERCENT) {
+					float scalesLeftPercent = (float) charges / chargedWeapon.rechargeAmount;
+					df.setRoundingMode(RoundingMode.DOWN);
+					//bottomText.setText(String.format("%.1f", (float) (scalesLeftPercent * 100)));
+					topText.setText(df.format((scalesLeftPercent * 100)) + "%");
+					if (df.format((scalesLeftPercent * 100)).equals(df.format(0.0)) && charges > 0) {
+						topText.setText("1.0%");
 					}
+					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(config);
+				} else if (config.serpentine_helm_DisplayMode() == SerpModes.BOTH) {
+					topText.setText(charges.toString());
+					float scalesLeftPercentSH = (float) charges / chargedWeapon.rechargeAmount;
+					df.setRoundingMode(RoundingMode.DOWN);
+					//bottomText.setText(String.format("%.1f", (float) (scalesLeftPercent * 100)));
+					bottomText.setText(df.format((scalesLeftPercentSH * 100)) + "%");
+					if (df.format((scalesLeftPercentSH * 100)).equals(df.format(0.0)) && charges > 0) {
+						bottomText.setText("1.0%");
+					}
+					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(config);
+					if (isLowCharge) bottomText.setColor(config.chargesTextLowColor());
 				}
 			}
 			found = true;
