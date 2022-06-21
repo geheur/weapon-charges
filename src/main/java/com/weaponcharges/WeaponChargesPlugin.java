@@ -216,7 +216,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	private int lastAttackTick = 0;
 	private int serpCombatBegan = 0;
-	private int MAX_SCALES_SERP = 11000
 
 	@Subscribe
 	public void onHitsplatApplied(HitsplatApplied e) {

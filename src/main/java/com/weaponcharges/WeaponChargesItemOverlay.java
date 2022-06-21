@@ -108,7 +108,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				if (scalesLeft == null) {
 					topText.setText("??.?%");
 				} else {
-					float scalesLeftPercent = scalesLeft / WeaponChargesPlugin.MAX_SCALES;
+					float scalesLeftPercent = scalesLeft / chargedWeapon.rechargeAmount;
 					topText.setText(String.format("%d%%", (int) (scalesLeftPercent * 100)));
 					if (String.format("%d%%", (int) (scalesLeftPercent * 100)).equals(String.format("%d%%", 0)) && scalesLeft > 0) {
 						topText.setText("1%");
