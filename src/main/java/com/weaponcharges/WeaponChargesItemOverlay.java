@@ -119,6 +119,23 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 			found = true;
 		}
 
+		if (itemId == ItemID.SERPENTINE_HELM || itemId == ItemID.TANZANITE_HELM || itemID == ItemID.MAGMA_HELM) {
+			DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(config.serpentine_helm_Display(), config.defaultDisplay());
+			if (charges == null)
+			{
+				bottomText.setText("??.?%");
+			} else {
+				if (displayWhen == DisplayWhen.NEVER && !plugin.isShowChargesKeyIsDown()) return;
+				if (!plugin.isShowChargesKeyIsDown()) return;
+				float scalesLeftPercent = charges / WeaponChargesPlugin.MAX_SCALES_SERP;
+				bottomText.setText(String.format("%d%%", (int) (scalesLeftPercent * 100)));
+				if (String.format("%d%%", (int) (scalesLeftPercent * 100)).equals(String.format("%d%%", 0)) && charges > 0) {
+					bottomText.setText("1%");
+				}
+			}
+			found = true;
+		}
+
 		if (found) {
 			topText.render(graphics);
 			bottomText.render(graphics);
