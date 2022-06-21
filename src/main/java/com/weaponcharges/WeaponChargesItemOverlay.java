@@ -129,10 +129,15 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				bottomText.setText("??.?%");
 			} else {
 				if (displayWhen == DisplayWhen.NEVER && !plugin.isShowChargesKeyIsDown()) return;
-				float scalesLeftPercent = charges / chargedWeapon.rechargeAmount;
-				bottomText.setText(String.format("%d%%", (int) (scalesLeftPercent * 100)));
-				if (String.format("%d%%", (int) (scalesLeftPercent * 100)).equals(String.format("%d%%", 0)) && charges > 0) {
-					bottomText.setText("1%");
+				if (config.serpentine_helm_DisplayMode() == SerpModes.SCALES || config.serpentine_helm_DisplayMode() == SerpModes.BOTH) {
+					topText.setText(charges.toString());
+				}
+				if (config.serpentine_helm_DisplayMode() == SerpModes.PERCENT || config.serpentine_helm_DisplayMode() == SerpModes.BOTH) {
+					float scalesLeftPercent = charges / chargedWeapon.rechargeAmount;
+					bottomText.setText(String.format("%d%%", (int) (scalesLeftPercent * 100)));
+					if (String.format("%d%%", (int) (scalesLeftPercent * 100)).equals(String.format("%d%%", 0)) && charges > 0) {
+						bottomText.setText("1%");
+					}
 				}
 			}
 			found = true;

@@ -94,6 +94,12 @@ public interface WeaponChargesConfig extends Config
 		NEVER,
 	}
 
+	enum SerpModes {
+		SCALES,
+		PERCENT,
+		BOTH,
+	}
+
 	@ConfigSection(
 		name = "Weapon Specific Config",
 		description = "Specify display and low charge threshold values for specific weapons.",
@@ -571,12 +577,26 @@ public interface WeaponChargesConfig extends Config
 		return WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
 	}
 
+	// Added after auto-generation
+	@ConfigItem(
+			keyName = "serpentine_helm_display_mode",
+			name = "Serp display mode",
+			description = "How the Serpentine helm should show the charge counter.",
+			section = WEAPON_SPECIFIC_SETTING,
+			position = 37
+	)
+	default WeaponChargesConfig.SerpModes serpentine_helm_DisplayMode()
+	{
+		return WeaponChargesConfig.SerpModes.PERCENT;
+	}
+	// End Addition
+
 	@ConfigItem(
 		keyName = "serpentine_helm_low_charge_threshold",
 		name = "Low (Serpentine helm)",
 		description = "Number of charges considered \"low\".",
 		section = WEAPON_SPECIFIC_SETTING,
-		position = 37
+		position = 38
 	)
 	default int serpentine_helm_LowChargeThreshold()
 	{
