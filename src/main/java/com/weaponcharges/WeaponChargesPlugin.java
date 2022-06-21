@@ -232,7 +232,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			}
 		}
 		// Crystal Armor Logic
-		if (e.getActor() != client.getLocalPlayer() || hitType != Hitsplat.HitsplatType.DAMAGE_ME || hitType != Hitsplat.HitsplatType.HEAL) return;
+		if (e.getActor() != client.getLocalPlayer() || e.getHitsplat().getHitsplatType() != Hitsplat.HitsplatType.DAMAGE_ME) return;
 		ChargedWeapon crystalHelm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
 		if (crystalHelm != null) addCharges(crystalHelm, -1, false);
 		ChargedWeapon crystalBody = getEquippedChargedWeapon(EquipmentInventorySlot.BODY);
