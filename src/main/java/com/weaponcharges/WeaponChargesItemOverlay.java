@@ -122,7 +122,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 			found = true;
 		}
 
-		if (itemId == ItemID.SERPENTINE_HELM || itemId == ItemID.TANZANITE_HELM || itemId == ItemID.MAGMA_HELM) {
+		if (ChargedWeapon.SERPENTINE_HELM.itemIds.contains(itemId)) {
 			DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(config.serpentine_helm_Display(), config.defaultDisplay());
 			Integer charges = null;
 			ChargedWeapon chargedWeapon = ChargedWeapon.SERPENTINE_HELM;
