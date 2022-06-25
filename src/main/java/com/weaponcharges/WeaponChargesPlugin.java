@@ -214,15 +214,35 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		eventBus.register(devtools);
 	}
 
+	private int lastDegradedHitsplatTick = -1000;
+
 	@Subscribe
 	public void onHitsplatApplied(HitsplatApplied e) {
-		if (e.getActor() != client.getLocalPlayer() || e.getHitsplat().getHitsplatType() != Hitsplat.HitsplatType.DAMAGE_ME) return;
-		ChargedWeapon crystalHelm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
-		if (crystalHelm != null) addCharges(crystalHelm, -1, false);
-		ChargedWeapon crystalBody = getEquippedChargedWeapon(EquipmentInventorySlot.BODY);
-		if (crystalBody != null) addCharges(crystalBody, -1, false);
-		ChargedWeapon crystalLegs = getEquippedChargedWeapon(EquipmentInventorySlot.LEGS);
-		if (crystalLegs != null) addCharges(crystalLegs, -1, false);
+		Hitsplat.HitsplatType hitType = e.getHitsplat().getHitsplatType();
+		ChargedWeapon helm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
+		if (helm == ChargedWeapon.SERPENTINE_HELM) {
+			if (hitType == Hitsplat.HitsplatType.DAMAGE_ME || hitType == Hitsplat.HitsplatType.BLOCK_ME) {
+				if (client.getTickCount() - lastDegradedHitsplatTick >= 90) {
+					addCharges(helm, -10, false);
+					lastDegradedHitsplatTick = client.getTickCount();
+					if (config.devMode())
+						client.addChatMessage(ChatMessageType.FRIENDSCHAT, "WeaponCharges", "Serpentine Helmet has Degraded!", "DEVMODE");
+				}
+			}
+		}
+		ChargedWeapon body = getEquippedChargedWeapon(EquipmentInventorySlot.BODY);
+		ChargedWeapon legs = getEquippedChargedWeapon(EquipmentInventorySlot.LEGS);
+		if (e.getActor() == client.getLocalPlayer() && hitType == Hitsplat.HitsplatType.DAMAGE_ME) {
+			if (helm == ChargedWeapon.CRYSTAL_HELM) {
+				addCharges(helm, -1, false);
+			}
+			if (body == ChargedWeapon.CRYSTAL_BODY) {
+				addCharges(body, -1, false);
+			}
+			if (legs == ChargedWeapon.CRYSTAL_LEGS) {
+				addCharges(legs, -1, false);
+			}
+		}
 	}
 
 	private void disableDevMode()
