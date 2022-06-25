@@ -662,7 +662,7 @@ public enum ChargedWeapon
 		.rechargeAmount(11_000)
 		.configKeyName("serpentine_helm")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("Scales: <col=007f00>([\\d,]+) (\\(\\d+[.]?\\d%\\))</col>"), 1)
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("^Scales: <col=007f00>([\\d,]+) (\\(\\d+[.]?\\d%\\))</col>$"), 1)
 		)
 		.updateMessageChargesRegexes(
 			ChargesMessage.staticChargeMessage("Your serpentine helm has run out of Zulrah's scales.", 0),
