@@ -1,11 +1,14 @@
 package com.weaponcharges;
 
 import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
+import com.weaponcharges.WeaponChargesConfig.SerpModes;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhenNoDefault;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import javax.inject.Inject;
 import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetID;
@@ -66,7 +69,11 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(config);
 					if (!isLowCharge && displayWhen == DisplayWhen.LOW_CHARGE && !plugin.isShowChargesKeyIsDown()) break;
 
-					topText.setText(String.valueOf(charges));
+					if (chargedWeapon == ChargedWeapon.SERPENTINE_HELM && charges == 0) {
+						topText.setText("Empty");
+					} else {
+						topText.setText(String.valueOf(charges));
+					}
 					if (isLowCharge) topText.setColor(config.chargesTextLowColor());
 				}
 				break;
@@ -114,6 +121,39 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 						topText.setText("1%");
 					}
 					if (blowpipeChargesLow(scalesLeft, dartsLeft1)) topText.setColor(config.chargesTextLowColor());
+				}
+			}
+			found = true;
+		}
+
+		if (ChargedWeapon.SERPENTINE_HELM.getItemIds().contains(itemId)) {
+			DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(config.serpentine_helm_Display(), config.defaultDisplay());
+			Integer charges = null;
+			ChargedWeapon chargedWeapon = ChargedWeapon.SERPENTINE_HELM;
+			charges = plugin.getCharges(chargedWeapon);
+			if (charges == null)
+			{
+				topText.setText("??.?%");
+			} else {
+				if (displayWhen == DisplayWhen.NEVER && !plugin.isShowChargesKeyIsDown()) return;
+				NumberFormat df = new DecimalFormat("##0.0");
+				float scalesLeftPercent = (float) charges / chargedWeapon.rechargeAmount;
+				df.setRoundingMode(RoundingMode.DOWN);
+				if (config.serpentine_helm_DisplayStyle() == SerpModes.SCALES) {
+					topText.setText(charges.toString());
+				} else if (config.serpentine_helm_DisplayStyle() == SerpModes.PERCENT) {
+					topText.setText(df.format((scalesLeftPercent * 100)) + "%");
+					if (df.format((scalesLeftPercent * 100)).equals(df.format(0.0)) && charges > 0) {
+						topText.setText("1.0%");
+					}
+				} else if (config.serpentine_helm_DisplayStyle() == SerpModes.BOTH) {
+					topText.setText(charges.toString());
+					bottomText.setText(df.format((scalesLeftPercent * 100)) + "%");
+					if (df.format((scalesLeftPercent * 100)).equals(df.format(0.0)) && charges > 0) {
+						bottomText.setText("1.0%");
+					}
+					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(config);
+					if (isLowCharge) bottomText.setColor(config.chargesTextLowColor());
 				}
 			}
 			found = true;
