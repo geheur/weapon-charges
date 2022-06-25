@@ -624,7 +624,12 @@ public enum ChargedWeapon
 		)
 	),
 	/* Serpentine Helmet:
+	degradation mechanics:
+		-10 Scales on Combat Beginning
+		-10 Scales if Combat Still Going in 90 ticks
+
     notes:
+		Shared 90-Tick Degradation Timer with Barrows gear
         Number = ([\\d,]+)
         Percent = \\(\\d+[.]?\\d%\\)
 
