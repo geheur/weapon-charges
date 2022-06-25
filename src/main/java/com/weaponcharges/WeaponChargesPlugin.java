@@ -221,8 +221,11 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		Hitsplat.HitsplatType hitType = e.getHitsplat().getHitsplatType();
 		ChargedWeapon helm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
 		if (helm == ChargedWeapon.SERPENTINE_HELM) {
+			// Explanation of Hitsplats (JavaDocs are shit):
+			// - DAMAGE_ME = RED (DAMAGE) SPLATS that are ON or CAUSED BY the player.
+			// - BLOCK_ME = BLUE (BLOCK) SPLATS that are ON or CAUSED BY the player.
 			if (hitType == Hitsplat.HitsplatType.DAMAGE_ME || hitType == Hitsplat.HitsplatType.BLOCK_ME) {
-				if (client.getTickCount() - lastDegradedHitsplatTick >= 90) {
+				if (client.getTickCount() - lastDegradedHitsplatTick > 90) {
 					addCharges(helm, -10, false);
 					lastDegradedHitsplatTick = client.getTickCount();
 					if (config.devMode())
