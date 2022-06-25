@@ -3,7 +3,24 @@ Interested in collecting chat messages/dialogs to improve this plugin's charge t
 # Weapon charges
 Estimates how many charges your weapons have left.
 
-Currently tracked are: ibans, trident, chally, tent, scythe, sang staff.
+Currently Tracked are:
+ - Toxic Blowpipe
+ - Iban's Staff
+ - Tridents
+ - Crystal Halberd
+ - Crystal Bow
+ - Tome of Fire / Water
+ - Arclight
+ - Craws Bow
+ - Viggora's Chainmace
+ - Thammaron's Sceptre
+ - Tentacle Whip
+ - Scythe of Vitur
+ - Sanguinesti Staff
+ - Serpentine Helm (and Tanzanite / Magma Variants)
+ - Crystal Armor
+ - Bow of Faerdhinen
+
 Some are better tracked than others, and many are untested because I don't have these weapons.
 
 Thanks to [Blackberry0Pie](https://github.com/Blackberry0Pie) for adding tome of water and craws/viggoras/thammarons, as well as fixing sang staff.
