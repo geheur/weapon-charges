@@ -21,6 +21,7 @@ import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.input.KeyListener;
 import net.runelite.client.util.Text;
@@ -44,7 +45,10 @@ public class DialogTracker implements KeyListener
     @Inject
     private Client client;
 
-    private Consumer<DialogState> dialogStateChanged;
+	@Inject
+	private ClientThread clientThread;
+
+	private Consumer<DialogState> dialogStateChanged;
     private BiConsumer<DialogState, String> dialogOptionSelected;
 
     private DialogState lastDialogState = null;
@@ -147,7 +151,7 @@ public class DialogTracker implements KeyListener
 			{
 				Widget titleWidget = client.getWidget(WidgetInfo.CHATBOX_TITLE);
 				String title = (titleWidget != null) ? titleWidget.getText() : null;
-				String input = client.getVar(VarClientStr.INPUT_TEXT);
+				String input = client.getVarcStrValue(VarClientStr.INPUT_TEXT);
 
 				state = DialogState.input(title, input);
 				break;
@@ -292,12 +296,16 @@ public class DialogTracker implements KeyListener
 	{
 		try
 		{
-			if (e.getKeyCode() == KeyEvent.VK_ENTER && client.getVar(VarClientInt.INPUT_TYPE) == 7)
+			if (e.getKeyCode() == KeyEvent.VK_ENTER)
 			{
-				String inputText = client.getVar(VarClientStr.INPUT_TEXT);
+				clientThread.invoke(() -> {
+					String inputText = client.getVarcStrValue(VarClientStr.INPUT_TEXT);
 
-				// idk if this if statement is needed but better safe than sorry.
-				if (lastDialogState.type == DialogState.DialogType.INPUT) optionSelected(lastDialogState, inputText);
+					if (lastDialogState.type == DialogState.DialogType.INPUT)
+					{
+						optionSelected(lastDialogState, inputText);
+					}
+				});
 			}
 		} catch (RuntimeException ex) {
 			// Exceptions thrown from here can prevent other keylisteners from receiving the key event.
