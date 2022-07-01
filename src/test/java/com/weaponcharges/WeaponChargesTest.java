@@ -247,7 +247,7 @@ public class WeaponChargesTest
 		checkBlowpipeMessage("Darts: <col=007f00>Adamant dart x 16,383</col>. Scales: <col=007f00>16,383 (100.0%)</col>.", 16383, 16383, DartType.ADAMANT);
 		checkBlowpipeMessage("Darts: <col=007f00>Adamant dart x 16,383</col>. Scales: <col=007f00>0 (0.0%)</col>.", 0, 16383, DartType.ADAMANT);
 
-		checkBlowpipeMessage("The blowpipe can't hold any more scales.", WeaponChargesPlugin.MAX_SCALES, null, null);
+		checkBlowpipeMessage("The blowpipe can't hold any more scales.", WeaponChargesPlugin.MAX_SCALES_BLOWPIPE, null, null);
 		checkBlowpipeMessage("The blowpipe can't hold any more darts.", null, WeaponChargesPlugin.MAX_DARTS, null);
 
 		checkBlowpipeMessage("Your blowpipe has run out of darts.", null, 0, DartType.UNKNOWN);

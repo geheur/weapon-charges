@@ -70,6 +70,8 @@ public class Devtools
 				return ChargedWeapon.ABYSSAL_TENTACLE.configKeyName;
 			case "tome":
 				return ChargedWeapon.TOME_OF_FIRE.configKeyName;
+			case "serp":
+				return ChargedWeapon.SERPENTINE_HELM.configKeyName;
 			default:
 				return null;
 		}

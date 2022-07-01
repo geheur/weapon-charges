@@ -9,6 +9,8 @@ Currently Tracked are:
  - Tridents
  - Crystal Halberd
  - Crystal Bow
+ - Crystal Armor
+ - Bow of Faerdhinen
  - Tome of Fire / Water
  - Arclight
  - Craws Bow
@@ -18,8 +20,6 @@ Currently Tracked are:
  - Scythe of Vitur
  - Sanguinesti Staff
  - Serpentine Helm (and Tanzanite / Magma Variants)
- - Crystal Armor
- - Bow of Faerdhinen
 
 Some are better tracked than others, and many are untested because I don't have these weapons.
 

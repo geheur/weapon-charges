@@ -625,11 +625,14 @@ public enum ChargedWeapon
 	),
 	/* Serpentine Helmet:
 	degradation mechanics:
-		-10 Scales on Combat Beginning
-		-10 Scales if Combat Still Going in 90 ticks
+		-10 Scales when taking or dealing damage, and it has been more than 90 ticks (i.e. minimum 91) since the last time scales were removed.
+		- taking or dealing damage is generally approximated by hitsplats dealt to or dealt by the player.
+			- ranged attacks cause the helmet to degrade sometimes before the hitsplat it seems. This is not taken into account by this plugin.
+			- splashes do not degrade it.
+			- unknown how enemy ranged attacks and splashes interact with this.
+		- the 90-tick timer is shared by barrows items - e.g. you could avoid all scale loss by having barrows items equipped and unequipping the serp helm at the right time.
 
     notes:
-		Shared 90-Tick Degradation Timer with Barrows gear
         Number = ([\\d,]+)
         Percent = \\(\\d+[.]?\\d%\\)
 

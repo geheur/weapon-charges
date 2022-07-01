@@ -214,14 +214,14 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		eventBus.register(devtools);
 	}
 
-	private int lastDegradedHitsplatTick = -1000;
+	private int lastDegradedHitsplatTick = -1000; // 1000 is far more than 91, so the serp helm will be able to have its degrading tracked on login rather than having to wait 90 ticks.
 
 	@Subscribe
 	public void onHitsplatApplied(HitsplatApplied e) {
 		Hitsplat.HitsplatType hitType = e.getHitsplat().getHitsplatType();
 		ChargedWeapon helm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
 		if (helm == ChargedWeapon.SERPENTINE_HELM) {
-			// Explanation of Hitsplats (JavaDocs are shit):
+			// Explanation of Hitsplats (JavaDocs are shit)L
 			// - DAMAGE_ME = RED (DAMAGE) SPLATS that are ON or CAUSED BY the player.
 			// - BLOCK_ME = BLUE (BLOCK) SPLATS that are ON or CAUSED BY the player.
 			if (hitType == Hitsplat.HitsplatType.DAMAGE_ME || hitType == Hitsplat.HitsplatType.BLOCK_ME) {
@@ -506,7 +506,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 		matcher = USE_SCALES_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
 		if (matcher.find()) {
-			setScalesLeft(MAX_SCALES);
+			setScalesLeft(MAX_SCALES_BLOWPIPE);
 		}
 
 		matcher = USE_DARTS_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
@@ -626,7 +626,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	private static final int TICKS_RAPID_PVP = 3;
 	private static final int TICKS_NORMAL_PVM = 3;
 	private static final int TICKS_NORMAL_PVP = 4;
-	public static final int MAX_SCALES = 16383;
+	public static final int MAX_SCALES_BLOWPIPE = 16383;
 	public static final int MAX_DARTS = 16383;
 
 	private int ticks = 0;

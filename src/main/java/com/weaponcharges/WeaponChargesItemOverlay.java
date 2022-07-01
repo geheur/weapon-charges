@@ -1,13 +1,14 @@
 package com.weaponcharges;
 
+import static com.weaponcharges.ChargedWeapon.SERPENTINE_HELM;
 import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
-import com.weaponcharges.WeaponChargesConfig.SerpModes;
-import static com.weaponcharges.WeaponChargesPlugin.MAX_SCALES;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhenNoDefault;
-import static java.lang.Math.round;
+import com.weaponcharges.WeaponChargesConfig.SerpModes;
+import static com.weaponcharges.WeaponChargesPlugin.MAX_SCALES_BLOWPIPE;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import static java.lang.Math.round;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -49,6 +50,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 		TextComponent bottomText = new TextComponent();
 		bottomText.setPosition(new java.awt.Point(bounds.x - 1, bounds.y + 30));
 		bottomText.setText("");
+		bottomText.setColor(config.chargesTextRegularColor());
 
 		boolean found = false;
 		for (ChargedWeapon chargedWeapon : ChargedWeapon.values()) {
@@ -71,10 +73,22 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(config);
 					if (!isLowCharge && displayWhen == DisplayWhen.LOW_CHARGE && !plugin.isShowChargesKeyIsDown()) break;
 
-					if (config.emptyNotZero() && charges == 0) {
+					if (charges == 0 && config.emptyNotZero()) {
 						topText.setText("Empty");
 					} else {
 						topText.setText(String.valueOf(charges));
+
+						if (chargedWeapon == SERPENTINE_HELM) {
+							String scalesLeftPercentDisplay = formatPercentage(charges, SERPENTINE_HELM.rechargeAmount);
+							SerpModes displayStyle = config.serpentine_helm_DisplayStyle();
+							if (displayStyle == SerpModes.PERCENT) {
+								topText.setText(scalesLeftPercentDisplay);
+							} else if (displayStyle == SerpModes.BOTH) {
+								topText.setText(charges.toString());
+								bottomText.setText(scalesLeftPercentDisplay);
+								if (isLowCharge) bottomText.setColor(config.chargesTextLowColor());
+							}
+						}
 					}
 					if (isLowCharge) topText.setColor(config.chargesTextLowColor());
 				}
@@ -117,53 +131,9 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				if (scalesLeft == null) {
 					topText.setText("??.?%");
 				} else {
-					int scalesLeftInt = round(scalesLeft);
-					String scalesLeftPercentDisplay = getScalesPercent(scalesLeftInt, MAX_SCALES);
+					String scalesLeftPercentDisplay = formatPercentage(round(scalesLeft), MAX_SCALES_BLOWPIPE);
 					topText.setText(scalesLeftPercentDisplay);
-					if (scalesLeftPercentDisplay == "0%" && scalesLeft > 0) {
-						topText.setText("1%");
-					}
 					if (blowpipeChargesLow(scalesLeft, dartsLeft1)) topText.setColor(config.chargesTextLowColor());
-				}
-			}
-			found = true;
-		}
-
-		if (ChargedWeapon.SERPENTINE_HELM.getItemIds().contains(itemId)) {
-			DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(config.serpentine_helm_Display(), config.defaultDisplay());
-			Integer charges = null;
-			ChargedWeapon chargedWeapon = ChargedWeapon.SERPENTINE_HELM;
-			SerpModes displayStyle = config.serpentine_helm_DisplayStyle();
-			charges = plugin.getCharges(chargedWeapon);
-			if (charges == null)
-			{
-				if (displayStyle == SerpModes.SCALES) {
-					topText.setText("?");
-				} else if (displayStyle == SerpModes.PERCENT) {
-					topText.setText("??.?%");
-				} else if (displayStyle == SerpModes.BOTH) {
-					topText.setText("?");
-					bottomText.setText("??.?%");
-				}
-			} else {
-				if (displayWhen == DisplayWhen.NEVER && !plugin.isShowChargesKeyIsDown()) return;
-				String scalesLeftPercentDisplay = getScalesPercent(charges, chargedWeapon.rechargeAmount);
-				if (displayStyle == SerpModes.SCALES) {
-					topText.setText(charges.toString());
-				} else if (displayStyle == SerpModes.PERCENT) {
-					topText.setText(scalesLeftPercentDisplay);
-				} else if (displayStyle == SerpModes.BOTH) {
-					topText.setText(charges.toString());
-					bottomText.setText(scalesLeftPercentDisplay);
-					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(config);
-					if (isLowCharge) bottomText.setColor(config.chargesTextLowColor());
-				}
-				if (scalesLeftPercentDisplay.equals("0.0%") && charges > 0) {
-					if (displayStyle == SerpModes.PERCENT){
-						topText.setText("0.1%");
-					} else if (displayStyle == SerpModes.BOTH) {
-						bottomText.setText("0.1%");
-					}
 				}
 			}
 			found = true;
@@ -175,13 +145,14 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 		}
 	}
 
-	private String getScalesPercent(int currentCharges, int maxCharges)
+	static String formatPercentage(int numerator, int denominator)
 	{
 		NumberFormat df = new DecimalFormat("##0.0");
-		float scalesLeftPercent = (float) currentCharges / maxCharges;
 		df.setRoundingMode(RoundingMode.DOWN);
-		String scalesLeftPercentDisplay = df.format((scalesLeftPercent * 100)) + "%";
-		return scalesLeftPercentDisplay;
+		float scalesLeftPercent = (float) numerator / denominator;
+		String percentage = df.format((scalesLeftPercent * 100));
+		if (percentage.equals("0.0") && numerator > 0) percentage = "0.1";
+		return percentage + "%";
 	}
 
 	private boolean blowpipeChargesLow(float scalesLeft, float dartsLeft)
