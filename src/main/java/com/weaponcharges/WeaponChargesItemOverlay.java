@@ -1,9 +1,9 @@
 package com.weaponcharges;
 
 import static com.weaponcharges.ChargedWeapon.SERPENTINE_HELM;
-import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
+import static com.weaponcharges.WeaponChargesConfig.DisplayWhen;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhenNoDefault;
-import com.weaponcharges.WeaponChargesConfig.SerpModes;
+import static com.weaponcharges.WeaponChargesConfig.SerpModes;
 import static com.weaponcharges.WeaponChargesPlugin.MAX_SCALES_BLOWPIPE;
 import java.awt.Color;
 import java.awt.Graphics2D;
