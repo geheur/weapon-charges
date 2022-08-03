@@ -40,6 +40,7 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.Hitsplat;
+import net.runelite.api.HitsplatID;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
@@ -218,13 +219,10 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	@Subscribe
 	public void onHitsplatApplied(HitsplatApplied e) {
-		Hitsplat.HitsplatType hitType = e.getHitsplat().getHitsplatType();
+		int hitType = e.getHitsplat().getHitsplatType();
 		ChargedWeapon helm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
 		if (helm == ChargedWeapon.SERPENTINE_HELM) {
-			// Explanation of Hitsplats (JavaDocs are shit):
-			// - DAMAGE_ME = RED (DAMAGE) SPLATS that are ON or CAUSED BY the player.
-			// - BLOCK_ME = BLUE (BLOCK) SPLATS that are ON or CAUSED BY the player.
-			if (hitType == Hitsplat.HitsplatType.DAMAGE_ME || hitType == Hitsplat.HitsplatType.BLOCK_ME) {
+			if (e.getHitsplat().isMine()) { // Caused by or dealt to the local player.
 				if (client.getTickCount() - lastDegradedHitsplatTick > 90) {
 					addCharges(helm, -10, false);
 					lastDegradedHitsplatTick = client.getTickCount();
@@ -235,7 +233,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		}
 		ChargedWeapon body = getEquippedChargedWeapon(EquipmentInventorySlot.BODY);
 		ChargedWeapon legs = getEquippedChargedWeapon(EquipmentInventorySlot.LEGS);
-		if (e.getActor() == client.getLocalPlayer() && hitType == Hitsplat.HitsplatType.DAMAGE_ME) {
+		if (e.getActor() == client.getLocalPlayer() && hitType == HitsplatID.DAMAGE_ME) {
 			if (helm == ChargedWeapon.CRYSTAL_HELM) {
 				addCharges(helm, -1, false);
 			}
