@@ -308,23 +308,25 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		if (event.getMenuAction() == MenuAction.WIDGET_TARGET_ON_WIDGET) {
 			ItemContainer itemContainer = client.getItemContainer(InventoryID.INVENTORY);
 			Item itemUsed = itemContainer.getItem(client.getSelectedWidget().getIndex());
-			int itemUsedId = itemUsed.getId();
-			Item itemUsedOn = itemContainer.getItem(event.getWidget().getIndex());
-			int itemUsedOnId = itemUsedOn.getId();
-			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedId);
-			if (lastUsedOnWeapon == null)
-			{
-				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedOnId);
-				if (lastUsedOnWeapon != null)
+			if (itemUsed != null) {
+				int itemUsedId = itemUsed.getId();
+				Item itemUsedOn = itemContainer.getItem(event.getWidget().getIndex());
+				int itemUsedOnId = itemUsedOn.getId();
+				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedId);
+				if (lastUsedOnWeapon == null)
 				{
-					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsedId, lastUsedOnWeapon);
-					checkSingleCrystalShardUse(itemUsed, itemUsedId);
+					lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedOnId);
+					if (lastUsedOnWeapon != null)
+					{
+						if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsedId, lastUsedOnWeapon);
+						checkSingleCrystalShardUse(itemUsed, itemUsedId);
+					} else {
+						if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsedId, itemUsedOnId);
+					}
 				} else {
-					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), itemUsedId, itemUsedOnId);
+					if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastUsedOnWeapon, itemUsedOnId);
+					checkSingleCrystalShardUse(itemUsedOn, itemUsedOnId);
 				}
-			} else {
-				if (config.devMode()) log.info("{}: used {} on {}", client.getTickCount(), lastUsedOnWeapon, itemUsedOnId);
-				checkSingleCrystalShardUse(itemUsedOn, itemUsedOnId);
 			}
 		}
 	}
