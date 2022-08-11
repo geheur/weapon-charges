@@ -313,6 +313,9 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			}
 			int itemUsedId = itemUsed.getId();
 			Item itemUsedOn = itemContainer.getItem(event.getWidget().getIndex());
+			if (itemUsedOn == null) {
+				return;
+			}
 			int itemUsedOnId = itemUsedOn.getId();
 			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedId);
 			if (lastUsedOnWeapon == null)
