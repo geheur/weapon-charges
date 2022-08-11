@@ -308,8 +308,10 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		if (event.getMenuAction() == MenuAction.WIDGET_TARGET_ON_WIDGET) {
 			ItemContainer itemContainer = client.getItemContainer(InventoryID.INVENTORY);
 			Item itemUsed = itemContainer.getItem(client.getSelectedWidget().getIndex());
+			if (itemUsed == null) return;
 			int itemUsedId = itemUsed.getId();
 			Item itemUsedOn = itemContainer.getItem(event.getWidget().getIndex());
+			if (itemUsedOn == null) return;
 			int itemUsedOnId = itemUsedOn.getId();
 			lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(itemUsedId);
 			if (lastUsedOnWeapon == null)
