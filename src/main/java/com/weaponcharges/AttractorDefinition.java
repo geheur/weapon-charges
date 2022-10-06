@@ -24,31 +24,50 @@
  */
 package com.weaponcharges;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.runelite.api.ItemID;
+import org.apache.commons.lang3.ArrayUtils;
 
-@AllArgsConstructor
 @Getter
 enum AttractorDefinition
 {
-	ATTRACTOR(ItemID.AVAS_ATTRACTOR, 0.2f, 0.16f, 0.64f),
-	ACCUMULATOR(ItemID.AVAS_ACCUMULATOR, 0.2f, 0.08f, 0.72f),
-	ACCUMULATOR_MAX_CAPE(ItemID.AVAS_ACCUMULATOR, 0.2f, 0.08f, 0.72f),
-	ACCUMULATOR_RANGE_CAPE(ItemID.RANGING_CAPE, 0.2f, 0.08f, 0.72f),
-	ASSEMBLER(ItemID.AVAS_ASSEMBLER, 0.2f, 0.0f, 0.8f),
-	ASSEMBLER_MAX_CAPE(ItemID.AVAS_ACCUMULATOR, 0.2f, 0.08f, 0.72f);
+	ATTRACTOR(0.2f, 0.16f, 0.64f, 
+		ItemID.AVAS_ATTRACTOR
+	),
+	ACCUMULATOR(0.2f, 0.08f, 0.72f, 
+		ItemID.AVAS_ACCUMULATOR, 
+		ItemID.RANGING_CAPE, 
+		ItemID.ACCUMULATOR_MAX_CAPE
+	),
+	ASSEMBLER(0.2f, 0.0f, 0.8f, 
+		ItemID.AVAS_ASSEMBLER,
+		ItemID.AVAS_ASSEMBLER_L,
+		ItemID.ASSEMBLER_MAX_CAPE,
+		ItemID.ASSEMBLER_MAX_CAPE_L,
+		ItemID.MASORI_ASSEMBLER,
+		ItemID.MASORI_ASSEMBLER_L,
+		ItemID.MASORI_ASSEMBLER_MAX_CAPE,
+		ItemID.MASORI_ASSEMBLER_MAX_CAPE_L
+	);
 
-	private int itemId;
-	private float breakOnImpactChance;
-	private float dropToFloorChance;
-	private float savedChance;
+	private final float breakOnImpactChance;
+	private final float dropToFloorChance;
+	private final float savedChance;
+	private final int[] itemIds;
+
+	AttractorDefinition(float breakOnImpactChance, float dropToFloorChance, float savedChance, int... itemIds)
+	{
+		this.breakOnImpactChance = breakOnImpactChance;
+		this.dropToFloorChance = dropToFloorChance;
+		this.savedChance = savedChance;
+		this.itemIds = itemIds;
+	}
 
 	static AttractorDefinition getAttractorById(int itemId)
 	{
 		for (AttractorDefinition attractorDefinition : values())
 		{
-			if (attractorDefinition.getItemId() == itemId)
+			if (ArrayUtils.contains(attractorDefinition.getItemIds(), itemId))
 			{
 				return attractorDefinition;
 			}
