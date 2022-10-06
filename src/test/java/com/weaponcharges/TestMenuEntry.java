@@ -27,6 +27,7 @@ package com.weaponcharges;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Actor;
 import net.runelite.api.MenuAction;
@@ -53,6 +54,8 @@ public class TestMenuEntry implements MenuEntry
 	private Widget widget;
 	@Setter
 	private Actor actor;
+	@Getter
+	private MenuEntry parent;
 
 	@Override
 	public String getOption()
@@ -222,5 +225,12 @@ public class TestMenuEntry implements MenuEntry
 	public Actor getActor()
 	{
 		return actor;
+	}
+
+	@Override
+	public MenuEntry setParent(MenuEntry parent)
+	{
+		this.parent = parent;
+		return this;
 	}
 }
