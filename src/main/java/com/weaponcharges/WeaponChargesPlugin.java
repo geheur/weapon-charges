@@ -39,14 +39,12 @@ import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
-import net.runelite.api.Hitsplat;
 import net.runelite.api.HitsplatID;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.ItemID;
 import net.runelite.api.MenuAction;
-import net.runelite.api.Player;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
@@ -621,15 +619,14 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	private static final int TICKS_RAPID_PVM = 2;
-	private static final int TICKS_RAPID_PVP = 3;
+//	private static final int TICKS_RAPID_PVP = 3;
 	private static final int TICKS_NORMAL_PVM = 3;
-	private static final int TICKS_NORMAL_PVP = 4;
+//	private static final int TICKS_NORMAL_PVP = 4;
 	public static final int MAX_SCALES_BLOWPIPE = 16383;
 	public static final int MAX_DARTS = 16383;
 
 	private int ticks = 0;
 	private int ticksInAnimation;
-	private int attackStyleVarbit = -1;
 	private int lastAnimationStart = 0;
 
 	@Subscribe
@@ -728,19 +725,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		if ((attackStyleVarbit == -1 || attackStyleVarbit != client.getVar(VarPlayer.ATTACK_STYLE)) && client.getLocalPlayer() != null)
-		{
-			attackStyleVarbit = client.getVar(VarPlayer.ATTACK_STYLE);
-
-			if (attackStyleVarbit == 0 || attackStyleVarbit == 3)
-			{
-				// TODO will this check run only when changing attack style, or also in pvp?
-				ticksInAnimation = client.getLocalPlayer().getInteracting() instanceof Player ? TICKS_NORMAL_PVP : TICKS_NORMAL_PVM;
-			}
-			else if (attackStyleVarbit == 1)
-			{
-				ticksInAnimation = client.getLocalPlayer().getInteracting() instanceof Player ? TICKS_RAPID_PVP : TICKS_RAPID_PVM;
-			}
+		if (event.getVarpId() == VarPlayer.ATTACK_STYLE.getId()) {
+			ticksInAnimation = event.getValue() == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM;
 		}
 	}
 
