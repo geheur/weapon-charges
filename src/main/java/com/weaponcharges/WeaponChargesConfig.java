@@ -106,9 +106,41 @@ public interface WeaponChargesConfig extends Config
 	}
 
 	@ConfigSection(
+		name = "Vorkath's head ammo saving",
+		description = "Instructions for setting vorkath's head ammo saving status.",
+		position = 6,
+		closedByDefault = true
+	)
+	String VORKATHS_HEAD_AMMO_SAVING_INSTRUCTIONS = "vorkathsHeadAmmoSavingInstructionsSection";
+
+	@ConfigItem(
+		keyName = "vorkathsHeadInstructions",
+		name = "Set vorkath's head ammo saving",
+		description = "When the Blowpipe should show the charge counter.",
+		section = VORKATHS_HEAD_AMMO_SAVING_INSTRUCTIONS,
+		position = 1
+	)
+	default String vorkathsHeadInstructions()
+	{
+		return "If you have used vorkath's head on your ranged or max cape, shift-right-click the cape and select that you have done so, so that this plugin will know the correct ammo saving chance.";
+	}
+
+	@ConfigItem(
+		keyName = "vorkathsHeadMenuOptionDisabled",
+		name = "Never show option on cape",
+		description = "When enabled, the option to select vorkath's head status is never shown. Normally it is shown when holding shift and right-clicking the cape.",
+		section = VORKATHS_HEAD_AMMO_SAVING_INSTRUCTIONS,
+		position = 2
+	)
+	default boolean vorkathsHeadMenuOptionDisabled()
+	{
+		return false;
+	}
+
+	@ConfigSection(
 		name = "Weapon Specific Config",
 		description = "Specify display and low charge threshold values for specific weapons.",
-		position = 6,
+		position = 7,
 		closedByDefault = true
 	)
 	String WEAPON_SPECIFIC_SETTING = "weaponSpecificConfig";

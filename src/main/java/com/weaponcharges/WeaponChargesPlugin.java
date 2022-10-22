@@ -44,7 +44,9 @@ import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.ItemID;
+import net.runelite.api.KeyCode;
 import net.runelite.api.MenuAction;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
@@ -53,6 +55,7 @@ import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.kit.KitType;
@@ -69,6 +72,7 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
 
 @PluginDescriptor(
@@ -254,6 +258,53 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	// does not match any regexes for some reason. This can cause the plugin to assign charges to the wrong weapon.
 	private List<ChargedWeapon> lastWeaponChecked = new ArrayList<>();
 	private List<ChargedWeapon> lastWeaponChecked2 = new ArrayList<>();
+
+	@Subscribe
+	public void onMenuOpened(MenuOpened e)
+	{
+		if (!client.isKeyPressed(KeyCode.KC_SHIFT) || config.vorkathsHeadMenuOptionDisabled()) {
+			return;
+		}
+
+		for (MenuEntry menuEntry : client.getMenuEntries())
+		{
+			int itemId;
+			if (WidgetInfo.TO_GROUP(menuEntry.getParam1()) == WidgetID.EQUIPMENT_GROUP_ID) { // item is equipped.
+				int childId = WidgetInfo.TO_CHILD(menuEntry.getParam1());
+				if (childId == 16) // cape slot.
+				{
+					ItemContainer itemContainer = client.getItemContainer(InventoryID.EQUIPMENT);
+					if (itemContainer == null) return;
+
+					Item item = itemContainer.getItem(EquipmentInventorySlot.CAPE.getSlotIdx());
+					if (item == null) return;
+
+					itemId = item.getId();
+				} else {
+					return;
+				}
+			} else if (menuEntry.getItemId() != -1) {
+				itemId = menuEntry.getItemId();
+			} else {
+				continue;
+			}
+
+			if (
+				itemId == ItemID.RANGING_CAPE ||
+				itemId == ItemID.RANGING_CAPET ||
+				itemId == ItemID.MAX_CAPE
+			) {
+				boolean vorkathsHeadUsed = Boolean.valueOf(configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed"));
+				client.createMenuEntry(0)
+					.setOption("Weapon Charges Plugin vorkath's head ammo saving is " + (vorkathsHeadUsed ? "on" : "off"))
+					.setTarget(ColorUtil.wrapWithColorTag("Click to turn " + (vorkathsHeadUsed ? "off" : "on"), Color.ORANGE))
+					.onClick(entry -> {
+						configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed", !vorkathsHeadUsed);
+					});
+				break;
+			}
+		}
+	}
 
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event)
@@ -711,15 +762,37 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	private void consumeBlowpipeCharges()
 	{
-		AttractorDefinition attractorDefinition = getAttractorForPlayer();
-		addDartsLeft(
-			attractorDefinition == null ?
-				-1 :
-				-1 * (attractorDefinition.getDropToFloorChance() + attractorDefinition.getBreakOnImpactChance()),
-			false
-		);
-
+		addDartsLeft(-1 * getAmmoLossChance(), false);
 		addScalesLeft(-2/3f, false);
+	}
+
+	private float getAmmoLossChance()
+	{
+		int attractorEquippedId = client.getLocalPlayer().getPlayerComposition().getEquipmentId(KitType.CAPE);
+		switch (attractorEquippedId) {
+			case ItemID.AVAS_ATTRACTOR:
+				return 0.4f;
+			case ItemID.AVAS_ACCUMULATOR:
+			case ItemID.ACCUMULATOR_MAX_CAPE:
+				return 0.28f;
+			case ItemID.RANGING_CAPE:
+			case ItemID.RANGING_CAPET:
+			case ItemID.MAX_CAPE:
+				boolean vorkathsHeadUsed = Boolean.valueOf(configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed"));
+				return vorkathsHeadUsed ? 0.2f : 0.28f;
+			case ItemID.AVAS_ASSEMBLER:
+			case ItemID.AVAS_ASSEMBLER_L:
+			case ItemID.ASSEMBLER_MAX_CAPE:
+			case ItemID.ASSEMBLER_MAX_CAPE_L:
+			case ItemID.MASORI_ASSEMBLER:
+			case ItemID.MASORI_ASSEMBLER_L:
+			case ItemID.MASORI_ASSEMBLER_MAX_CAPE:
+			case ItemID.MASORI_ASSEMBLER_MAX_CAPE_L:
+				return 0.2f;
+			default:
+				// no ammo-saving thing equipped.
+				return 1f;
+		}
 	}
 
 	@Subscribe
@@ -728,12 +801,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		if (event.getVarpId() == VarPlayer.ATTACK_STYLE.getId()) {
 			ticksInAnimation = event.getValue() == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM;
 		}
-	}
-
-	private AttractorDefinition getAttractorForPlayer()
-	{
-		int attractorEquippedId = client.getLocalPlayer().getPlayerComposition().getEquipmentId(KitType.CAPE);
-		return AttractorDefinition.getAttractorById(attractorEquippedId);
 	}
 
 	@Inject
