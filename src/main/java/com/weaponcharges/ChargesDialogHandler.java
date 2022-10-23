@@ -105,4 +105,11 @@ public final class ChargesDialogHandler
 			plugin.addCharges(plugin.lastUsedOnWeapon, chargesEntered * multiplier, true);
 		};
 	}
+
+	public static MatchHandler genericUnchargeDialog()
+	{
+		return (matchers, dialogState, optionSelected, plugin) -> {
+			plugin.setCharges(plugin.lastUnchargeClickedWeapon, 0, true);
+		};
+	}
 }

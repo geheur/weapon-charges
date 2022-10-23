@@ -428,9 +428,7 @@ public enum ChargedWeapon
 		.dialogHandlers(
 			new ChargesDialogHandler(
 				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge your staff for all its charges\\? \\(regaining [\\d,]+ blood runes\\)"), null, Pattern.compile("Proceed.")),
-				(matchers, dialogState, optionSelected, plugin) -> {
-					plugin.setCharges(get_sang_circumvent_illegal_self_reference(), 0, true);
-				}
+				ChargesDialogHandler.genericUnchargeDialog()
 			),
 			new ChargesDialogHandler(
 				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to apply\\? \\(Up to ([\\d,]+)\\)"), null),
@@ -442,7 +440,7 @@ public enum ChargedWeapon
 			),
 			new ChargesDialogHandler(
 				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your (Holy s|S)anguinesti staff. It now has ([\\d,]+) charges in total."), null),
-				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
+				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 3)
 			)
 		)
 	),
@@ -679,6 +677,84 @@ public enum ChargedWeapon
 			)
 		)
 	),
+	/* Tumeken's shadow
+		https://github.com/geheur/weapon-charges/issues/14 log here.
+		check (full, <full & >1, 1, 0/empty):
+			full:
+			>1: GAMEMESSAGE "Tumeken's shadow has 99 charges remaining."
+			1:
+			empty: GAMEMESSAGE "Tumeken's Shadow has no charges! You need to charge it with soul runes and chaos runes." // TODO is this one actually from checking?
+
+		periodic updates (periodic, empty):
+			periodic: GAMEMESSAGE "Tumeken's shadow has 200 charges remaining."
+			low: GAMEMESSAGE "<col=e00a19>Tumeken's shadow only has 100 charges left!</col>"
+			empty: GAMEMESSAGE "Tumeken's shadow has run out of charges."
+
+			TODO check used on item id to see if he used it on an uncharged staff.
+
+		adding (adding by using items on the weapon, adding via right-click option, any other methods):
+			using items:
+234589: used 566 on 27277
+234590: dialog state changed: DialogState{INPUT, title='How many charges do you want to apply? (Up to 994)', input=''}
+234592: option selected: "201" from DialogState{INPUT, title='How many charges do you want to apply? (Up to 994)', input=''}
+234592: dialog state changed: DialogState{NO_DIALOG}
+234593: dialog state changed: DialogState{SPRITE, text='You apply 201 charges to your Tumeken's shadow.', itemId=27275}
+234594: option selected: "null" from DialogState{SPRITE, text='You apply 201 charges to your Tumeken's shadow.', itemId=27275}
+234595: dialog state changed: DialogState{NO_DIALOG}
+
+234643: used 566 on 27275
+234643: dialog state changed: DialogState{INPUT, title='How many charges do you want to apply? (Up to 793)', input=''}
+234645: dialog state changed: DialogState{INPUT, title='How many charges do you want to apply? (Up to 793)', input='301'}
+234646: option selected: "301" from DialogState{INPUT, title='How many charges do you want to apply? (Up to 793)', input='301'}
+234646: dialog state changed: DialogState{SPRITE, text='You apply an additional 301 charges to your<br>Tumeken's shadow. It now has 498 charges in total.', itemId=27275}
+234648: dialog state changed: DialogState{NO_DIALOG}
+
+234692: dialog state changed: DialogState{SPRITE, text='You apply 1 charges to your Tumeken's shadow.', itemId=27275}
+			right-click options:
+			// TODO there is a "Charge" option but I haven't seen it used.
+			other:
+
+		removing (regular removal methods, dropping:
+234582: dialog state changed: DialogState{OPTIONS, text='Uncharge all the charges from your staff?', options=[Proceed., Cancel.]}
+234584: option selected: "Proceed." from DialogState{OPTIONS, text='Uncharge all the charges from your staff?', options=[Proceed., Cancel.]}
+234584: dialog state changed: DialogState{SPRITE, text='You uncharge your Tumeken's shadow, regaining 198<br>soul runes and 495 chaos runes in the process.', itemId=27277}
+234586: option selected: "null" from DialogState{SPRITE, text='You uncharge your Tumeken's shadow, regaining 198<br>soul runes and 495 chaos runes in the process.', itemId=27277}
+234586: dialog state changed: DialogState{NO_DIALOG}
+	 */
+	TUMEKENS_SHADOW(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.TUMEKENS_SHADOW)
+		.unchargedItemIds(ItemID.TUMEKENS_SHADOW_UNCHARGED)
+		.animationIds(9493)
+		.rechargeAmount(20_000)
+		.configKeyName("tumekens_shadow")
+		.checkChargesRegexes(
+			ChargesMessage.staticChargeMessage("Your Tumeken's shadow is already fully charged.", 20000) // I guessed this one.
+			// Some check messages omitted because they are the same as update messages.
+		)
+		.updateMessageChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Tumeken's shadow has ([\\d,]+) charges remaining.", 1),
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=e00a19>Tumeken's shadow only has ([\\d,]+) charges left!</col>"), 1),
+			ChargesMessage.staticChargeMessage("Tumeken's shadow has run out of charges.", 0)
+		)
+		.dialogHandlers(
+			new ChargesDialogHandler(
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge all the charges from your staff?"), null, Pattern.compile("Proceed.")),
+				ChargesDialogHandler.genericUnchargeDialog()
+			),
+			new ChargesDialogHandler(
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to apply\\? \\(Up to ([\\d,]+)\\)"), null),
+				ChargesDialogHandler.genericInputChargeMessage()
+			),
+			new ChargesDialogHandler(
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Tumeken's shadow."), null),
+				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
+			),
+			new ChargesDialogHandler(
+				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your Tumeken's shadow. It now has ([\\d,]+) charges in total."), null),
+				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
+			)
+		)
+	),
 	;
 
 	public static final List<ChargedWeapon> CRYSTAL_SHARD_RECHARGABLE_ITEMS = Arrays.asList(CRYSTAL_BOW, CRYSTAL_HELM, CRYSTAL_BODY, CRYSTAL_LEGS, BOW_OF_FAERDHINEN, CRYSTAL_HALBERD);
@@ -726,21 +802,15 @@ public enum ChargedWeapon
 		),
 		new ChargesDialogHandler(
 			DialogStateMatcher.optionsOptionSelected(Pattern.compile("You will NOT get the coins back."), null, Pattern.compile("Okay, uncharge it.")),
-			(matchers, dialogState, optionSelected, plugin) -> {
-				plugin.setCharges(plugin.lastUnchargeClickedWeapon, 0);
-			}
+			ChargesDialogHandler.genericUnchargeDialog()
 		),
 		new ChargesDialogHandler(
 			DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the trident?"), null, Pattern.compile("Okay, uncharge it.")),
-			(matchers, dialogState, optionSelected, plugin) -> {
-				plugin.setCharges(plugin.lastUnchargeClickedWeapon, 0);
-			}
+			ChargesDialogHandler.genericUnchargeDialog()
 		),
 		new ChargesDialogHandler(
 			DialogStateMatcher.optionsOptionSelected(Pattern.compile("If you drop it, it will lose all its charges."), null, Pattern.compile("Drop it.")),
-			(matchers, dialogState, optionSelected, plugin) -> {
-				plugin.setCharges(plugin.lastUnchargeClickedWeapon, 0);
-			}
+			ChargesDialogHandler.genericUnchargeDialog()
 		),
 		// Crystal shard recharging.
 //		2022-06-13 09:38:09 [Client] INFO  com.weaponcharges.Devtools - 25: dialog state changed: DialogState{INPUT, title='How many shards do you wish to add? (0 - 5)', input=''}
@@ -879,10 +949,6 @@ public enum ChargedWeapon
 
 	private static ChargedWeapon get_scythe_circumvent_illegal_self_reference() {
 		return SCYTHE_OF_VITUR;
-	}
-
-	private static ChargedWeapon get_sang_circumvent_illegal_self_reference() {
-		return SANGUINESTI_STAFF;
 	}
 }
 
