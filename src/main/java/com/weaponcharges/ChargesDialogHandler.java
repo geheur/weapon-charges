@@ -89,6 +89,8 @@ public final class ChargesDialogHandler
 	public static MatchHandler genericInputChargeMessage(int multiplier)
 	{
 		return (matchers, dialogState, optionSelected, plugin) -> {
+			if (plugin.lastUsedOnWeapon == null) return;
+
 			String chargeCountString = matchers.getNameMatcher().group(1).replaceAll(",", "");
 			int maxChargeCount = Integer.parseInt(chargeCountString);
 			int chargesEntered;
