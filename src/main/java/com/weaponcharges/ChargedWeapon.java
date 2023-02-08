@@ -1,15 +1,13 @@
 package com.weaponcharges;
 
 import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import lombok.Getter;
 import net.runelite.api.ItemID;
-import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.util.Text;
 
 @Getter
@@ -74,7 +72,9 @@ public enum ChargedWeapon
 	IBANS_STAFF(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.IBANS_STAFF, ItemID.IBANS_STAFF_U)
 		.animationIds(708)
+		.name("Iban's staff")
 		.rechargeAmount(2500) /*120 for regular, 2500 for (u)*/ // TODO fix this for regular staff?
+		.defaultLowChargeThreshold(250)
 		.configKeyName("ibans_staff")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("You have ([\\d,]+) charges left on the staff.", 1),
@@ -142,6 +142,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.TRIDENT_OF_THE_SEAS)
 		.unchargedItemIds(ItemID.UNCHARGED_TRIDENT)
 		.animationIds(1167)
+		.name("Trident of the seas")
 		.rechargeAmount(2500)
 		.configKeyName("trident_of_the_seas")
 		.checkChargesRegexes(
@@ -154,6 +155,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.TRIDENT_OF_THE_SWAMP)
 		.unchargedItemIds(ItemID.UNCHARGED_TOXIC_TRIDENT)
 		.animationIds(1167)
+		.name("Trident of the swamp")
 		.rechargeAmount(2500)
 		.configKeyName("trident_of_the_swamp")
 		.checkChargesRegexes(
@@ -172,6 +174,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.TRIDENT_OF_THE_SEAS_E)
 		.unchargedItemIds(ItemID.UNCHARGED_TRIDENT_E)
 		.animationIds(1167)
+		.name("Trident of the seas (e)")
 		.rechargeAmount(10_000)
 		.configKeyName("trident_of_the_seas_e")
 		.checkChargesRegexes(
@@ -184,6 +187,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.TRIDENT_OF_THE_SWAMP_E)
 		.unchargedItemIds(ItemID.UNCHARGED_TOXIC_TRIDENT_E)
 		.animationIds(1167)
+		.name("Trident of the swamp (e)")
 		.rechargeAmount(10_000)
 		.configKeyName("trident_of_the_swamp_e")
 		.checkChargesRegexes(
@@ -202,6 +206,7 @@ public enum ChargedWeapon
 	ABYSSAL_TENTACLE(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.ABYSSAL_TENTACLE, ItemID.ABYSSAL_TENTACLE_OR)
 		.animationIds(1658)
+		.name("Abyssal tentacle")
 		.rechargeAmount(10_000)
 		.configKeyName("abyssal_tentacle")
 		.checkChargesRegexes(
@@ -231,7 +236,9 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.CRYSTAL_HALBERD)
 		.unchargedItemIds() // TODO add proper empty halberd ID oh God help me
 		.animationIds(428, 440, 1203)
+		.name("Crystal halberd")
 		.rechargeAmount(10_000/*TODO is this correct?*/)
+		.defaultLowChargeThreshold(25)
 		.configKeyName("crystal_halberd")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your crystal halberd has ([\\d,]+) charges remaining.", 1)
@@ -264,6 +271,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.TOME_OF_FIRE)
 		.unchargedItemIds(ItemID.TOME_OF_FIRE_EMPTY)
 		.animationIds(711, 1162, 727, 1167, 7855)
+		.name("Tome of fire")
 		.rechargeAmount(20_000)
 		.configKeyName("tome_of_fire")
 		.updateMessageChargesRegexes(
@@ -289,6 +297,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.TOME_OF_WATER)
 		.unchargedItemIds(ItemID.TOME_OF_WATER_EMPTY)
 		.animationIds(1161 /*bind/snare/entangle*/, 1162 /*strike/bolt/blast*/, 1163 /*confuse*/, 1164 /*weaken*/, 1165 /*curse/vulnerability*/, 1167 /*wave*/, 1168 /*enfeeble*/, 1169 /*stun*/, 7855 /*surge*/)
+		.name("Tome of water")
 		.rechargeAmount(20_000)
 		.configKeyName("tome_of_water")
 		.updateMessageChargesRegexes(
@@ -327,6 +336,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.SCYTHE_OF_VITUR, ItemID.HOLY_SCYTHE_OF_VITUR, ItemID.SANGUINE_SCYTHE_OF_VITUR)
 		.unchargedItemIds(ItemID.SCYTHE_OF_VITUR_UNCHARGED, ItemID.HOLY_SCYTHE_OF_VITUR_UNCHARGED, ItemID.SANGUINE_SCYTHE_OF_VITUR_UNCHARGED)
 		.animationIds(8056)
+		.name("Scythe of vitur")
 		.rechargeAmount(20_000)
 		.configKeyName("scythe_of_vitur")
 		.checkChargesRegexes(
@@ -427,6 +437,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.SANGUINESTI_STAFF, ItemID.HOLY_SANGUINESTI_STAFF)
 		.unchargedItemIds(ItemID.SANGUINESTI_STAFF_UNCHARGED, ItemID.HOLY_SANGUINESTI_STAFF_UNCHARGED)
 		.animationIds(1167)
+		.name("Sanguinesti staff")
 		.rechargeAmount(20_000)
 		.configKeyName("sanguinesti_staff")
 		.checkChargesRegexes(
@@ -485,6 +496,7 @@ public enum ChargedWeapon
 	ARCLIGHT(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.ARCLIGHT)
 		.animationIds(386, 390)
+		.name("Arclight")
 		.rechargeAmount(10_000)
 		.configKeyName("arclight")
 		.checkChargesRegexes(
@@ -533,6 +545,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.CRAWS_BOW)
 		.unchargedItemIds(ItemID.CRAWS_BOW_U)
 		.animationIds(426)
+		.name("Craw's bow")
 		.rechargeAmount(16_000)
 		.configKeyName("craws_bow")
 		.checkChargesRegexes(
@@ -550,6 +563,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.VIGGORAS_CHAINMACE)
 		.unchargedItemIds(ItemID.VIGGORAS_CHAINMACE_U)
 		.animationIds(245, 7200)
+		.name("Viggora's chainmace")
 		.rechargeAmount(16_000)
 		.configKeyName("viggoras_chainmace")
 		.checkChargesRegexes(
@@ -563,6 +577,7 @@ public enum ChargedWeapon
 	THAMMARONS(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.THAMMARONS_SCEPTRE)
 		.unchargedItemIds(ItemID.THAMMARONS_SCEPTRE_U)
+		.name("Thammaron's sceptre")
 		.rechargeAmount(16_000)
 		.configKeyName("thammarons_sceptre")
 		.checkChargesRegexes(
@@ -578,6 +593,7 @@ public enum ChargedWeapon
 	CRYSTAL_BOW(new ChargedWeaponBuilder() // crystal bow, for ctrl-f
 		.chargedItemIds(ItemID.CRYSTAL_BOW)
 		.animationIds(426)
+		.name("Crystal bow")
 		.configKeyName("crystal_bow")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your crystal bow has ([\\d,]+) charges remaining.", 1)
@@ -593,6 +609,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.BOW_OF_FAERDHINEN)
 		.unchargedItemIds(ItemID.BOW_OF_FAERDHINEN_INACTIVE)
 		.animationIds(426)
+		.name("Bow of faerdhinen")
 		.configKeyName("bow_of_faerdhinen")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your bow of Faerdhinen has ([\\d,]+) charges remaining.", 1)
@@ -611,6 +628,7 @@ public enum ChargedWeapon
 	CRYSTAL_HELM(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.CRYSTAL_HELM, ItemID.CRYSTAL_HELM_27705, ItemID.CRYSTAL_HELM_27717, ItemID.CRYSTAL_HELM_27729, ItemID.CRYSTAL_HELM_27741, ItemID.CRYSTAL_HELM_27753, ItemID.CRYSTAL_HELM_27765, ItemID.CRYSTAL_HELM_27777)
 		.unchargedItemIds(ItemID.CRYSTAL_HELM_INACTIVE, ItemID.CRYSTAL_HELM_INACTIVE_27707, ItemID.CRYSTAL_HELM_INACTIVE_27719, ItemID.CRYSTAL_HELM_INACTIVE_27731, ItemID.CRYSTAL_HELM_INACTIVE_27743, ItemID.CRYSTAL_HELM_INACTIVE_27755, ItemID.CRYSTAL_HELM_INACTIVE_27767, ItemID.CRYSTAL_HELM_INACTIVE_27779)
+		.name("Crystal armour")
 		.configKeyName("crystal_helm")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
@@ -620,6 +638,7 @@ public enum ChargedWeapon
 	CRYSTAL_BODY(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.CRYSTAL_BODY, ItemID.CRYSTAL_BODY_27697, ItemID.CRYSTAL_BODY_27709, ItemID.CRYSTAL_BODY_27721, ItemID.CRYSTAL_BODY_27733, ItemID.CRYSTAL_BODY_27745, ItemID.CRYSTAL_BODY_27757, ItemID.CRYSTAL_BODY_27769)
 		.unchargedItemIds(ItemID.CRYSTAL_BODY_INACTIVE, ItemID.CRYSTAL_BODY_INACTIVE_27699, ItemID.CRYSTAL_BODY_INACTIVE_27711, ItemID.CRYSTAL_BODY_INACTIVE_27723, ItemID.CRYSTAL_BODY_INACTIVE_27735, ItemID.CRYSTAL_BODY_INACTIVE_27747, ItemID.CRYSTAL_BODY_INACTIVE_27759, ItemID.CRYSTAL_BODY_INACTIVE_27771)
+		.name("Crystal armour")
 		.configKeyName("crystal_body")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
@@ -629,6 +648,7 @@ public enum ChargedWeapon
 	CRYSTAL_LEGS(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.CRYSTAL_LEGS, ItemID.CRYSTAL_LEGS_27701, ItemID.CRYSTAL_LEGS_27713, ItemID.CRYSTAL_LEGS_27725, ItemID.CRYSTAL_LEGS_27737, ItemID.CRYSTAL_LEGS_27749, ItemID.CRYSTAL_LEGS_27761, ItemID.CRYSTAL_LEGS_27773)
 		.unchargedItemIds(ItemID.CRYSTAL_LEGS_INACTIVE, ItemID.CRYSTAL_LEGS_INACTIVE_27703, ItemID.CRYSTAL_LEGS_INACTIVE_27715, ItemID.CRYSTAL_LEGS_INACTIVE_27727, ItemID.CRYSTAL_LEGS_INACTIVE_27739, ItemID.CRYSTAL_LEGS_INACTIVE_27751, ItemID.CRYSTAL_LEGS_INACTIVE_27763, ItemID.CRYSTAL_LEGS_INACTIVE_27775)
+		.name("Crystal armour")
 		.configKeyName("crystal_legs")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
@@ -674,6 +694,7 @@ public enum ChargedWeapon
 	SERPENTINE_HELM(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM)
 		.unchargedItemIds(ItemID.SERPENTINE_HELM_UNCHARGED, ItemID.TANZANITE_HELM_UNCHARGED, ItemID.MAGMA_HELM_UNCHARGED)
+		.name("Serpentine helm")
 		.rechargeAmount(11_000)
 		.configKeyName("serpentine_helm")
 		.checkChargesRegexes(
@@ -739,6 +760,7 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.TUMEKENS_SHADOW)
 		.unchargedItemIds(ItemID.TUMEKENS_SHADOW_UNCHARGED)
 		.animationIds(9493)
+		.name("Tumeken's shadow")
 		.rechargeAmount(20_000)
 		.configKeyName("tumekens_shadow")
 		.checkChargesRegexes(
@@ -768,6 +790,15 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 			)
 		)
+	),
+	/**
+	 * Only used to access settings. Lots of things in the blowpipe are handled specially because it holds two kinds of
+	 * charges: darts and scales.
+	 */
+	TOXIC_BLOWPIPE(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.TOXIC_BLOWPIPE)
+		.name("Toxic blowpipe")
+		.settingsConfigKey("blowpipe")
 	),
 	;
 
@@ -846,6 +877,11 @@ public enum ChargedWeapon
 			this.animationIds = Arrays.asList(animationIds);
 			return this;
 		}
+		String name = null;
+		public ChargedWeaponBuilder name(String name) {
+			this.name = name;
+			return this;
+		}
 		Integer rechargeAmount;
 		public ChargedWeaponBuilder rechargeAmount(Integer rechargeAmount) {
 			this.rechargeAmount = rechargeAmount;
@@ -879,12 +915,19 @@ public enum ChargedWeapon
 			this.dialogHandlers = Arrays.asList(dialogHandlers);
 			return this;
 		}
+		int defaultLowChargeThreshold = 500;
+		public ChargedWeaponBuilder defaultLowChargeThreshold(int defaultLowChargeThreshold) {
+			this.defaultLowChargeThreshold = defaultLowChargeThreshold;
+			return this;
+		}
 	}
 
 	public final List<Integer> itemIds;
 	public final List<Integer> unchargedIds;
 	public final List<Integer> animationIds;
+	public final String name;
 	public final Integer rechargeAmount;
+	public final int defaultLowChargeThreshold;
 	public final String configKeyName;
 	public final String settingsConfigKey;
 	// check messages are those produced by menu actions like "Check". update messages are those produced by the weapon
@@ -900,7 +943,10 @@ public enum ChargedWeapon
 		this.itemIds = builder.chargedItemIds;
 		this.unchargedIds = builder.unchargedItemIds;
 		this.animationIds = builder.animationIds;
+		if (builder.name == null) throw new IllegalStateException("cannot have a null name for charged weapon.");
+		this.name = builder.name;
 		this.rechargeAmount = builder.rechargeAmount;
+		this.defaultLowChargeThreshold = builder.defaultLowChargeThreshold;
 		this.configKeyName = builder.configKeyName;
 		this.settingsConfigKey = builder.settingsConfigKey == null ? builder.configKeyName : builder.settingsConfigKey;
 		this.checkChargesRegexes = builder.checkChargesRegexes;
@@ -924,37 +970,40 @@ public enum ChargedWeapon
 	public static final String DISPLAY_CONFIG_KEY_SUFFIX = "_display";
 	public static final String LOW_CHARGE_CONFIG_KEY_SUFFIX = "_low_charge_threshold";
 
-	public DisplayWhen getDisplayWhen(WeaponChargesConfig config) {
-		return invokeMethodWithConfigKey(settingsConfigKey + DISPLAY_CONFIG_KEY_SUFFIX, config);
-	}
-
-	public int getLowCharge(WeaponChargesConfig config)
-	{
-		return invokeMethodWithConfigKey(settingsConfigKey + LOW_CHARGE_CONFIG_KEY_SUFFIX, config);
-	}
-
-	private <T> T invokeMethodWithConfigKey(String key, WeaponChargesConfig config)
-	{
-		for (final Method method : WeaponChargesConfig.class.getMethods())
+	public DisplayWhen getDisplayWhen(ConfigManager configManager) {
+		try
 		{
-			if (!method.isDefault()) continue;
-
-			final ConfigItem annotation = method.getAnnotation(ConfigItem.class);
-
-			if (annotation == null) continue;
-
-			if (key.equals(annotation.keyName())) {
-				try
-				{
-					return (T) method.invoke(config);
-				}
-				catch (IllegalAccessException | InvocationTargetException e)
-				{
-					e.printStackTrace();
-				}
-			}
+			return DisplayWhen.valueOf(configManager.getConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, settingsConfigKey + DISPLAY_CONFIG_KEY_SUFFIX));
 		}
-		throw new IllegalArgumentException("That config key doesn't exist: " + key);
+		catch (NullPointerException | IllegalArgumentException e)
+		{
+			// return default value.
+			return DisplayWhen.USE_DEFAULT;
+		}
+	}
+
+	public void setDisplayWhen(ConfigManager configManager, DisplayWhen displayWhen)
+	{
+		if (displayWhen == null) throw new IllegalArgumentException("displaywhen cannot be set to null");
+		configManager.setConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, settingsConfigKey + DISPLAY_CONFIG_KEY_SUFFIX, displayWhen);
+	}
+
+	public int getLowCharge(ConfigManager configManager)
+	{
+		try
+		{
+			return Integer.parseInt(configManager.getConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, settingsConfigKey + LOW_CHARGE_CONFIG_KEY_SUFFIX));
+		}
+		catch (NullPointerException | IllegalArgumentException e)
+		{
+			// return default value.
+			return getDefaultLowChargeThreshold();
+		}
+	}
+
+	public void setLowCharge(ConfigManager configManager, int charges)
+	{
+		configManager.setConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, settingsConfigKey + LOW_CHARGE_CONFIG_KEY_SUFFIX, charges);
 	}
 
 	private static ChargedWeapon get_scythe_circumvent_illegal_self_reference() {
@@ -962,33 +1011,3 @@ public enum ChargedWeapon
 	}
 }
 
-	/*
-	TODO
-
-	toggle per tracked item.
-	show only at low charges.
-
-	Scythe
-	Sang
-	Arclight
-	Craws
-	thammarons
-	viggoras
-	Crystal bow
-	GAMEMESSAGE "Your crystal bow has 2,250 charges remaining."
-	saeldor
-	fbow
-	blessed sara sword
-	regular trident
-	(e) sea tridents
-	(e) swamp trident
-	tome of fire
-
-	crystal armour?
-	crystal shield?
-	GAMEMESSAGE "Your crystal shield has 2,369 charges remaining."
-	crystal tools?
-	GAMEMESSAGE "Your crystal harpoon has 3,957 charges remaining."
-	GAMEMESSAGE "Your saw has 8 charges left." //crystal saw
-	barrows armour (maybe just show 100/75/50/25).
-	 */

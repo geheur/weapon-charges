@@ -25,10 +25,20 @@
 package com.weaponcharges;
 
 import com.google.inject.Provides;
+import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
+import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.ALWAYS;
+import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.LOW_CHARGE;
+import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.NEVER;
+import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
+import com.weaponcharges.WeaponChargesConfig.SerpModes;
+import static com.weaponcharges.WeaponChargesConfig.SerpModes.BOTH;
+import static com.weaponcharges.WeaponChargesConfig.SerpModes.PERCENT;
+import static com.weaponcharges.WeaponChargesConfig.SerpModes.SCALES;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -59,14 +69,20 @@ import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.kit.KitType;
+import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
+import net.runelite.client.chat.ChatColorType;
+import net.runelite.client.chat.ChatMessageBuilder;
+import net.runelite.client.chat.ChatMessageManager;
+import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.game.chatbox.ChatboxPanelManager;
 import net.runelite.client.input.KeyListener;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
@@ -94,32 +110,17 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	ChargedWeapon lastUsedOnWeapon;
 	ChargedWeapon lastUnchargeClickedWeapon;
 
-	@Inject
-	Client client;
-
-	@Inject
-	private WeaponChargesItemOverlay itemOverlay;
-
-	@Inject
-	private ItemManager itemManager;
-
-	@Inject
-	private WeaponChargesConfig config;
-
-	@Inject
-	private ClientThread clientThread;
-
-	@Inject
-	private EventBus eventBus;
-
-	@Inject
-	private OverlayManager overlayManager;
-
-	@Inject
-	private KeyManager keyManager;
-
-	@Inject
-	private DialogTracker dialogTracker;
+	@Inject Client client;
+	@Inject private WeaponChargesItemOverlay itemOverlay;
+	@Inject private ItemManager itemManager;
+	@Inject private WeaponChargesConfig config;
+	@Inject private ClientThread clientThread;
+	@Inject private EventBus eventBus;
+	@Inject private OverlayManager overlayManager;
+	@Inject private KeyManager keyManager;
+	@Inject private DialogTracker dialogTracker;
+	@Inject private ChatboxPanelManager chatboxPanelManager;
+	@Inject private ChatMessageManager chatMessageManager;
 
 	private Devtools devtools;
 
@@ -259,8 +260,22 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	private List<ChargedWeapon> lastWeaponChecked = new ArrayList<>();
 	private List<ChargedWeapon> lastWeaponChecked2 = new ArrayList<>();
 
-	@Subscribe
+	// If this doesn't have -1 priority, it will run prior to the vanilla
+	// runelite MES which cannot properly handle other plugins adding menu
+	// entries to the menu before it adds its menu entries. This is because it
+	// uses the MenuOpened event's list of menu entries which does not reflect
+	// changes to the menu entries made by other plugins in their MenuOpened
+	// subscribers. It can lead to the vanilla runelite MES menu options being
+	// added in the wrong spot.
+	@Subscribe(priority = -1)
 	public void onMenuOpened(MenuOpened e)
+	{
+		onMenuOpened2();
+
+		addVorkathsHeadMenuOptions();
+	}
+
+	private void addVorkathsHeadMenuOptions()
 	{
 		if (!client.isKeyPressed(KeyCode.KC_SHIFT) || config.vorkathsHeadMenuOptionDisabled()) {
 			return;
@@ -954,6 +969,153 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			}
 			return null;
 		}
+	}
+
+	public void onMenuOpened2()
+	{
+		if (!client.isKeyPressed(KeyCode.KC_SHIFT) || config.hideShiftRightClickOptions())
+		{
+			return;
+		}
+
+		MenuEntry[] entries = client.getMenuEntries();
+		for (int i = 0; i < entries.length; i++)
+		{
+			MenuEntry entry = entries[i];
+			Widget w = entry.getWidget();
+
+			int itemId;
+			if (w != null && WidgetInfo.TO_GROUP(w.getId()) == WidgetID.INVENTORY_GROUP_ID
+				&& "Examine".equals(entry.getOption()) && entry.getIdentifier() == 10)
+			{
+				itemId = entry.getItemId();
+			}
+			else if (w != null && WidgetInfo.TO_GROUP(w.getId()) == WidgetID.EQUIPMENT_GROUP_ID
+				&& "Examine".equals(entry.getOption()) && entry.getIdentifier() == 10)
+			{
+				w = w.getChild(1);
+				itemId = w.getItemId();
+			}
+			else
+			{
+				continue;
+			}
+
+			for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
+			{
+				if (!chargedWeapon.getItemIds().contains(itemId) && !chargedWeapon.getUnchargedIds().contains(itemId))
+				{
+					continue;
+				}
+
+				// I want to insert the menu entry underneath everything else (except "Cancel"), such as the runelite MES left and shift click swap options, and inventory tags, because those are more useful to people.
+				MenuEntry submenuEntry = client.createMenuEntry(1)
+					.setOption("Weapon charges plugin")
+					.setType(MenuAction.RUNELITE_SUBMENU);
+				/*
+				Set low charge threshold (500)
+				Show charge count on item
+				[ ] Use default setting
+				[ ] Always
+				[x] Only when low
+				[ ] Never
+				 */
+				addSubmenu("Set low charge threshold (" + chargedWeapon.getLowCharge(configManager) + ")",
+					e -> openChangeLowChargeDialog(chargedWeapon, chargedWeapon.getLowCharge(configManager)),
+					submenuEntry);
+				addSubmenu(ColorUtil.wrapWithColorTag("Show charge count on item", Color.decode("#ff9040")),
+					submenuEntry);
+				DisplayWhen displayWhen = chargedWeapon.getDisplayWhen(configManager);
+				addSubmenuRadioButtonStyle(displayWhen == USE_DEFAULT, "Use default settings",
+					e -> chargedWeapon.setDisplayWhen(configManager, USE_DEFAULT),
+					submenuEntry);
+				addSubmenuRadioButtonStyle(displayWhen == LOW_CHARGE, "When low",
+					e -> chargedWeapon.setDisplayWhen(configManager, LOW_CHARGE),
+					submenuEntry);
+				addSubmenuRadioButtonStyle(displayWhen == ALWAYS, "Always",
+					e -> chargedWeapon.setDisplayWhen(configManager, ALWAYS),
+					submenuEntry);
+				addSubmenuRadioButtonStyle(displayWhen == NEVER, "Never",
+					e -> chargedWeapon.setDisplayWhen(configManager, NEVER),
+					submenuEntry);
+				if (chargedWeapon == ChargedWeapon.SERPENTINE_HELM) {
+					addSubmenu(ColorUtil.wrapWithColorTag("Display style", Color.decode("#ff9040")),
+						submenuEntry);
+					SerpModes serpMode = getSerpHelmDisplayStyle();
+					addSubmenuRadioButtonStyle(serpMode == PERCENT, "Percent",
+						e -> setSerpHelmDisplayStyle(PERCENT),
+						submenuEntry);
+					addSubmenuRadioButtonStyle(serpMode == SCALES, "Scales",
+						e -> setSerpHelmDisplayStyle(SCALES),
+						submenuEntry);
+					addSubmenuRadioButtonStyle(serpMode == BOTH, "Both",
+						e -> setSerpHelmDisplayStyle(BOTH),
+						submenuEntry);
+				}
+				break;
+			}
+		}
+	}
+
+	public void setSerpHelmDisplayStyle(SerpModes percent)
+	{
+		configManager.setConfiguration(CONFIG_GROUP_NAME, "serpentine_helm_display_style", percent);
+	}
+
+	public SerpModes getSerpHelmDisplayStyle()
+	{
+		SerpModes serpMode = SerpModes.valueOf(configManager.getConfiguration(CONFIG_GROUP_NAME, "serpentine_helm_display_style"));
+		if (serpMode == null) serpMode = PERCENT;
+		return serpMode;
+	}
+
+	private void openChangeLowChargeDialog(ChargedWeapon chargedWeapon, int currentLowCharge)
+	{
+		chatboxPanelManager.openTextInput("Set low charge threshold for " + chargedWeapon.getName() + ", (currently " + currentLowCharge + "):")
+			.addCharValidator(c -> "-0123456789".indexOf(c) != -1)
+			.onDone((Consumer<String>) (input) -> clientThread.invoke(() ->
+			{
+				int newLowChargeThreshold;
+				try
+				{
+					newLowChargeThreshold = Integer.parseInt(input);
+				} catch (NumberFormatException e) {
+					final String message = new ChatMessageBuilder()
+						.append(ChatColorType.HIGHLIGHT)
+						.append("\"" + input + "\" is not a number.")
+						.build();
+
+					chatMessageManager.queue(
+						QueuedMessage.builder()
+							.type(ChatMessageType.CONSOLE)
+							.runeLiteFormattedMessage(message)
+							.build());
+					return;
+				}
+				chargedWeapon.setLowCharge(configManager, newLowChargeThreshold);
+			}))
+			.build();
+	}
+
+	private void addSubmenu(String option, MenuEntry submenuEntry)
+	{
+		addSubmenu(option, e -> {}, submenuEntry);
+	}
+
+	private void addSubmenuRadioButtonStyle(boolean selected, String option, Consumer<MenuEntry> callback, MenuEntry submenuEntry)
+	{
+		addSubmenu("(" + (selected ? "x" : "  ") + ") " + option,
+			callback,
+			submenuEntry);
+	}
+
+	private void addSubmenu(String option, Consumer<MenuEntry> callback, MenuEntry submenuEntry)
+	{
+		client.createMenuEntry(0)
+			.setOption(option)
+			.setType(MenuAction.RUNELITE)
+			.onClick(callback)
+			.setParent(submenuEntry);
 	}
 
 }

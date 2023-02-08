@@ -17,7 +17,6 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.inject.Inject;
-import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.ui.FontManager;
@@ -67,14 +66,16 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				charges = 0;
 			}
 
-			if (found) {
+			if (!found) continue;
+
+			if (chargedWeapon != ChargedWeapon.TOXIC_BLOWPIPE) {
 				if (charges == null) {
 					topText.setText("?");
 				} else {
-					DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(chargedWeapon.getDisplayWhen(config), config.defaultDisplay());
+					DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(chargedWeapon.getDisplayWhen(plugin.configManager), config.defaultDisplay());
 					if (displayWhen == NEVER && !plugin.isShowChargesKeyIsDown()) break;
 
-					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(config);
+					boolean isLowCharge = charges <= chargedWeapon.getLowCharge(plugin.configManager);
 					if (!isLowCharge && displayWhen == LOW_CHARGE && !plugin.isShowChargesKeyIsDown()) break;
 
 					if (charges == 0 && config.emptyNotZero()) {
@@ -84,7 +85,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 
 						if (chargedWeapon == SERPENTINE_HELM) {
 							String scalesLeftPercentDisplay = formatPercentage(charges, SERPENTINE_HELM.rechargeAmount);
-							SerpModes displayStyle = config.serpentine_helm_DisplayStyle();
+							SerpModes displayStyle = plugin.getSerpHelmDisplayStyle();
 							if (displayStyle == PERCENT) {
 								topText.setText(scalesLeftPercentDisplay);
 							} else if (displayStyle == BOTH) {
@@ -98,49 +99,48 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				}
 				break;
 			}
-		}
-
-		if (itemId == ItemID.TOXIC_BLOWPIPE) {
-			DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(config.blowpipe_Display(), config.defaultDisplay());
-			Float dartsLeft1 = plugin.getDartsLeft();
-			Float scalesLeft = plugin.getScalesLeft();
-			if (dartsLeft1 == null || scalesLeft == null)
+			else
 			{
-				topText.setText("?");
-			} else {
-				if (displayWhen == NEVER && !plugin.isShowChargesKeyIsDown()) return;
-
-				boolean isLowCharge = blowpipeChargesLow(scalesLeft, dartsLeft1);
-				if (!isLowCharge && displayWhen == LOW_CHARGE && !plugin.isShowChargesKeyIsDown()) return;
-
-				String dartsString;
-				if (dartsLeft1 == null) {
-					dartsString = "?";
+				DisplayWhen displayWhen = DisplayWhenNoDefault.getDisplayWhen(ChargedWeapon.TOXIC_BLOWPIPE.getDisplayWhen(plugin.configManager), config.defaultDisplay());
+				Float dartsLeft1 = plugin.getDartsLeft();
+				Float scalesLeft = plugin.getScalesLeft();
+				if (dartsLeft1 == null || scalesLeft == null)
+				{
+					topText.setText("?");
 				} else {
-					int dartsLeft = (int) (float) dartsLeft1;
-					dartsString = dartsLeft > 9999 ? new DecimalFormat("#0").format(dartsLeft / 1000.0) + "k" : dartsLeft < 1000 ? String.valueOf(dartsLeft) :
-						new DecimalFormat("#0.0").format(dartsLeft / 1000.0) + "k";
-				}
-				bottomText.setText(dartsString);
-				int stringLength = graphics.getFontMetrics().stringWidth(dartsString);
-				bottomText.setPosition(new java.awt.Point(bounds.x - 1 + 30 - stringLength, bounds.y + 30));
+					if (displayWhen == NEVER && !plugin.isShowChargesKeyIsDown()) return;
 
-				WeaponChargesPlugin.DartType dartType = plugin.getDartType();
-				if (dartType == null) {
-					bottomText.setText("");
-				} else {
-					bottomText.setColor(dartType.displayColor);
-				}
+					boolean isLowCharge = blowpipeChargesLow(scalesLeft, dartsLeft1);
+					if (!isLowCharge && displayWhen == LOW_CHARGE && !plugin.isShowChargesKeyIsDown()) return;
 
-				if (scalesLeft == null) {
-					topText.setText("??.?%");
-				} else {
-					String scalesLeftPercentDisplay = formatPercentage(round(scalesLeft), MAX_SCALES_BLOWPIPE);
-					topText.setText(scalesLeftPercentDisplay);
-					if (blowpipeChargesLow(scalesLeft, dartsLeft1)) topText.setColor(config.chargesTextLowColor());
+					String dartsString;
+					if (dartsLeft1 == null) {
+						dartsString = "?";
+					} else {
+						int dartsLeft = (int) (float) dartsLeft1;
+						dartsString = dartsLeft > 9999 ? new DecimalFormat("#0").format(dartsLeft / 1000.0) + "k" : dartsLeft < 1000 ? String.valueOf(dartsLeft) :
+							new DecimalFormat("#0.0").format(dartsLeft / 1000.0) + "k";
+					}
+					bottomText.setText(dartsString);
+					int stringLength = graphics.getFontMetrics().stringWidth(dartsString);
+					bottomText.setPosition(new java.awt.Point(bounds.x - 1 + 30 - stringLength, bounds.y + 30));
+
+					WeaponChargesPlugin.DartType dartType = plugin.getDartType();
+					if (dartType == null) {
+						bottomText.setText("");
+					} else {
+						bottomText.setColor(dartType.displayColor);
+					}
+
+					if (scalesLeft == null) {
+						topText.setText("??.?%");
+					} else {
+						String scalesLeftPercentDisplay = formatPercentage(round(scalesLeft), MAX_SCALES_BLOWPIPE);
+						topText.setText(scalesLeftPercentDisplay);
+						if (blowpipeChargesLow(scalesLeft, dartsLeft1)) topText.setColor(config.chargesTextLowColor());
+					}
 				}
 			}
-			found = true;
 		}
 
 		if (found) {
@@ -161,7 +161,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 
 	private boolean blowpipeChargesLow(float scalesLeft, float dartsLeft)
 	{
-		int lowCharges = config.blowpipe_LowChargeThreshold();
+		int lowCharges = ChargedWeapon.TOXIC_BLOWPIPE.getLowCharge(plugin.configManager);
 		int scaleCharges = (int) (scalesLeft * 1.5f);
 		int dartCharges = (int) (dartsLeft * 5);
 		return scaleCharges <= lowCharges || dartCharges <= lowCharges;
