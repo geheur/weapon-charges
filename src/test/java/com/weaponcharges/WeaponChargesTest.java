@@ -139,8 +139,8 @@ public class WeaponChargesTest
 		{
 			plugin.setCharges(chargedWeapon, 100);
 
-			chargedWeapon.getDisplayWhen(config);
-			chargedWeapon.getLowCharge(config);
+			chargedWeapon.getDisplayWhen(configManager);
+			chargedWeapon.getLowCharge(configManager);
 		}
 
 		checkIbans();
