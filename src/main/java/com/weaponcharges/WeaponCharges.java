@@ -1,41 +1,39 @@
 package com.weaponcharges;
 
-import jdk.tools.jlink.plugin.Plugin;
 import net.runelite.api.Client;
 import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.InventoryID;
 import net.runelite.api.ItemID;
-import net.runelite.client.ui.overlay.components.TitleComponent;
 
-import javax.inject.Inject;
 import java.awt.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
 
+import static java.lang.Math.round;
 import static com.weaponcharges.ChargedWeapon.SERPENTINE_HELM;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.LOW_CHARGE;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.NEVER;
 import static com.weaponcharges.WeaponChargesConfig.SerpModes.BOTH;
 import static com.weaponcharges.WeaponChargesConfig.SerpModes.PERCENT;
 import static com.weaponcharges.WeaponChargesPlugin.MAX_SCALES_BLOWPIPE;
-import static java.lang.Math.floor;
-import static java.lang.Math.round;
 
-public class RenderCharges {
+public class WeaponCharges {
 
-    public RenderCharges(){
+    public WeaponCharges(){
     }
 
-    public static BottomTopText renderCharges(Graphics2D graphics, WeaponChargesPlugin plugin, Client client, WeaponChargesConfig config)
+    public static BottomTopText getWeaponCharges(Graphics2D graphics, WeaponChargesPlugin plugin, Client client, WeaponChargesConfig config,int itemId)
     {
-        String ammoCount = "";
-        String percentage = "";
-        Color ammoColor = Color.white;
-        Color percentageColor = Color.white;
-        int itemId = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.WEAPON.getSlotIdx()).getId();
+        String topText = "";
+        String bottomText = "";
+        Color topColor = Color.white;
+        Color bottomcolor = Color.white;
+
+        //send in parameters client null and itemId -1 to get the equipped weapon
+        if(client != null && itemId == -1 && client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.WEAPON.getSlotIdx()) != null)
+            itemId = client.getItemContainer(InventoryID.EQUIPMENT).getItem(EquipmentInventorySlot.WEAPON.getSlotIdx()).getId();
+
 
         boolean found = false;
         for (ChargedWeapon chargedWeapon : ChargedWeapon.values()) {
@@ -50,7 +48,7 @@ public class RenderCharges {
 
             if (found) {
                 if (charges == null) {
-                    ammoCount = "?";
+                    topText = "?";
                 } else {
                     WeaponChargesConfig.DisplayWhen displayWhen = WeaponChargesConfig.DisplayWhenNoDefault.getDisplayWhen(chargedWeapon.getDisplayWhen(config), config.defaultDisplay());
                     if (displayWhen == NEVER && !plugin.isShowChargesKeyIsDown()) break;
@@ -59,23 +57,23 @@ public class RenderCharges {
                     if (!isLowCharge && displayWhen == LOW_CHARGE && !plugin.isShowChargesKeyIsDown()) break;
 
                     if (charges == 0 && config.emptyNotZero()) {
-                        ammoCount = "Empty";
+                        topText = "Empty";
                     } else {
-                        ammoCount = String.valueOf(charges);
+                        topText = String.valueOf(charges);
 
                         if (chargedWeapon == SERPENTINE_HELM) {
                             String scalesLeftPercentDisplay = formatPercentage(charges, SERPENTINE_HELM.rechargeAmount);
                             WeaponChargesConfig.SerpModes displayStyle = config.serpentine_helm_DisplayStyle();
                             if (displayStyle == PERCENT) {
-                                ammoCount = scalesLeftPercentDisplay;
+                                topText = scalesLeftPercentDisplay;
                             } else if (displayStyle == BOTH) {
-                                ammoCount = charges.toString();
-                                percentage= scalesLeftPercentDisplay;
-                                if (isLowCharge) percentageColor = config.chargesTextLowColor();
+                                topText = charges.toString();
+                                bottomText= scalesLeftPercentDisplay;
+                                if (isLowCharge) bottomcolor = config.chargesTextLowColor();
                             }
                         }
                     }
-                    if (isLowCharge) ammoColor = config.chargesTextLowColor();
+                    if (isLowCharge) topColor = config.chargesTextLowColor();
                 }
                 break;
             }
@@ -87,7 +85,7 @@ public class RenderCharges {
             Float scalesLeft = plugin.getScalesLeft();
             if (dartsLeft1 == null || scalesLeft == null)
             {
-                ammoCount = "?";
+                topText = "?";
             } else {
                 if (displayWhen == NEVER && !plugin.isShowChargesKeyIsDown()) return null;
 
@@ -102,22 +100,22 @@ public class RenderCharges {
                     dartsString = dartsLeft > 9999 ? new DecimalFormat("#0").format(dartsLeft / 1000.0) + "k" : dartsLeft < 1000 ? String.valueOf(dartsLeft) :
                             new DecimalFormat("#0.0").format(dartsLeft / 1000.0) + "k";
                 }
-                percentage = dartsString;
+                bottomText = dartsString;
                 int stringLength = graphics.getFontMetrics().stringWidth(dartsString);
 
                 WeaponChargesPlugin.DartType dartType = plugin.getDartType();
                 if (dartType == null) {
-                    percentage = "";
+                    bottomText = "";
                 } else {
-                    percentageColor = dartType.displayColor;
+                    bottomcolor = dartType.displayColor;
                 }
 
                 if (scalesLeft == null) {
-                    ammoCount ="??.?%";
+                    topText ="??.?%";
                 } else {
                     String scalesLeftPercentDisplay = formatPercentage(round(scalesLeft), MAX_SCALES_BLOWPIPE);
-                    ammoCount = scalesLeftPercentDisplay;
-                    if (blowpipeChargesLow(scalesLeft, dartsLeft1,config)) ammoColor = config.chargesTextLowColor();
+                    topText = scalesLeftPercentDisplay;
+                    if (blowpipeChargesLow(scalesLeft, dartsLeft1,config)) topColor = config.chargesTextLowColor();
                 }
             }
             found = true;
@@ -125,7 +123,8 @@ public class RenderCharges {
 
         if (found) {
 
-            return new BottomTopText(ammoCount,percentage,ammoColor,percentageColor);
+            BottomTopText bottomTopText = new BottomTopText(topText,bottomText,topColor,bottomcolor);
+            return bottomTopText;
         }
 
         return null;
@@ -147,5 +146,10 @@ public class RenderCharges {
         String percentage = df.format((scalesLeftPercent * 100));
         if (percentage.equals("0.0") && numerator > 0) percentage = "0.1";
         return percentage + "%";
+    }
+
+    private Color getColorForScalesLeft(float scalesLeftPercent)
+    {
+        return Color.getHSBColor((float) (scalesLeftPercent * 1/3f), 1f, 1f);
     }
 }
