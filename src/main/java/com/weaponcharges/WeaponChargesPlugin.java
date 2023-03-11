@@ -336,20 +336,20 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		} else if (event.getMenuOption().equalsIgnoreCase("uncharge")) {
 			for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
 			{
-				if (chargedWeapon.getItemIds().contains(event.getId()) && chargedWeapon.getCheckChargesRegexes().isEmpty())
+				if (chargedWeapon.getItemIds().contains(event.getItemId()))
 				{
 					if (config.devMode()) log.info("setting lastUnchargeClickedWeapon to " + chargedWeapon);
 					lastUnchargeClickedWeapon = chargedWeapon;
 					break;
 				}
 			}
-		} else if (event.getMenuOption().equalsIgnoreCase("unload") && event.getId() == ItemID.TOXIC_BLOWPIPE) {
+		} else if (event.getMenuOption().equalsIgnoreCase("unload") && event.getItemId() == ItemID.TOXIC_BLOWPIPE) {
 			checkBlowpipeUnload = client.getTickCount();
 		} else if (event.getMenuOption().equalsIgnoreCase("pages")) {
 			if (WidgetInfo.TO_GROUP(event.getParam1()) == WidgetID.EQUIPMENT_GROUP_ID) { // item is equipped.
 				lastUsedOnWeapon = getEquippedChargedWeapon(EquipmentInventorySlot.SHIELD);
 			} else {
-				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(event.getId());
+				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(event.getItemId());
 			}
 			if (config.devMode()) log.info("pages checked. setting last used weapon to {}", lastUsedOnWeapon.toString());
 		}

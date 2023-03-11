@@ -130,7 +130,9 @@ public enum ChargedWeapon
 		removing:
 			dialog choice. the dialog that confirms the player's choice is skippable.
 			seas trident: 2021-08-29 18:48:38 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 4334: dialog state changed: NpcDialogState{OPTIONS, text='You will NOT get the coins back.', options=[Okay, uncharge it., No, don't uncharge it.]}
-			swamp trident: 2021-08-28 03:33:54 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - option selected: "Okay, uncharge it." from NpcDialogState{OPTIONS, text='Really uncharge the trident?', options=[Okay, uncharge it., No, don't uncharge it.]}
+			seas (e): presumably the same as seas.
+			swamp trident: 2023-03-10 17:14:02 [Client] INFO  com.weaponcharges.Devtools - 2786: option selected: "Okay, uncharge it." from DialogState{OPTIONS, text='Really uncharge the Trident of the swamp?', options=[Okay, uncharge it., No, don't uncharge it.]}
+			swamp (e): just adds " (e)" to it, according to a screenshot I recieved.
 			dropping: 2021-08-29 19:03:59 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 5862: option selected: "Drop it." from NpcDialogState{OPTIONS, text='If you drop it, it will lose all its charges.', options=[Drop it., No, don't drop it.]} TODO unimplemented
 				(the charge loss happens when you select "Drop it.".
 
@@ -159,6 +161,12 @@ public enum ChargedWeapon
 			ChargesMessage.staticChargeMessage("Your Trident of the swamp has one charge.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the swamp has no charges.", 0)
 		)
+		.dialogHandlers(
+			new ChargesDialogHandler(
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp?"), null, Pattern.compile("Okay, uncharge it.")),
+				ChargesDialogHandler.genericUnchargeDialog()
+			)
+		)
 	),
 	TRIDENT_OF_THE_SEAS_E(new ChargedWeaponBuilder()
 		.chargedItemIds(ItemID.TRIDENT_OF_THE_SEAS_E)
@@ -182,6 +190,12 @@ public enum ChargedWeapon
 			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp \\(e\\) has ([\\d,]+) charges.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has one charge.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has no charges.", 0)
+		)
+		.dialogHandlers(
+			new ChargesDialogHandler(
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp (e)?"), null, Pattern.compile("Okay, uncharge it.")),
+				ChargesDialogHandler.genericUnchargeDialog()
+			)
 		)
 	),
 
@@ -802,10 +816,6 @@ public enum ChargedWeapon
 		),
 		new ChargesDialogHandler(
 			DialogStateMatcher.optionsOptionSelected(Pattern.compile("You will NOT get the coins back."), null, Pattern.compile("Okay, uncharge it.")),
-			ChargesDialogHandler.genericUnchargeDialog()
-		),
-		new ChargesDialogHandler(
-			DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the trident?"), null, Pattern.compile("Okay, uncharge it.")),
 			ChargesDialogHandler.genericUnchargeDialog()
 		),
 		new ChargesDialogHandler(
