@@ -798,7 +798,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		if (event.getVarpId() == VarPlayer.ATTACK_STYLE.getId()) {
+		if (event.getVarpId() == VarPlayer.ATTACK_STYLE) {
 			ticksInAnimation = event.getValue() == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM;
 		}
 	}
