@@ -88,6 +88,7 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
 
@@ -121,6 +122,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Inject private DialogTracker dialogTracker;
 	@Inject private ChatboxPanelManager chatboxPanelManager;
 	@Inject private ChatMessageManager chatMessageManager;
+	@Inject private InfoBoxManager infoBoxManager;
 
 	private Devtools devtools;
 
