@@ -88,10 +88,18 @@ public interface WeaponChargesConfig extends Config
 	}
 
 	@ConfigItem(
+			keyName = "showInfoBoxOverlay",
+			name = "Show InfoBox",
+			description = "Enables the infobox",
+			position = 5
+	)
+	default boolean showInfoBoxOverlay(){return true;}
+
+	@ConfigItem(
 		keyName = "showOnHotkey",
 		name = "Always show charge when held",
 		description = "When this key is held, show charges on all tracked weapons.",
-		position = 5
+		position = 6
 	)
 	default Keybind showOnHotkey()
 	{
@@ -108,7 +116,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigSection(
 		name = "Vorkath's head ammo saving",
 		description = "Instructions for setting vorkath's head ammo saving status.",
-		position = 6,
+		position = 7,
 		closedByDefault = true
 	)
 	String VORKATHS_HEAD_AMMO_SAVING_INSTRUCTIONS = "vorkathsHeadAmmoSavingInstructionsSection";
@@ -140,7 +148,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigSection(
 		name = "Weapon Specific Config",
 		description = "Specify display and low charge threshold values for specific weapons.",
-		position = 7,
+		position = 8,
 		closedByDefault = true
 	)
 	String WEAPON_SPECIFIC_SETTING = "weaponSpecificConfig";

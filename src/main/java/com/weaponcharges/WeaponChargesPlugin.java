@@ -32,22 +32,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+
+import com.sun.tools.javac.jvm.Items;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Actor;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.EquipmentInventorySlot;
-import net.runelite.api.HitsplatID;
-import net.runelite.api.InventoryID;
-import net.runelite.api.Item;
-import net.runelite.api.ItemContainer;
-import net.runelite.api.ItemID;
-import net.runelite.api.KeyCode;
-import net.runelite.api.MenuAction;
-import net.runelite.api.MenuEntry;
-import net.runelite.api.VarPlayer;
+import net.runelite.api.*;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.ClientTick;
@@ -72,6 +62,7 @@ import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
 
@@ -101,6 +92,9 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	private WeaponChargesItemOverlay itemOverlay;
 
 	@Inject
+	private WeaponChargesInfoboxOverlay infoBoxOverlay;
+
+	@Inject
 	private ItemManager itemManager;
 
 	@Inject
@@ -114,6 +108,9 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	@Inject
 	private OverlayManager overlayManager;
+
+	@Inject
+	InfoBoxManager infoBoxManager;
 
 	@Inject
 	private KeyManager keyManager;
@@ -133,6 +130,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	protected void startUp()
 	{
 		overlayManager.add(itemOverlay);
+		if(config.showInfoBoxOverlay()) overlayManager.add(infoBoxOverlay);
 		if (config.devMode()) enableDevMode();
 		dialogTracker.reset();
 		eventBus.register(dialogTracker);
@@ -149,6 +147,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	protected void shutDown()
 	{
 		overlayManager.remove(itemOverlay);
+		overlayManager.remove(infoBoxOverlay);
 		disableDevMode();
 		eventBus.unregister(dialogTracker);
 		keyManager.unregisterKeyListener(dialogTracker);
@@ -209,6 +208,11 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				disableDevMode();
 			}
 		}
+
+		if(config.showInfoBoxOverlay())
+			overlayManager.add(infoBoxOverlay);
+		else
+			overlayManager.remove(infoBoxOverlay);
 	}
 
 	private void enableDevMode()
