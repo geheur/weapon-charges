@@ -575,11 +575,48 @@ public enum ChargedWeapon
 			see Ether Weapon common
 	 */
 	THAMMARONS(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.THAMMARONS_SCEPTRE)
-		.unchargedItemIds(ItemID.THAMMARONS_SCEPTRE_U)
+		.chargedItemIds(ItemID.THAMMARONS_SCEPTRE, ItemID.THAMMARONS_SCEPTRE_A)
+		.unchargedItemIds(ItemID.THAMMARONS_SCEPTRE_U, ItemID.THAMMARONS_SCEPTRE_AU)
 		.name("Thammaron's sceptre")
+		.animationIds(1167)
 		.rechargeAmount(16_000)
 		.configKeyName("thammarons_sceptre")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1)
+		)
+	),
+	WEBWEAVER_BOW(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.WEBWEAVER_BOW_27655)
+		.unchargedItemIds(ItemID.WEBWEAVER_BOW_U_27652)
+		.name("Webweaver bow")
+		.animationIds(426)
+		.rechargeAmount(16_000)
+		.configKeyName("webweaver_bow")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it.", 1)
+		)
+		.updateMessageChargesRegexes(
+			ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow.", 0)
+		)
+	),
+	URSINE_CHAINMACE(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.URSINE_CHAINMACE_27660)
+		.unchargedItemIds(ItemID.URSINE_CHAINMACE_U_27657)
+		.name("Ursine chainmace")
+		.animationIds(245, 7200)
+		.rechargeAmount(16_000)
+		.configKeyName("ursine_chainmace")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it.", 1)
+		)
+	),
+	ACCURSED_SCEPTRE(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.ACCURSED_SCEPTRE, ItemID.ACCURSED_SCEPTRE_A)
+		.unchargedItemIds(ItemID.ACCURSED_SCEPTRE_U, ItemID.ACCURSED_SCEPTRE_AU)
+		.name("Accursed sceptre")
+		.animationIds(1167)
+		.rechargeAmount(16_000)
+		.configKeyName("accursed_sceptre")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1)
 		)
