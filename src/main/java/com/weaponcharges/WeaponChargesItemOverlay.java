@@ -17,6 +17,8 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.inject.Inject;
+
+import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.ui.FontManager;
