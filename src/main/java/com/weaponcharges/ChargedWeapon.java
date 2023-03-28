@@ -548,12 +548,15 @@ public enum ChargedWeapon
 		.name("Craw's bow")
 		.rechargeAmount(16_000)
 		.configKeyName("craws_bow")
-		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it.", 1)
-		)
-		.updateMessageChargesRegexes(
-			ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow.", 0)
-		)
+	),
+
+	WEBWEAVER(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.WEBWEAVER_BOW_27655)
+		.unchargedItemIds(ItemID.WEBWEAVER_BOW_U_27652)
+		.name("Webweaver bow")
+		.animationIds(426)
+		.rechargeAmount(16_000)
+		.configKeyName("webweaver_bow")
 	),
 	/* Vigorra's chainmace
 		message overlap:
@@ -566,10 +569,17 @@ public enum ChargedWeapon
 		.name("Viggora's chainmace")
 		.rechargeAmount(16_000)
 		.configKeyName("viggoras_chainmace")
-		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it.", 1)
-		)
 	),
+
+	URSINE (new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.URSINE_CHAINMACE_27660)
+		.unchargedItemIds(ItemID.URSINE_CHAINMACE_U_27657)
+		.name("Ursine chainmace")
+		.animationIds(245, 7200)
+		.rechargeAmount(16_000)
+		.configKeyName("ursine_chainmace")
+	),
+
 	/* Thammaron's sceptre
 		message overlap:
 			see Ether Weapon common
@@ -581,45 +591,14 @@ public enum ChargedWeapon
 		.animationIds(1167)
 		.rechargeAmount(16_000)
 		.configKeyName("thammarons_sceptre")
-		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1)
-		)
 	),
-	WEBWEAVER_BOW(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.WEBWEAVER_BOW_27655)
-		.unchargedItemIds(ItemID.WEBWEAVER_BOW_U_27652)
-		.name("Webweaver bow")
-		.animationIds(426)
-		.rechargeAmount(16_000)
-		.configKeyName("webweaver_bow")
-		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it.", 1)
-		)
-		.updateMessageChargesRegexes(
-			ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow.", 0)
-		)
-	),
-	URSINE_CHAINMACE(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.URSINE_CHAINMACE_27660)
-		.unchargedItemIds(ItemID.URSINE_CHAINMACE_U_27657)
-		.name("Ursine chainmace")
-		.animationIds(245, 7200)
-		.rechargeAmount(16_000)
-		.configKeyName("ursine_chainmace")
-		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it.", 1)
-		)
-	),
-	ACCURSED_SCEPTRE(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.ACCURSED_SCEPTRE, ItemID.ACCURSED_SCEPTRE_A)
-		.unchargedItemIds(ItemID.ACCURSED_SCEPTRE_U, ItemID.ACCURSED_SCEPTRE_AU)
+	ACCURSED(new ChargedWeaponBuilder()
+		.chargedItemIds(ItemID.ACCURSED_SCEPTRE_27665)
+		.unchargedItemIds(ItemID.ACCURSED_SCEPTRE_U_27662)
 		.name("Accursed sceptre")
 		.animationIds(1167)
 		.rechargeAmount(16_000)
 		.configKeyName("accursed_sceptre")
-		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1)
-		)
 	),
 	/*
 	check:
@@ -845,6 +824,9 @@ public enum ChargedWeapon
 	private static final List<ChargesMessage> nonUniqueCheckChargesRegexes = Arrays.asList(
 		// ether weapons
 		ChargesMessage.matcherGroupChargeMessage("Your weapon has ([\\d,]+) charges.", 1),
+		ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it.", 1),
+		ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it.", 1),
+		ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1),
 		//ChargesMessage.staticChargeMessage("You require at least 1000 revenant ether to activate this weapon.", 0),
 		ChargesMessage.staticChargeMessage("You use 1000 ether to activate the weapon.", 0),
 		ChargesMessage.matcherGroupChargeMessage("You add (a further )?([\\d,]+) revenant ether to your weapon, giving it a total of ([\\d,]+) charges?.", 3),
@@ -860,7 +842,8 @@ public enum ChargedWeapon
 		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your trident has run out of charges.</col>"), 0),
 		// ether weapons
 		ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your weapon only has ([\\d,]+) charges left.</col>"), 1),
-		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your weapon has run out of revenant ether.</col>"), 0)
+		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your weapon has run out of revenant ether.</col>"), 0),
+		ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow.", 0)
 	);
 
 	@Getter
