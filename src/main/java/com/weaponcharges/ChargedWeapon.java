@@ -557,6 +557,8 @@ public enum ChargedWeapon
 		.animationIds(426)
 		.rechargeAmount(16_000)
 		.configKeyName("webweaver_bow")
+		.settingsConfigKey("craws_bow")
+
 	),
 	/* Vigorra's chainmace
 		message overlap:
@@ -578,6 +580,7 @@ public enum ChargedWeapon
 		.animationIds(245, 7200)
 		.rechargeAmount(16_000)
 		.configKeyName("ursine_chainmace")
+		.settingsConfigKey("viggoras_chainmace")
 	),
 
 	/* Thammaron's sceptre
@@ -588,17 +591,21 @@ public enum ChargedWeapon
 		.chargedItemIds(ItemID.THAMMARONS_SCEPTRE, ItemID.THAMMARONS_SCEPTRE_A)
 		.unchargedItemIds(ItemID.THAMMARONS_SCEPTRE_U, ItemID.THAMMARONS_SCEPTRE_AU)
 		.name("Thammaron's sceptre")
-		.animationIds(1167)
+		.animationIds(1167,1978,1979,1162,1167,7855,811)
 		.rechargeAmount(16_000)
 		.configKeyName("thammarons_sceptre")
 	),
 	ACCURSED(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.ACCURSED_SCEPTRE_27665)
-		.unchargedItemIds(ItemID.ACCURSED_SCEPTRE_U_27662)
+		.chargedItemIds(ItemID.ACCURSED_SCEPTRE_27665, ItemID.ACCURSED_SCEPTRE_A_27679)
+		.unchargedItemIds(ItemID.ACCURSED_SCEPTRE_U_27662, ItemID.ACCURSED_SCEPTRE_AU_27676)
 		.name("Accursed sceptre")
-		.animationIds(1167)
+		//1178 1179 Ancient
+		//1162,1167,7855,811 Standard
+		// Support for charge count for autocasting spell, manual casting non-combat spell will still not be tracked
+		.animationIds(1167,1978,1979,1162,1167,7855,811)
 		.rechargeAmount(16_000)
 		.configKeyName("accursed_sceptre")
+		.settingsConfigKey("thammarons_sceptre")
 	),
 	/*
 	check:
