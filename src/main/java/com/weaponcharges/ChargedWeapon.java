@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import lombok.Getter;
-import net.runelite.api.ItemID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.util.Text;
 
@@ -70,7 +69,7 @@ public enum ChargedWeapon
 			(u) and non-(u) probably both use the same messages. TODO
 	 */
 	IBANS_STAFF(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.IBANS_STAFF, ItemID.IBANS_STAFF_U)
+		.chargedItemIds(1409 /*IBANS_STAFF*/, 12658 /*IBANS_STAFF_U*/)
 		.animationIds(708)
 		.name("Iban's staff")
 		.rechargeAmount(2500) /*120 for regular, 2500 for (u)*/ // TODO fix this for regular staff?
@@ -139,8 +138,8 @@ public enum ChargedWeapon
 		message overlap: all 4 tridents use the same messages except for the check messages.
 	 */
 	TRIDENT_OF_THE_SEAS(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.TRIDENT_OF_THE_SEAS)
-		.unchargedItemIds(ItemID.UNCHARGED_TRIDENT)
+		.chargedItemIds(11907 /*TRIDENT_OF_THE_SEAS*/)
+		.unchargedItemIds(11908 /*UNCHARGED_TRIDENT*/)
 		.animationIds(1167)
 		.name("Trident of the seas")
 		.rechargeAmount(2500)
@@ -152,8 +151,8 @@ public enum ChargedWeapon
 		)
 	),
 	TRIDENT_OF_THE_SWAMP(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.TRIDENT_OF_THE_SWAMP)
-		.unchargedItemIds(ItemID.UNCHARGED_TOXIC_TRIDENT)
+		.chargedItemIds(12899 /*TRIDENT_OF_THE_SWAMP*/)
+		.unchargedItemIds(12900 /*UNCHARGED_TOXIC_TRIDENT*/)
 		.animationIds(1167)
 		.name("Trident of the swamp")
 		.rechargeAmount(2500)
@@ -171,8 +170,8 @@ public enum ChargedWeapon
 		)
 	),
 	TRIDENT_OF_THE_SEAS_E(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.TRIDENT_OF_THE_SEAS_E)
-		.unchargedItemIds(ItemID.UNCHARGED_TRIDENT_E)
+		.chargedItemIds(22288 /*TRIDENT_OF_THE_SEAS_E*/)
+		.unchargedItemIds(22290 /*UNCHARGED_TRIDENT_E*/)
 		.animationIds(1167)
 		.name("Trident of the seas (e)")
 		.rechargeAmount(10_000)
@@ -184,8 +183,8 @@ public enum ChargedWeapon
 		)
 	),
 	TRIDENT_OF_THE_SWAMP_E(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.TRIDENT_OF_THE_SWAMP_E)
-		.unchargedItemIds(ItemID.UNCHARGED_TOXIC_TRIDENT_E)
+		.chargedItemIds(22292 /*TRIDENT_OF_THE_SWAMP_E*/)
+		.unchargedItemIds(22294 /*UNCHARGED_TOXIC_TRIDENT_E*/)
 		.animationIds(1167)
 		.name("Trident of the swamp (e)")
 		.rechargeAmount(10_000)
@@ -204,7 +203,7 @@ public enum ChargedWeapon
 	),
 
 	ABYSSAL_TENTACLE(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.ABYSSAL_TENTACLE, ItemID.ABYSSAL_TENTACLE_OR)
+		.chargedItemIds(12006 /*ABYSSAL_TENTACLE*/, 26484 /*ABYSSAL_TENTACLE_OR*/)
 		.animationIds(1658)
 		.name("Abyssal tentacle")
 		.rechargeAmount(10_000)
@@ -233,7 +232,7 @@ public enum ChargedWeapon
 		message overlap: none that I'm aware of.
 	 */
 	CRYSTAL_HALBERD(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.CRYSTAL_HALBERD)
+		.chargedItemIds(23987 /*CRYSTAL_HALBERD*/)
 		.unchargedItemIds() // TODO add proper empty halberd ID oh God help me
 		.animationIds(428, 440, 1203)
 		.name("Crystal halberd")
@@ -268,8 +267,8 @@ public enum ChargedWeapon
 		The tome of fire needs an additional check for fire spells being cast, which is done in onClientTick by checking for a gfx value.
 	 */
 	TOME_OF_FIRE(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.TOME_OF_FIRE)
-		.unchargedItemIds(ItemID.TOME_OF_FIRE_EMPTY)
+		.chargedItemIds(20714 /*TOME_OF_FIRE*/)
+		.unchargedItemIds(20716 /*TOME_OF_FIRE_EMPTY*/)
 		.animationIds(711, 1162, 727, 1167, 7855)
 		.name("Tome of fire")
 		.rechargeAmount(20_000)
@@ -294,8 +293,8 @@ public enum ChargedWeapon
 		The Tome of water needs an additional check for water and curse spells being cast, which is done in onClientTick by checking for a gfx value.
 	 */
 	TOME_OF_WATER(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.TOME_OF_WATER)
-		.unchargedItemIds(ItemID.TOME_OF_WATER_EMPTY)
+		.chargedItemIds(25574 /*TOME_OF_WATER*/)
+		.unchargedItemIds(25576 /*TOME_OF_WATER_EMPTY*/)
 		.animationIds(1161 /*bind/snare/entangle*/, 1162 /*strike/bolt/blast*/, 1163 /*confuse*/, 1164 /*weaken*/, 1165 /*curse/vulnerability*/, 1167 /*wave*/, 1168 /*enfeeble*/, 1169 /*stun*/, 7855 /*surge*/)
 		.name("Tome of water")
 		.rechargeAmount(20_000)
@@ -333,8 +332,8 @@ public enum ChargedWeapon
 	 */
 	SCYTHE_OF_VITUR(new ChargedWeaponBuilder()
 		// TODO some kind of optional graphic to show when a scythe is uncharged? like a "(u)" that shows up on the item.
-		.chargedItemIds(ItemID.SCYTHE_OF_VITUR, ItemID.HOLY_SCYTHE_OF_VITUR, ItemID.SANGUINE_SCYTHE_OF_VITUR)
-		.unchargedItemIds(ItemID.SCYTHE_OF_VITUR_UNCHARGED, ItemID.HOLY_SCYTHE_OF_VITUR_UNCHARGED, ItemID.SANGUINE_SCYTHE_OF_VITUR_UNCHARGED)
+		.chargedItemIds(22325 /*SCYTHE_OF_VITUR*/, 25736 /*HOLY_SCYTHE_OF_VITUR*/, 25739 /*SANGUINE_SCYTHE_OF_VITUR*/)
+		.unchargedItemIds(22486 /*SCYTHE_OF_VITUR_UNCHARGED*/, 25738 /*HOLY_SCYTHE_OF_VITUR_UNCHARGED*/, 25741 /*SANGUINE_SCYTHE_OF_VITUR_UNCHARGED*/)
 		.animationIds(8056)
 		.name("Scythe of vitur")
 		.rechargeAmount(20_000)
@@ -434,8 +433,8 @@ public enum ChargedWeapon
 			none afaik
 	 */
 	SANGUINESTI_STAFF(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.SANGUINESTI_STAFF, ItemID.HOLY_SANGUINESTI_STAFF)
-		.unchargedItemIds(ItemID.SANGUINESTI_STAFF_UNCHARGED, ItemID.HOLY_SANGUINESTI_STAFF_UNCHARGED)
+		.chargedItemIds(22323 /*SANGUINESTI_STAFF*/, 25731 /*HOLY_SANGUINESTI_STAFF*/)
+		.unchargedItemIds(22481 /*SANGUINESTI_STAFF_UNCHARGED*/, 25733 /*HOLY_SANGUINESTI_STAFF_UNCHARGED*/)
 		.animationIds(1167)
 		.name("Sanguinesti staff")
 		.rechargeAmount(20_000)
@@ -494,7 +493,7 @@ public enum ChargedWeapon
 			TODO
 	 */
 	ARCLIGHT(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.ARCLIGHT)
+		.chargedItemIds(19675 /*ARCLIGHT*/)
 		.animationIds(386, 390)
 		.name("Arclight")
 		.rechargeAmount(10_000)
@@ -542,16 +541,16 @@ public enum ChargedWeapon
 			see Ether Weapon common
 	 */
 	CRAWS(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.CRAWS_BOW)
-		.unchargedItemIds(ItemID.CRAWS_BOW_U)
+		.chargedItemIds(22550 /*CRAWS_BOW*/)
+		.unchargedItemIds(22547 /*CRAWS_BOW_U*/)
 		.animationIds(426)
 		.name("Craw's bow")
 		.rechargeAmount(16_000)
 		.configKeyName("craws_bow")
 	),
 	WEBWEAVER(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.WEBWEAVER_BOW_27655)
-		.unchargedItemIds(ItemID.WEBWEAVER_BOW_U_27652)
+		.chargedItemIds(27655 /*WEBWEAVER_BOW*/)
+		.unchargedItemIds(27652 /*WEBWEAVER_BOW_U*/)
 		.name("Webweaver bow")
 		.animationIds(426)
 		.rechargeAmount(16_000)
@@ -563,16 +562,16 @@ public enum ChargedWeapon
 			see Ether Weapon common
 	 */
 	VIGGORAS(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.VIGGORAS_CHAINMACE)
-		.unchargedItemIds(ItemID.VIGGORAS_CHAINMACE_U)
+		.chargedItemIds(22545 /*VIGGORAS_CHAINMACE*/)
+		.unchargedItemIds(22542 /*VIGGORAS_CHAINMACE_U*/)
 		.animationIds(245)
 		.name("Viggora's chainmace")
 		.rechargeAmount(16_000)
 		.configKeyName("viggoras_chainmace")
 	),
 	URSINE (new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.URSINE_CHAINMACE_27660)
-		.unchargedItemIds(ItemID.URSINE_CHAINMACE_U_27657)
+		.chargedItemIds(27660 /*URSINE_CHAINMACE*/)
+		.unchargedItemIds(27657 /*URSINE_CHAINMACE_U*/)
 		.name("Ursine chainmace")
 		.animationIds(245)
 		.rechargeAmount(16_000)
@@ -584,16 +583,16 @@ public enum ChargedWeapon
 			see Ether Weapon common
 	 */
 	THAMMARONS(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.THAMMARONS_SCEPTRE, ItemID.THAMMARONS_SCEPTRE_A)
-		.unchargedItemIds(ItemID.THAMMARONS_SCEPTRE_U, ItemID.THAMMARONS_SCEPTRE_AU)
+		.chargedItemIds(22555 /*THAMMARONS_SCEPTRE*/, 27788 /*THAMMARONS_SCEPTRE_A*/)
+		.unchargedItemIds(22552 /*THAMMARONS_SCEPTRE_U*/, 27785 /*THAMMARONS_SCEPTRE_AU*/)
 		.name("Thammaron's sceptre")
 		.animationIds(1167,1978,1979,1162,1167,7855,811)
 		.rechargeAmount(16_000)
 		.configKeyName("thammarons_sceptre")
 	),
 	ACCURSED(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.ACCURSED_SCEPTRE_27665, ItemID.ACCURSED_SCEPTRE_A_27679)
-		.unchargedItemIds(ItemID.ACCURSED_SCEPTRE_U_27662, ItemID.ACCURSED_SCEPTRE_AU_27676)
+		.chargedItemIds(27665 /*ACCURSED_SCEPTRE*/, 27679 /*ACCURSED_SCEPTRE_A*/)
+		.unchargedItemIds(27662 /*ACCURSED_SCEPTRE_U*/, 27676 /*ACCURSED_SCEPTRE_AU*/)
 		.name("Accursed sceptre")
 		//1178 1179 Ancient
 		//1162,1167,7855,811 Standard
@@ -610,7 +609,7 @@ public enum ChargedWeapon
 		there may be no message; I didn't see one at 100 charges.
 	 */
 	CRYSTAL_BOW(new ChargedWeaponBuilder() // crystal bow, for ctrl-f
-		.chargedItemIds(ItemID.CRYSTAL_BOW)
+		.chargedItemIds(23983 /*CRYSTAL_BOW*/)
 		.animationIds(426)
 		.name("Crystal bow")
 		.configKeyName("crystal_bow")
@@ -625,8 +624,8 @@ public enum ChargedWeapon
 2022-06-07 18:53:09 [Client] INFO  com.weaponcharges.Devtools - 3353: GAMEMESSAGE "<col=ff0000>Your bow of Faerdhinen has 100 charges remaining.</col>"
 	 */
 	BOW_OF_FAERDHINEN(new ChargedWeaponBuilder() // bofa bowfa, for ctrl-f :)
-		.chargedItemIds(ItemID.BOW_OF_FAERDHINEN)
-		.unchargedItemIds(ItemID.BOW_OF_FAERDHINEN_INACTIVE)
+		.chargedItemIds(25865 /*BOW_OF_FAERDHINEN*/)
+		.unchargedItemIds(25862 /*BOW_OF_FAERDHINEN_INACTIVE*/)
 		.animationIds(426)
 		.name("Bow of faerdhinen")
 		.configKeyName("bow_of_faerdhinen")
@@ -645,8 +644,8 @@ public enum ChargedWeapon
 2022-06-07 12:48:00 [Client] INFO  com.weaponcharges.Devtools - 81: GAMEMESSAGE "Your crystal legs has 982 charges remaining."
 	 */
 	CRYSTAL_HELM(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.CRYSTAL_HELM, ItemID.CRYSTAL_HELM_27705, ItemID.CRYSTAL_HELM_27717, ItemID.CRYSTAL_HELM_27729, ItemID.CRYSTAL_HELM_27741, ItemID.CRYSTAL_HELM_27753, ItemID.CRYSTAL_HELM_27765, ItemID.CRYSTAL_HELM_27777)
-		.unchargedItemIds(ItemID.CRYSTAL_HELM_INACTIVE, ItemID.CRYSTAL_HELM_INACTIVE_27707, ItemID.CRYSTAL_HELM_INACTIVE_27719, ItemID.CRYSTAL_HELM_INACTIVE_27731, ItemID.CRYSTAL_HELM_INACTIVE_27743, ItemID.CRYSTAL_HELM_INACTIVE_27755, ItemID.CRYSTAL_HELM_INACTIVE_27767, ItemID.CRYSTAL_HELM_INACTIVE_27779)
+		.chargedItemIds(23971 /*CRYSTAL_HELM*/, 27705 /*CRYSTAL_HELM_27705*/, 27717 /*CRYSTAL_HELM_27717*/, 27729 /*CRYSTAL_HELM_27729*/, 27741 /*CRYSTAL_HELM_27741*/, 27753 /*CRYSTAL_HELM_27753*/, 27765 /*CRYSTAL_HELM_27765*/, 27777 /*CRYSTAL_HELM_27777*/)
+		.unchargedItemIds(23973 /*CRYSTAL_HELM_INACTIVE*/, 27707 /*CRYSTAL_HELM_INACTIVE_27707*/, 27719 /*CRYSTAL_HELM_INACTIVE_27719*/, 27731 /*CRYSTAL_HELM_INACTIVE_27731*/, 27743 /*CRYSTAL_HELM_INACTIVE_27743*/, 27755 /*CRYSTAL_HELM_INACTIVE_27755*/, 27767 /*CRYSTAL_HELM_INACTIVE_27767*/, 27779 /*CRYSTAL_HELM_INACTIVE_27779*/)
 		.name("Crystal armour")
 		.configKeyName("crystal_helm")
 		.settingsConfigKey("crystal_armour")
@@ -655,8 +654,8 @@ public enum ChargedWeapon
 		)
 	),
 	CRYSTAL_BODY(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.CRYSTAL_BODY, ItemID.CRYSTAL_BODY_27697, ItemID.CRYSTAL_BODY_27709, ItemID.CRYSTAL_BODY_27721, ItemID.CRYSTAL_BODY_27733, ItemID.CRYSTAL_BODY_27745, ItemID.CRYSTAL_BODY_27757, ItemID.CRYSTAL_BODY_27769)
-		.unchargedItemIds(ItemID.CRYSTAL_BODY_INACTIVE, ItemID.CRYSTAL_BODY_INACTIVE_27699, ItemID.CRYSTAL_BODY_INACTIVE_27711, ItemID.CRYSTAL_BODY_INACTIVE_27723, ItemID.CRYSTAL_BODY_INACTIVE_27735, ItemID.CRYSTAL_BODY_INACTIVE_27747, ItemID.CRYSTAL_BODY_INACTIVE_27759, ItemID.CRYSTAL_BODY_INACTIVE_27771)
+		.chargedItemIds(23975 /*CRYSTAL_BODY*/, 27697 /*CRYSTAL_BODY_27697*/, 27709 /*CRYSTAL_BODY_27709*/, 27721 /*CRYSTAL_BODY_27721*/, 27733 /*CRYSTAL_BODY_27733*/, 27745 /*CRYSTAL_BODY_27745*/, 27757 /*CRYSTAL_BODY_27757*/, 27769 /*CRYSTAL_BODY_27769*/)
+		.unchargedItemIds(23977 /*CRYSTAL_BODY_INACTIVE*/, 27699 /*CRYSTAL_BODY_INACTIVE_27699*/, 27711 /*CRYSTAL_BODY_INACTIVE_27711*/, 27723 /*CRYSTAL_BODY_INACTIVE_27723*/, 27735 /*CRYSTAL_BODY_INACTIVE_27735*/, 27747 /*CRYSTAL_BODY_INACTIVE_27747*/, 27759 /*CRYSTAL_BODY_INACTIVE_27759*/, 27771 /*CRYSTAL_BODY_INACTIVE_27771*/)
 		.name("Crystal armour")
 		.configKeyName("crystal_body")
 		.settingsConfigKey("crystal_armour")
@@ -665,8 +664,8 @@ public enum ChargedWeapon
 		)
 	),
 	CRYSTAL_LEGS(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.CRYSTAL_LEGS, ItemID.CRYSTAL_LEGS_27701, ItemID.CRYSTAL_LEGS_27713, ItemID.CRYSTAL_LEGS_27725, ItemID.CRYSTAL_LEGS_27737, ItemID.CRYSTAL_LEGS_27749, ItemID.CRYSTAL_LEGS_27761, ItemID.CRYSTAL_LEGS_27773)
-		.unchargedItemIds(ItemID.CRYSTAL_LEGS_INACTIVE, ItemID.CRYSTAL_LEGS_INACTIVE_27703, ItemID.CRYSTAL_LEGS_INACTIVE_27715, ItemID.CRYSTAL_LEGS_INACTIVE_27727, ItemID.CRYSTAL_LEGS_INACTIVE_27739, ItemID.CRYSTAL_LEGS_INACTIVE_27751, ItemID.CRYSTAL_LEGS_INACTIVE_27763, ItemID.CRYSTAL_LEGS_INACTIVE_27775)
+		.chargedItemIds(23979 /*CRYSTAL_LEGS*/, 27701 /*CRYSTAL_LEGS_27701*/, 27713 /*CRYSTAL_LEGS_27713*/, 27725 /*CRYSTAL_LEGS_27725*/, 27737 /*CRYSTAL_LEGS_27737*/, 27749 /*CRYSTAL_LEGS_27749*/, 27761 /*CRYSTAL_LEGS_27761*/, 27773 /*CRYSTAL_LEGS_27773*/)
+		.unchargedItemIds(23981 /*CRYSTAL_LEGS_INACTIVE*/, 27703 /*CRYSTAL_LEGS_INACTIVE_27703*/, 27715 /*CRYSTAL_LEGS_INACTIVE_27715*/, 27727 /*CRYSTAL_LEGS_INACTIVE_27727*/, 27739 /*CRYSTAL_LEGS_INACTIVE_27739*/, 27751 /*CRYSTAL_LEGS_INACTIVE_27751*/, 27763 /*CRYSTAL_LEGS_INACTIVE_27763*/, 27775 /*CRYSTAL_LEGS_INACTIVE_27775*/)
 		.name("Crystal armour")
 		.configKeyName("crystal_legs")
 		.settingsConfigKey("crystal_armour")
@@ -711,8 +710,8 @@ public enum ChargedWeapon
         TODO
 	*/
 	SERPENTINE_HELM(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM)
-		.unchargedItemIds(ItemID.SERPENTINE_HELM_UNCHARGED, ItemID.TANZANITE_HELM_UNCHARGED, ItemID.MAGMA_HELM_UNCHARGED)
+		.chargedItemIds(12931 /*SERPENTINE_HELM*/, 13197 /*TANZANITE_HELM*/, 13199 /*MAGMA_HELM*/)
+		.unchargedItemIds(12929 /*SERPENTINE_HELM_UNCHARGED*/, 13196 /*TANZANITE_HELM_UNCHARGED*/, 13198 /*MAGMA_HELM_UNCHARGED*/)
 		.name("Serpentine helm")
 		.rechargeAmount(11_000)
 		.configKeyName("serpentine_helm")
@@ -776,8 +775,8 @@ public enum ChargedWeapon
 234586: dialog state changed: DialogState{NO_DIALOG}
 	 */
 	TUMEKENS_SHADOW(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.TUMEKENS_SHADOW)
-		.unchargedItemIds(ItemID.TUMEKENS_SHADOW_UNCHARGED)
+		.chargedItemIds(27275 /*TUMEKENS_SHADOW*/)
+		.unchargedItemIds(27277 /*TUMEKENS_SHADOW_UNCHARGED*/)
 		.animationIds(9493)
 		.name("Tumeken's shadow")
 		.rechargeAmount(20_000)
@@ -815,7 +814,7 @@ public enum ChargedWeapon
 	 * charges: darts and scales.
 	 */
 	TOXIC_BLOWPIPE(new ChargedWeaponBuilder()
-		.chargedItemIds(ItemID.TOXIC_BLOWPIPE)
+		.chargedItemIds(12926 /*TOXIC_BLOWPIPE*/)
 		.name("Toxic blowpipe")
 		.settingsConfigKey("blowpipe")
 	),
@@ -1033,4 +1032,3 @@ public enum ChargedWeapon
 		return SCYTHE_OF_VITUR;
 	}
 }
-
