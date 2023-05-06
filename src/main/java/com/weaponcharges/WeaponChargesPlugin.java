@@ -1064,9 +1064,13 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	public SerpModes getSerpHelmDisplayStyle()
 	{
-		SerpModes serpMode = SerpModes.valueOf(configManager.getConfiguration(CONFIG_GROUP_NAME, "serpentine_helm_display_style"));
-		if (serpMode == null) serpMode = PERCENT;
-		return serpMode;
+		String serpentine_helm_display_style = configManager.getConfiguration(CONFIG_GROUP_NAME, "serpentine_helm_display_style");
+		try
+		{
+			return SerpModes.valueOf(serpentine_helm_display_style);
+		} catch (IllegalArgumentException | NullPointerException e) {
+			return PERCENT;
+		}
 	}
 
 	private void openChangeLowChargeDialog(ChargedWeapon chargedWeapon, int currentLowCharge)
