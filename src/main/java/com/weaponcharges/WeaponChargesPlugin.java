@@ -38,6 +38,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,6 +58,7 @@ import net.runelite.api.ItemID;
 import net.runelite.api.KeyCode;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
+import net.runelite.api.Skill;
 import net.runelite.api.VarPlayer;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
@@ -67,6 +69,7 @@ import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.widgets.Widget;
@@ -223,6 +226,11 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Subscribe
 	public void onHitsplatApplied(HitsplatApplied e) {
 		int hitType = e.getHitsplat().getHitsplatType();
+		if (checkScytheHitsplats == client.getTickCount() && e.getHitsplat().isMine() && e.getHitsplat().getAmount() > 0 && scytheHitsplatsSeen <= 2) {
+			// skip first hit since one charge has already been removed due to the xp drop.
+			if (scytheHitsplatsSeen > 0) addCharges(ChargedWeapon.BLOOD_FURY, -1, false);
+			scytheHitsplatsSeen++;
+		}
 		ChargedWeapon helm = getEquippedChargedWeapon(EquipmentInventorySlot.HEAD);
 		if (helm == ChargedWeapon.SERPENTINE_HELM) {
 			if (e.getHitsplat().isMine()) { // Caused by or dealt to the local player.
@@ -700,6 +708,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Subscribe
 	public void onGameTick(GameTick tick)
 	{
+		bloodFuryAppliedThisTick = false;
+
 		// This delay is necessary because equipped items are updated after onAnimationChanged, so with items that share
 		// a game message it will not be possible to tell which item the message is for.
 		// The order must be: check messages, animation, charge update messages.
@@ -1122,6 +1132,32 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			.setType(MenuAction.RUNELITE)
 			.onClick(callback)
 			.setParent(submenuEntry);
+	}
+
+	private boolean bloodFuryAppliedThisTick = false;
+	private final Set<Integer> MELEE_ATTACK_ANIMATIONS = Set.of(8056, 245,376,381,386,390,8288,8290,8289,9471,6118,393,0,395,400,401,406,407,414,419,422,423,428,429,440,1058,1060,1062,1378,1658,1665,1667,2066,2067,2078,2661,3297,3298,3852,4503,5865,7004,7045,7054,7055,7514,7515,7516,7638,7639,7640,7641,7642,7643,7644,7645,8145,9171,1203, 5439, 8640);
+	private int checkScytheHitsplats = -1;
+	private int scytheHitsplatsSeen = 0;
+
+	@Subscribe
+	public void onStatChanged(StatChanged e) {
+		Skill skill = e.getSkill();
+		if (
+			!bloodFuryAppliedThisTick &&
+			(
+				skill == Skill.ATTACK ||
+				skill == Skill.STRENGTH ||
+				skill == Skill.DEFENCE && MELEE_ATTACK_ANIMATIONS.contains(client.getLocalPlayer().getAnimation())
+			) &&
+			getEquippedChargedWeapon(EquipmentInventorySlot.AMULET) == ChargedWeapon.BLOOD_FURY
+		) {
+			bloodFuryAppliedThisTick = true;
+			if (client.getLocalPlayer().getAnimation() == 8056) {
+				checkScytheHitsplats = client.getTickCount() + 1;
+				scytheHitsplatsSeen = 0;
+			}
+			addCharges(ChargedWeapon.BLOOD_FURY, -1, false);
+		}
 	}
 
 }

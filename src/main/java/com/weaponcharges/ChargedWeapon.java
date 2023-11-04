@@ -407,15 +407,11 @@ public enum ChargedWeapon
 	),
 	/* blood fury
 		check (full, <full & >1, 1, 0/empty):
-			full: "Your Amulet of blood fury will work for 30,000 more hits." TODO unimplemented, copied from screenshot
-			>1: GAMEMESSAGE "Your Amulet of blood fury will work for 9,016 more hits." TODO unimplemented
-			1: TODO
-			empty: TODO
+			full: "Your Amulet of blood fury will work for 30,000 more hits."
+			>1: GAMEMESSAGE "Your Amulet of blood fury will work for 9,016 more hits."
 
 		periodic updates (periodic, empty):
-			periodic: TODO
-			empty: TODO
-			attacking when empty: TODO
+			periodic: "Your Amulet of blood fury can perform 4,000 more hits." - from screenshot.
 
 		adding (adding by using items on the weapon, adding via right-click option, any other methods):
 			using items: TODO
@@ -423,15 +419,21 @@ public enum ChargedWeapon
 			other: TODO
 			TODO overcharge warning, different text?
 
-		removing (regular removal methods, dropping:
-			regular: TODO
-			dropping: TODO
-
-		message overlap:
-			TODO
-
 		How to track? either xp drop + hitsplats if it's possible to always see all of your own hitsplats, or xp drop + animation.
 	 */
+	BLOOD_FURY(new ChargedWeaponBuilder()
+		.chargedItemIds(24780 /*ItemID.AMULET_OF_BLOOD_FURY*/)
+		.name("Amulet of blood fury")
+		.rechargeAmount(10_000)
+		.configKeyName("amulet_of_blood_fury")
+		.checkChargesRegexes(
+			ChargesMessage.staticChargeMessage("You have successfully created an Amulet of blood fury.", 10_000),
+			ChargesMessage.matcherGroupChargeMessage("Your Amulet of blood fury will work for ([\\d,]+) more hits.", 1)
+		)
+		.updateMessageChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your Amulet of blood fury can perform ([\\d,]+) more hits.", 1)
+		)
+	),
 //	BLOOD_FURY(),
 	/* sang staff
 		check (full, <full & >1, 1, 0/empty):
