@@ -851,6 +851,26 @@ public enum ChargedWeapon
 		.name("Toxic blowpipe")
 		.settingsConfigKey("blowpipe")
 	),
+	VENATOR_BOW(new ChargedWeaponBuilder()
+		.chargedItemIds(27610 /*ItemID.VENATOR_BOW*/)
+		.unchargedItemIds(27612 /*ItemID.VENATOR_BOW_UNCHARGED*/)
+		.animationIds(9858)
+		.name("Venator bow")
+		.configKeyName("venator_bow")
+		.updateMessageChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("Your Venator bow has ([\\d,]+) charges remaining.", 1)
+		)
+		.checkChargesRegexes(
+			//Yep, same as the automatic message but with a lowercase 'v'.
+			ChargesMessage.matcherGroupChargeMessage("Your venator bow has ([\\d,]+) charges remaining.", 1)
+		)
+		.dialogHandlers(
+			new ChargesDialogHandler(
+				DialogStateMatcher.sprite(Pattern.compile("You use ([\\d,]+) ancient essence to charge your venator bow. It now has ([\\d,]+) charges."), null),
+				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
+			)
+		)
+	),
 	;
 
 	public static final List<ChargedWeapon> CRYSTAL_SHARD_RECHARGABLE_ITEMS = Arrays.asList(CRYSTAL_BOW, CRYSTAL_HELM, CRYSTAL_BODY, CRYSTAL_LEGS, BOW_OF_FAERDHINEN, CRYSTAL_HALBERD);
