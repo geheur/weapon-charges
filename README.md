@@ -49,11 +49,6 @@ arclight
     periodic update message
     charging/uncharging.
 
-blood fury
-
-    periodic update message
-    charging/uncharging.
-
 crystal armor, crystal shield
 
 blessed sara sword

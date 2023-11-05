@@ -431,12 +431,19 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Subscribe
 	public void onChatMessage(ChatMessage event)
 	{
+		System.out.println(event.getType());
+		long t = System.nanoTime();
 		if (event.getType() != ChatMessageType.GAMEMESSAGE && event.getType() != ChatMessageType.SPAM)
 		{
 			return;
 		}
 
 		String message = Text.removeTags(event.getMessage());
+
+		if (!message.startsWith("You")) {
+			System.out.println((System.nanoTime() - t) / 1_000);
+			return;
+		}
 
 		for (ChargesMessage checkMessage : ChargedWeapon.getNonUniqueCheckChargesRegexes())
 		{
@@ -498,6 +505,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		}
 
 		chatMessageBlowpipe(message);
+		System.out.println((System.nanoTime() - t) / 1_000);
 	}
 
 	private ChargedWeapon removeLastWeaponChecked()
