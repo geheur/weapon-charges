@@ -72,9 +72,9 @@ import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.kit.KitType;
+import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetID;
-import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.widgets.WidgetUtil;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatColorType;
 import net.runelite.client.chat.ChatMessageBuilder;
@@ -292,8 +292,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		for (MenuEntry menuEntry : client.getMenuEntries())
 		{
 			int itemId;
-			if (WidgetInfo.TO_GROUP(menuEntry.getParam1()) == WidgetID.EQUIPMENT_GROUP_ID) { // item is equipped.
-				int childId = WidgetInfo.TO_CHILD(menuEntry.getParam1());
+			if (WidgetUtil.componentToInterface(menuEntry.getParam1()) == InterfaceID.EQUIPMENT) { // item is equipped.
+				int childId = WidgetUtil.componentToId(menuEntry.getParam1());
 				if (childId == 16) // cape slot.
 				{
 					ItemContainer itemContainer = client.getItemContainer(InventoryID.EQUIPMENT);
@@ -336,8 +336,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	    	// TODO investigate shift-click.
 			if (config.devMode()) log.info("clicked \"check\" on " + event.getMenuTarget());
 
-			if (WidgetInfo.TO_GROUP(event.getParam1()) == WidgetID.EQUIPMENT_GROUP_ID) { // item is equipped.
-				int childId = WidgetInfo.TO_CHILD(event.getParam1());
+			if (WidgetUtil.componentToInterface(event.getParam1()) == InterfaceID.EQUIPMENT) { // item is equipped.
+				int childId = WidgetUtil.componentToId(event.getParam1());
 				if (childId == 18) {
 					ChargedWeapon chargedWeapon = getEquippedChargedWeapon(EquipmentInventorySlot.WEAPON);
 					if (chargedWeapon != null) lastWeaponChecked.add(chargedWeapon);
@@ -369,7 +369,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		} else if (event.getMenuOption().equalsIgnoreCase("unload") && event.getItemId() == ItemID.TOXIC_BLOWPIPE) {
 			checkBlowpipeUnload = client.getTickCount();
 		} else if (event.getMenuOption().equalsIgnoreCase("pages")) {
-			if (WidgetInfo.TO_GROUP(event.getParam1()) == WidgetID.EQUIPMENT_GROUP_ID) { // item is equipped.
+			if (WidgetUtil.componentToInterface(event.getParam1()) == InterfaceID.EQUIPMENT) { // item is equipped.
 				lastUsedOnWeapon = getEquippedChargedWeapon(EquipmentInventorySlot.SHIELD);
 			} else {
 				lastUsedOnWeapon = ChargedWeapon.getChargedWeaponFromId(event.getItemId());
@@ -997,12 +997,12 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			Widget w = entry.getWidget();
 
 			int itemId;
-			if (w != null && WidgetInfo.TO_GROUP(w.getId()) == WidgetID.INVENTORY_GROUP_ID
+			if (w != null && WidgetUtil.componentToInterface(w.getId()) == InterfaceID.INVENTORY
 				&& "Examine".equals(entry.getOption()) && entry.getIdentifier() == 10)
 			{
 				itemId = entry.getItemId();
 			}
-			else if (w != null && WidgetInfo.TO_GROUP(w.getId()) == WidgetID.EQUIPMENT_GROUP_ID
+			else if (w != null && WidgetUtil.componentToInterface(w.getId()) == InterfaceID.EQUIPMENT
 				&& "Examine".equals(entry.getOption()) && entry.getIdentifier() == 10)
 			{
 				w = w.getChild(1);

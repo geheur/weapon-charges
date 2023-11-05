@@ -17,7 +17,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.inject.Inject;
-import net.runelite.api.widgets.WidgetID;
+import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
@@ -36,8 +36,8 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 		showOnInventory();
 		showOnEquipment();
 		showOnBank();
-		showOnInterfaces(WidgetID.CHAMBERS_OF_XERIC_STORAGE_UNIT_INVENTORY_GROUP_ID);
-		showOnInterfaces(WidgetID.CHAMBERS_OF_XERIC_STORAGE_UNIT_PRIVATE_GROUP_ID);
+		showOnInterfaces(InterfaceID.CHAMBERS_OF_XERIC_INVENTORY);
+		showOnInterfaces(InterfaceID.CHAMBERS_OF_XERIC_STORAGE_UNIT_PRIVATE);
 	}
 
 	@Override
