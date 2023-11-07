@@ -833,17 +833,17 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	@Inject
 	ConfigManager configManager;
 
-	public Integer getCharges(ChargedWeapon weapon) {
+	public Float getCharges(ChargedWeapon weapon) {
 		String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, weapon.configKeyName);
 		if (configString == null) return null;
-		return Integer.parseInt(configString);
+		return Float.parseFloat(configString);
 	}
 
 	public void setCharges(ChargedWeapon weapon, int charges) {
 		setCharges(weapon, charges, true);
 	}
 
-	public void setCharges(ChargedWeapon weapon, int charges, boolean logChange) {
+	public void setCharges(ChargedWeapon weapon, float charges, boolean logChange) {
 		configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, weapon.configKeyName, Math.max(charges, 0));
 		if (logChange)
 		{
@@ -851,9 +851,10 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		}
 	}
 
-	public void addCharges(ChargedWeapon weapon, int change, boolean logChange) {
-		Integer charges = getCharges(weapon);
-		setCharges(weapon, (charges == null ? 0 : charges) + change, logChange);
+	public void addCharges(ChargedWeapon weapon, float change, boolean logChange) {
+		if (trailblazerRelicAffectsWeapon(weapon)) change *= 0.1f;
+		Float charges = getCharges(weapon);
+		setCharges(weapon, (charges == null ? 0f : charges) + change, logChange);
 	}
 
 	public Float getDartsLeft()
@@ -861,6 +862,46 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "blowpipeDarts");
 		if (configString == null) return null;
 		return Float.parseFloat(configString);
+	}
+
+	private static final Set<ChargedWeapon> MELEE_RELIC_CHARGE_SAVERS = Set.of(
+		ChargedWeapon.SCYTHE_OF_VITUR,
+		ChargedWeapon.ABYSSAL_TENTACLE,
+		ChargedWeapon.CRYSTAL_HALBERD,
+		ChargedWeapon.ARCLIGHT,
+		ChargedWeapon.VIGGORAS,
+		ChargedWeapon.URSINE
+	);
+	private static final Set<ChargedWeapon> RANGED_RELIC_CHARGE_SAVERS = Set.of(
+		ChargedWeapon.TOXIC_BLOWPIPE,
+		ChargedWeapon.CRYSTAL_BOW,
+		ChargedWeapon.BOW_OF_FAERDHINEN,
+		ChargedWeapon.CRAWS,
+		ChargedWeapon.WEBWEAVER,
+		ChargedWeapon.VENATOR_BOW
+	);
+	private static final Set<ChargedWeapon> MAGIC_RELIC_CHARGE_SAVERS = Set.of(
+		ChargedWeapon.TRIDENT_OF_THE_SEAS,
+		ChargedWeapon.TRIDENT_OF_THE_SEAS_E,
+		ChargedWeapon.TRIDENT_OF_THE_SWAMP,
+		ChargedWeapon.TRIDENT_OF_THE_SWAMP_E,
+		ChargedWeapon.WARPED_SCEPTRE,
+		ChargedWeapon.TUMEKENS_SHADOW,
+		ChargedWeapon.THAMMARONS,
+		ChargedWeapon.ACCURSED,
+		ChargedWeapon.SANGUINESTI_STAFF,
+		ChargedWeapon.IBANS_STAFF
+	);
+	private static final int MELEE_RELIC_VARBIT = -1;
+	private static final int RANGED_RELIC_VARBIT = -1;
+	private static final int MAGIC_RELIC_VARBIT = -1;
+	private boolean trailblazerRelicAffectsWeapon(ChargedWeapon weapon)
+	{
+		return false &&
+			(client.getVarbitValue(MELEE_RELIC_VARBIT) == 1 && MELEE_RELIC_CHARGE_SAVERS.contains(weapon)) ||
+			(client.getVarbitValue(RANGED_RELIC_VARBIT) == 1 && RANGED_RELIC_CHARGE_SAVERS.contains(weapon)) ||
+			(client.getVarbitValue(MAGIC_RELIC_VARBIT) == 1 && MAGIC_RELIC_CHARGE_SAVERS.contains(weapon))
+			;
 	}
 
 	void setDartsLeft(float dartsLeft)
@@ -878,6 +919,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	private void addDartsLeft(float change, boolean logChange) {
+		if (trailblazerRelicAffectsWeapon(ChargedWeapon.TOXIC_BLOWPIPE)) change *= 0.1f;
 		Float dartsLeft = getDartsLeft();
 		setDartsLeft((dartsLeft == null ? 0 : dartsLeft) + change, logChange);
 	}
@@ -917,6 +959,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	private void addScalesLeft(float change, boolean logChange) {
+		if (trailblazerRelicAffectsWeapon(ChargedWeapon.TOXIC_BLOWPIPE)) change *= 0.1f;
 		Float scalesLeft = getScalesLeft();
 		setScalesLeft((scalesLeft == null ? 0 : scalesLeft) + change, logChange);
 	}
