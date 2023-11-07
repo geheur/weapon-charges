@@ -60,7 +60,8 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 			Integer charges = null;
 			if (chargedWeapon.getItemIds().contains(itemId)) {
 				found = true;
-				charges = plugin.getCharges(chargedWeapon);
+				Float c = plugin.getCharges(chargedWeapon);
+				charges = c == null ? null : (int) (float) c;
 			} else if (chargedWeapon.getUnchargedIds().contains(itemId)) {
 				found = true;
 				charges = 0;
