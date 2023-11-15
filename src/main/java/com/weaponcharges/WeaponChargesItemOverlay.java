@@ -141,6 +141,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 						if (blowpipeChargesLow(scalesLeft, dartsLeft1)) topText.setColor(config.chargesTextLowColor());
 					}
 				}
+				break;
 			}
 		}
 
