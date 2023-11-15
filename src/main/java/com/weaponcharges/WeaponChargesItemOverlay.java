@@ -82,7 +82,8 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 					if (charges == 0 && config.emptyNotZero()) {
 						topText.setText("Empty");
 					} else {
-						topText.setText(String.valueOf(charges));
+						String prefix = chargedWeapon.leaguesRelicType == plugin.leaguesRelic() && chargedWeapon.leaguesAnimationIssue ? "~" : "";
+						topText.setText(prefix + charges);
 
 						if (chargedWeapon == SERPENTINE_HELM) {
 							String scalesLeftPercentDisplay = formatPercentage(charges, SERPENTINE_HELM.rechargeAmount);

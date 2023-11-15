@@ -58,19 +58,23 @@ import net.runelite.api.ItemID;
 import net.runelite.api.KeyCode;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
+import net.runelite.api.Player;
+import net.runelite.api.Projectile;
 import net.runelite.api.Skill;
 import net.runelite.api.VarPlayer;
+import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.events.ProjectileMoved;
 import net.runelite.api.events.StatChanged;
-import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
@@ -144,9 +148,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		keyManager.registerKeyListener(this);
 		dialogTracker.setStateChangedListener(this::dialogStateChanged);
 		dialogTracker.setOptionSelectedListener(this::optionSelected);
-
-		lastLocalPlayerAnimationChangedGameTick = -1;
-		lastLocalPlayerAnimationChanged = -1;
 	}
 
 	@Override
@@ -636,53 +637,16 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		}
 	}
 
-	private boolean checkTomeOfFire = false;
-	private boolean checkTomeOfWater = false;
 	private int checkBlowpipeUnload = -100;
 	private int checkSingleCrystalShardUse = -100;
-
-	@Subscribe
-	public void onClientTick(ClientTick clientTick)
-	{
-		if (checkTomeOfFire) {
-			int graphic = client.getLocalPlayer().getGraphic();
-			if (
-					graphic == 99 ||
-					graphic == 126 ||
-					graphic == 129 ||
-					graphic == 155 ||
-					graphic == 1464
-			) {
-				addCharges(ChargedWeapon.TOME_OF_FIRE, -1, false);
-			}
-		}
-		checkTomeOfFire = false;
-
-		if (checkTomeOfWater) {
-			int graphic = client.getLocalPlayer().getGraphic();
-			if (
-					graphic == 177 || //bind/snare/entangle
-					graphic == 102 || //curse spells
-					graphic == 105 ||
-					graphic == 108 ||
-					graphic == 167 ||
-					graphic == 170 ||
-					graphic == 173 ||
-					graphic ==  93 || //water spells
-					graphic == 120 ||
-					graphic == 135 ||
-					graphic == 161 ||
-					graphic == 1458
-			) {
-				addCharges(ChargedWeapon.TOME_OF_WATER, -1, false);
-			}
-			checkTomeOfWater = false;
-		}
-	}
 
 	private int lastLocalPlayerAnimationChangedGameTick = -1;
 	// I record the animation id so that animation changing plugins that change the animation (e.g. weapon animation replacer) can't interfere.
 	private int lastLocalPlayerAnimationChanged = -1;
+	private int lastLocalPlayerGraphicChangedGameTick = -1;
+	// I record the graphic id so that graphic changing plugins that change the graphic can't interfere.
+	private int lastLocalPlayerGraphicChanged = -1;
+	private int checkBlowpipeGameTick = -1;
 
 	@Subscribe(priority = 10.0f) // I want to get ahead of those pesky animation modifying plugins.
 	public void onAnimationChanged(AnimationChanged event)
@@ -694,6 +658,37 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		lastLocalPlayerAnimationChanged = actor.getAnimation();
 	}
 
+	@Subscribe(priority = 10.0f)
+	public void onGraphicChanged(GraphicChanged event)
+	{
+		final Actor actor = event.getActor();
+		if (actor != client.getLocalPlayer()) return;
+
+		lastLocalPlayerGraphicChangedGameTick = client.getTickCount();
+		lastLocalPlayerGraphicChanged = actor.getGraphic();
+	}
+
+	@Subscribe(priority = 10.0f)
+	public void onProjectileMoved(ProjectileMoved event)
+	{
+		Projectile projectile = event.getProjectile();
+		if (client.getGameCycle() >= projectile.getStartCycle()) return; // skip already seen projectiles.
+
+		// This is the player's actual location which is what projectiles use as their start position. Player#getX, #getSceneX, etc., do not work here.
+		Player player = client.getLocalPlayer();
+		final WorldPoint playerPos = player.getWorldLocation();
+		if (playerPos == null) return;
+		final LocalPoint playerPosLocal = LocalPoint.fromWorld(client, playerPos);
+		if (playerPosLocal == null) return;
+
+		if (projectile.getX1() != playerPosLocal.getX() || projectile.getY1() != playerPosLocal.getY()) return;
+
+		int id = projectile.getId();
+		if (id == 1122 || id == 1936 || (id >= 226 && id <= 231)) {
+			checkBlowpipeGameTick = client.getTickCount();
+		}
+	}
+
 	private static final int TICKS_RAPID_PVM = 2;
 //	private static final int TICKS_RAPID_PVP = 3;
 	private static final int TICKS_NORMAL_PVM = 3;
@@ -701,9 +696,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	public static final int MAX_SCALES_BLOWPIPE = 16383;
 	public static final int MAX_DARTS = 16383;
 
-	private int ticks = 0;
-	private int ticksInAnimation;
-	private int lastAnimationStart = 0;
+	private int blowpipeCooldownUp = 0;
 
 	@Subscribe
 	public void onGameTick(GameTick tick)
@@ -715,11 +708,14 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		// The order must be: check messages, animation, charge update messages.
 		// Runelite's order is: onChatMessage, onAnimationChanged, onGameTick.
 		// charge update messages must also be delayed due to equipment slot info not being current in onChatMessage.
-		if (lastLocalPlayerAnimationChangedGameTick == client.getTickCount()) checkAnimation();
+		checkAnimation(lastLocalPlayerAnimationChangedGameTick == client.getTickCount(), lastLocalPlayerGraphicChangedGameTick == client.getTickCount());
 
-		if (lastLocalPlayerAnimationChanged == BLOWPIPE_ATTACK_ANIMATION)
-		{
-			blowpipeOnGameTick();
+		if (lastLocalPlayerAnimationChanged == BLOWPIPE_ATTACK_ANIMATION && checkBlowpipeGameTick == client.getTickCount() && client.getTickCount() >= blowpipeCooldownUp) {
+			blowpipeCooldownUp = client.getTickCount() +
+				client.getVarpValue(VarPlayer.ATTACK_STYLE) == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM +
+				leaguesRelic() == ChargedWeapon.RANGE_RELIC ? -1 : 0
+			;
+			consumeBlowpipeCharges();
 		}
 
 		if (!delayChargeUpdateUntilAfterAnimations.isEmpty()) {
@@ -738,59 +734,43 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		lastWeaponChecked = new ArrayList<>();
 	}
 
-	private void blowpipeOnGameTick()
+	private void checkAnimation(boolean checkAnimation, boolean checkGraphic)
 	{
-		if (ticks == 0) {
-			lastAnimationStart = client.getTickCount();
-		} else {
-			if (client.getTickCount() - lastAnimationStart > ticksInAnimation) {
-				ticks = 0;
-				lastAnimationStart = client.getTickCount();
-			}
-		}
+		if (!checkAnimation && !checkGraphic) return;
 
-		ticks++;
-//		System.out.println(client.getTickCount() + " blowpipe: " + ticks + " " + ticksInAnimation);
-
-		if (ticks == ticksInAnimation)
-		{
-//			System.out.println(client.getTickCount() + " blowpipe hits (animation update): " + ++blowpipeHits + " " + blowpipeHitsBySound);
-			consumeBlowpipeCharges();
-			ticks = 0;
-		}
-	}
-
-	private void checkAnimation()
-	{
 		ItemContainer itemContainer = client.getItemContainer(InventoryID.EQUIPMENT);
 		if (itemContainer == null) return;
-
 		Item weapon = itemContainer.getItem(EquipmentInventorySlot.WEAPON.getSlotIdx());
 		int weaponItemId = (weapon == null) ? -1 : weapon.getId();
-
 		Item offhand = itemContainer.getItem(EquipmentInventorySlot.SHIELD.getSlotIdx());
 		int offhandItemId = (offhand == null) ? -1 : offhand.getId();
 
+		int relic = leaguesRelic();
 		for (ChargedWeapon chargedWeapon : ChargedWeapon.values()) {
-			if (
-				(chargedWeapon.getItemIds().contains(weaponItemId) || chargedWeapon.getItemIds().contains(offhandItemId)) &&
-					chargedWeapon.animationIds.contains(lastLocalPlayerAnimationChanged))
-			{
-				if (chargedWeapon == ChargedWeapon.TOME_OF_FIRE) {
-					checkTomeOfFire = true;
-				} else if (chargedWeapon == ChargedWeapon.TOME_OF_WATER) {
-					checkTomeOfWater = true;
-				} else {
-					addCharges(chargedWeapon, -1, false);
+			if (chargedWeapon.getItemIds().contains(weaponItemId) || chargedWeapon.getItemIds().contains(offhandItemId)) {
+				boolean isLeagueAffected = chargedWeapon.leaguesRelicType == relic;
+				if (isLeagueAffected && chargedWeapon.leaguesAnimationIssue) continue;
+
+				if (
+					checkAnimation && chargedWeapon.animationIds.contains(lastLocalPlayerAnimationChanged) ||
+					checkGraphic && chargedWeapon.graphicIds.contains(lastLocalPlayerGraphicChanged)
+				) {
+					addCharges(chargedWeapon, isLeagueAffected ? -.1f : -1, false);
 				}
 			}
 		}
 	}
 
+	public int leaguesRelic()
+	{
+		return client.getVarbitValue(10052);
+	}
+
 	private void consumeBlowpipeCharges()
 	{
-		addDartsLeft(-1 * getAmmoLossChance(), false);
-		addScalesLeft(-2/3f, false);
+		float leaguesMultiplier = leaguesRelic() == ChargedWeapon.RANGE_RELIC ? .1f : 1;
+		addDartsLeft(leaguesMultiplier * -1 * getAmmoLossChance(), false);
+		addScalesLeft(leaguesMultiplier * -2/3f, false);
 	}
 
 	private float getAmmoLossChance()
@@ -822,14 +802,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		}
 	}
 
-	@Subscribe
-	public void onVarbitChanged(VarbitChanged event)
-	{
-		if (event.getVarpId() == VarPlayer.ATTACK_STYLE) {
-			ticksInAnimation = event.getValue() == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM;
-		}
-	}
-
 	@Inject
 	ConfigManager configManager;
 
@@ -852,7 +824,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	public void addCharges(ChargedWeapon weapon, float change, boolean logChange) {
-		if (trailblazerRelicAffectsWeapon(weapon)) change *= 0.1f;
 		Float charges = getCharges(weapon);
 		setCharges(weapon, (charges == null ? 0f : charges) + change, logChange);
 	}
@@ -862,46 +833,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "blowpipeDarts");
 		if (configString == null) return null;
 		return Float.parseFloat(configString);
-	}
-
-	private static final Set<ChargedWeapon> MELEE_RELIC_CHARGE_SAVERS = Set.of(
-		ChargedWeapon.SCYTHE_OF_VITUR,
-		ChargedWeapon.ABYSSAL_TENTACLE,
-		ChargedWeapon.CRYSTAL_HALBERD,
-		ChargedWeapon.ARCLIGHT,
-		ChargedWeapon.VIGGORAS,
-		ChargedWeapon.URSINE
-	);
-	private static final Set<ChargedWeapon> RANGED_RELIC_CHARGE_SAVERS = Set.of(
-		ChargedWeapon.TOXIC_BLOWPIPE,
-		ChargedWeapon.CRYSTAL_BOW,
-		ChargedWeapon.BOW_OF_FAERDHINEN,
-		ChargedWeapon.CRAWS,
-		ChargedWeapon.WEBWEAVER,
-		ChargedWeapon.VENATOR_BOW
-	);
-	private static final Set<ChargedWeapon> MAGIC_RELIC_CHARGE_SAVERS = Set.of(
-		ChargedWeapon.TRIDENT_OF_THE_SEAS,
-		ChargedWeapon.TRIDENT_OF_THE_SEAS_E,
-		ChargedWeapon.TRIDENT_OF_THE_SWAMP,
-		ChargedWeapon.TRIDENT_OF_THE_SWAMP_E,
-		ChargedWeapon.WARPED_SCEPTRE,
-		ChargedWeapon.TUMEKENS_SHADOW,
-		ChargedWeapon.THAMMARONS,
-		ChargedWeapon.ACCURSED,
-		ChargedWeapon.SANGUINESTI_STAFF,
-		ChargedWeapon.IBANS_STAFF
-	);
-	private static final int MELEE_RELIC_VARBIT = -1;
-	private static final int RANGED_RELIC_VARBIT = -1;
-	private static final int MAGIC_RELIC_VARBIT = -1;
-	private boolean trailblazerRelicAffectsWeapon(ChargedWeapon weapon)
-	{
-		return false &&
-			(client.getVarbitValue(MELEE_RELIC_VARBIT) == 1 && MELEE_RELIC_CHARGE_SAVERS.contains(weapon)) ||
-			(client.getVarbitValue(RANGED_RELIC_VARBIT) == 1 && RANGED_RELIC_CHARGE_SAVERS.contains(weapon)) ||
-			(client.getVarbitValue(MAGIC_RELIC_VARBIT) == 1 && MAGIC_RELIC_CHARGE_SAVERS.contains(weapon))
-			;
 	}
 
 	void setDartsLeft(float dartsLeft)
@@ -919,7 +850,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	private void addDartsLeft(float change, boolean logChange) {
-		if (trailblazerRelicAffectsWeapon(ChargedWeapon.TOXIC_BLOWPIPE)) change *= 0.1f;
 		Float dartsLeft = getDartsLeft();
 		setDartsLeft((dartsLeft == null ? 0 : dartsLeft) + change, logChange);
 	}
@@ -959,7 +889,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	}
 
 	private void addScalesLeft(float change, boolean logChange) {
-		if (trailblazerRelicAffectsWeapon(ChargedWeapon.TOXIC_BLOWPIPE)) change *= 0.1f;
 		Float scalesLeft = getScalesLeft();
 		setScalesLeft((scalesLeft == null ? 0 : scalesLeft) + change, logChange);
 	}
@@ -1192,7 +1121,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				skill == Skill.STRENGTH ||
 				skill == Skill.DEFENCE && MELEE_ATTACK_ANIMATIONS.contains(client.getLocalPlayer().getAnimation())
 			) &&
-			getEquippedChargedWeapon(EquipmentInventorySlot.AMULET) == ChargedWeapon.BLOOD_FURY
+			getEquippedChargedWeapon(EquipmentInventorySlot.AMULET) == ChargedWeapon.BLOOD_FURY &&
+			leaguesRelic() != ChargedWeapon.MELEE_RELIC // not affected by charge saving but cannot track due to animation speed.
 		) {
 			bloodFuryAppliedThisTick = true;
 			if (client.getLocalPlayer().getAnimation() == 8056) {
