@@ -887,7 +887,7 @@ public enum ChargedWeapon
 	 * charges: darts and scales.
 	 */
 	TOXIC_BLOWPIPE(new ChargedWeaponBuilder()
-		.chargedItemIds(12926 /*TOXIC_BLOWPIPE*/)
+		.chargedItemIds(12926 /*TOXIC_BLOWPIPE*/, 28688 /*blazing blowpipe*/)
 		.name("Toxic blowpipe")
 		.settingsConfigKey("blowpipe")
 		.leaguesRangeRelic()
