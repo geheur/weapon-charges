@@ -43,31 +43,28 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 	@Override
 	public void renderItemOverlay(Graphics2D graphics, int itemId, WidgetItem itemWidget)
 	{
-		graphics.setFont(FontManager.getRunescapeSmallFont());
-
-		Rectangle bounds = itemWidget.getCanvasBounds();
-		TextComponent topText = new TextComponent();
-		topText.setPosition(new java.awt.Point(bounds.x - 1, bounds.y + 10));
-		topText.setText("");
-		topText.setColor(config.chargesTextRegularColor());
-		TextComponent bottomText = new TextComponent();
-		bottomText.setPosition(new java.awt.Point(bounds.x - 1, bounds.y + 30));
-		bottomText.setText("");
-		bottomText.setColor(config.chargesTextRegularColor());
-
-		boolean found = false;
 		for (ChargedWeapon chargedWeapon : ChargedWeapon.values()) {
-			Integer charges = null;
+			Integer charges;
 			if (chargedWeapon.getItemIds().contains(itemId)) {
-				found = true;
 				Float c = plugin.getCharges(chargedWeapon);
 				charges = c == null ? null : (int) (float) c;
 			} else if (chargedWeapon.getUnchargedIds().contains(itemId)) {
-				found = true;
 				charges = 0;
+			} else {
+				continue;
 			}
 
-			if (!found) continue;
+			graphics.setFont(FontManager.getRunescapeSmallFont());
+
+			Rectangle bounds = itemWidget.getCanvasBounds();
+			TextComponent topText = new TextComponent();
+			topText.setPosition(new java.awt.Point(bounds.x - 1, bounds.y + 10));
+			topText.setText("");
+			topText.setColor(config.chargesTextRegularColor());
+			TextComponent bottomText = new TextComponent();
+			bottomText.setPosition(new java.awt.Point(bounds.x - 1, bounds.y + 30));
+			bottomText.setText("");
+			bottomText.setColor(config.chargesTextRegularColor());
 
 			if (chargedWeapon != ChargedWeapon.TOXIC_BLOWPIPE) {
 				if (charges == null) {
@@ -82,10 +79,10 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 					if (charges == 0 && config.emptyNotZero()) {
 						topText.setText("Empty");
 					} else {
-						String prefix = chargedWeapon.leaguesRelicType == plugin.leaguesRelic() && chargedWeapon.leaguesAnimationIssue ? "~" : "";
-						topText.setText(prefix + charges);
-
-						if (chargedWeapon == SERPENTINE_HELM) {
+						if (chargedWeapon != SERPENTINE_HELM) {
+							String prefix = chargedWeapon.leaguesRelicType == plugin.leaguesRelic() && chargedWeapon.leaguesAnimationIssue ? "~" : "";
+							topText.setText(prefix + ((charges >= 10000) ? (charges / 1000) + "k" : charges));
+						} else {
 							String scalesLeftPercentDisplay = formatPercentage(charges, SERPENTINE_HELM.rechargeAmount);
 							SerpModes displayStyle = plugin.getSerpHelmDisplayStyle();
 							if (displayStyle == PERCENT) {
@@ -99,7 +96,6 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 					}
 					if (isLowCharge) topText.setColor(config.chargesTextLowColor());
 				}
-				break;
 			}
 			else
 			{
@@ -142,13 +138,11 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 						if (blowpipeChargesLow(scalesLeft, dartsLeft1)) topText.setColor(config.chargesTextLowColor());
 					}
 				}
-				break;
 			}
-		}
 
-		if (found) {
 			topText.render(graphics);
 			bottomText.render(graphics);
+			return;
 		}
 	}
 
