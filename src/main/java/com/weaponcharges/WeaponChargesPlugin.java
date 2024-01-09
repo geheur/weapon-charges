@@ -712,8 +712,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 		if (lastLocalPlayerAnimationChanged == BLOWPIPE_ATTACK_ANIMATION && checkBlowpipeGameTick == client.getTickCount() && client.getTickCount() >= blowpipeCooldownUp) {
 			blowpipeCooldownUp = client.getTickCount() +
-				client.getVarpValue(VarPlayer.ATTACK_STYLE) == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM +
-				leaguesRelic() == ChargedWeapon.RANGE_RELIC ? -1 : 0
+				client.getVarpValue(VarPlayer.ATTACK_STYLE) == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM
 			;
 			consumeBlowpipeCharges();
 		}
@@ -745,17 +744,13 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		Item offhand = itemContainer.getItem(EquipmentInventorySlot.SHIELD.getSlotIdx());
 		int offhandItemId = (offhand == null) ? -1 : offhand.getId();
 
-		int relic = leaguesRelic();
 		for (ChargedWeapon chargedWeapon : ChargedWeapon.values()) {
 			if (chargedWeapon.getItemIds().contains(weaponItemId) || chargedWeapon.getItemIds().contains(offhandItemId)) {
-				boolean isLeagueAffected = chargedWeapon.leaguesRelicType == relic;
-				if (isLeagueAffected && chargedWeapon.leaguesAnimationIssue) continue;
-
 				if (
 					checkAnimation && chargedWeapon.animationIds.contains(lastLocalPlayerAnimationChanged) ||
 					checkGraphic && chargedWeapon.graphicIds.contains(lastLocalPlayerGraphicChanged)
 				) {
-					addCharges(chargedWeapon, isLeagueAffected ? -.1f : -1, false);
+					addCharges(chargedWeapon, -1, false);
 				}
 			}
 		}
@@ -768,9 +763,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	private void consumeBlowpipeCharges()
 	{
-		float leaguesMultiplier = leaguesRelic() == ChargedWeapon.RANGE_RELIC ? .1f : 1;
-		addDartsLeft(leaguesMultiplier * -1 * getAmmoLossChance(), false);
-		addScalesLeft(leaguesMultiplier * -2/3f, false);
+		addDartsLeft(-1 * getAmmoLossChance(), false);
+		addScalesLeft(-2/3f, false);
 	}
 
 	private float getAmmoLossChance()
@@ -1121,8 +1115,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				skill == Skill.STRENGTH ||
 				skill == Skill.DEFENCE && MELEE_ATTACK_ANIMATIONS.contains(client.getLocalPlayer().getAnimation())
 			) &&
-			getEquippedChargedWeapon(EquipmentInventorySlot.AMULET) == ChargedWeapon.BLOOD_FURY &&
-			leaguesRelic() != ChargedWeapon.MELEE_RELIC // not affected by charge saving but cannot track due to animation speed.
+			getEquippedChargedWeapon(EquipmentInventorySlot.AMULET) == ChargedWeapon.BLOOD_FURY
 		) {
 			bloodFuryAppliedThisTick = true;
 			if (client.getLocalPlayer().getAnimation() == 8056) {

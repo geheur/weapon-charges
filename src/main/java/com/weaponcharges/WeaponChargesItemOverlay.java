@@ -80,7 +80,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 						topText.setText("Empty");
 					} else {
 						if (chargedWeapon != SERPENTINE_HELM) {
-							String prefix = chargedWeapon.leaguesRelicType == plugin.leaguesRelic() && chargedWeapon.leaguesAnimationIssue ? "~" : "";
+							String prefix = ""; // This used to be used to show "~". Keeping in case I want this later.
 							topText.setText(prefix + ((charges >= 10000) ? (charges / 1000) + "k" : charges));
 						} else {
 							String scalesLeftPercentDisplay = formatPercentage(charges, SERPENTINE_HELM.rechargeAmount);

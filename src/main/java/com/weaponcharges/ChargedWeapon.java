@@ -91,8 +91,6 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericSpriteDialogFullChargeMessage()
 			)
 		)
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(false)
 	),
 
 	/* Tridents
@@ -151,8 +149,6 @@ public enum ChargedWeapon
 			ChargesMessage.staticChargeMessage("Your Trident of the seas has one charge.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the seas has no charges.", 0)
 		)
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(false)
 	),
 	TRIDENT_OF_THE_SWAMP(new ChargedWeaponBuilder()
 		.chargedItemIds(12899 /*TRIDENT_OF_THE_SWAMP*/)
@@ -172,8 +168,6 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericUnchargeDialog()
 			)
 		)
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(false)
 	),
 	TRIDENT_OF_THE_SEAS_E(new ChargedWeaponBuilder()
 		.chargedItemIds(22288 /*TRIDENT_OF_THE_SEAS_E*/)
@@ -187,8 +181,6 @@ public enum ChargedWeapon
 			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has one charge.", 1),
 			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has no charges.", 0)
 		)
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(false)
 	),
 	TRIDENT_OF_THE_SWAMP_E(new ChargedWeaponBuilder()
 		.chargedItemIds(22292 /*TRIDENT_OF_THE_SWAMP_E*/)
@@ -208,8 +200,6 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericUnchargeDialog()
 			)
 		)
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(false)
 	),
 	WARPED_SCEPTRE(new ChargedWeaponBuilder()
 			.chargedItemIds(28585 /*WARPED_SCEPTRE*/)
@@ -241,8 +231,6 @@ public enum ChargedWeapon
 							ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 					)
 			)
-			.leaguesMageRelic()
-			.leaguesAnimationIssue(true)
 	),
 
 	ABYSSAL_TENTACLE(new ChargedWeaponBuilder()
@@ -254,8 +242,6 @@ public enum ChargedWeapon
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your abyssal tentacle can perform ([\\d,]+) more attacks.", 1)
 		)
-		.leaguesMeleeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	/* chally
 		checking:
@@ -287,8 +273,6 @@ public enum ChargedWeapon
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your crystal halberd has ([\\d,]+) charges remaining.", 1)
 		)
-		.leaguesMeleeRelic()
-		.leaguesAnimationIssue(false)
 	),
 
 	/* Tome of fire:
@@ -421,8 +405,6 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericSpriteDialogUnchargeMessage()
 			)
 		)
-		.leaguesMeleeRelic()
-		.leaguesAnimationIssue(true)
 	),
 	/* blood fury
 		check (full, <full & >1, 1, 0/empty):
@@ -519,8 +501,6 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 3)
 			)
 		)
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(false)
 	),
 	/* arclight
 		check (full, <full & >1, 1, 0/empty):
@@ -555,8 +535,6 @@ public enum ChargedWeapon
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your arclight has ([\\d,]+) charges left.", 1)
 		)
-		.leaguesMeleeRelic()
-		.leaguesAnimationIssue(true)
 	),
 	/* Ether Weapon common
 		check (full, <full & >1, 1, 0/empty):
@@ -603,8 +581,6 @@ public enum ChargedWeapon
 		.name("Craw's bow")
 		.rechargeAmount(16_000)
 		.configKeyName("craws_bow")
-		.leaguesRangeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	WEBWEAVER(new ChargedWeaponBuilder()
 		.chargedItemIds(27655 /*WEBWEAVER_BOW*/)
@@ -614,8 +590,6 @@ public enum ChargedWeapon
 		.rechargeAmount(16_000)
 		.configKeyName("webweaver_bow")
 		.settingsConfigKey("craws_bow")
-		.leaguesRangeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	/* Vigorra's chainmace
 		message overlap:
@@ -628,8 +602,6 @@ public enum ChargedWeapon
 		.name("Viggora's chainmace")
 		.rechargeAmount(16_000)
 		.configKeyName("viggoras_chainmace")
-		.leaguesMeleeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	URSINE (new ChargedWeaponBuilder()
 		.chargedItemIds(27660 /*URSINE_CHAINMACE*/)
@@ -639,8 +611,6 @@ public enum ChargedWeapon
 		.rechargeAmount(16_000)
 		.configKeyName("ursine_chainmace")
 		.settingsConfigKey("viggoras_chainmace")
-		.leaguesMeleeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	/* Thammaron's sceptre
 		message overlap:
@@ -653,8 +623,6 @@ public enum ChargedWeapon
 		.animationIds(1167,1978,1979,1162,1167,7855,811, 9961)
 		.rechargeAmount(16_000)
 		.configKeyName("thammarons_sceptre")
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(true)
 	),
 	ACCURSED(new ChargedWeaponBuilder()
 		.chargedItemIds(27665 /*ACCURSED_SCEPTRE*/, 27679 /*ACCURSED_SCEPTRE_A*/)
@@ -667,8 +635,6 @@ public enum ChargedWeapon
 		.rechargeAmount(16_000)
 		.configKeyName("accursed_sceptre")
 		.settingsConfigKey("thammarons_sceptre")
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(true)
 	),
 	/*
 	check:
@@ -684,8 +650,6 @@ public enum ChargedWeapon
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your crystal bow has ([\\d,]+) charges remaining.", 1)
 		)
-		.leaguesRangeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	/*
 	check:
@@ -705,8 +669,6 @@ public enum ChargedWeapon
 		.updateMessageChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ff0000>Your bow of Faerdhinen has ([\\d,]+) charges remaining.</col>"), 1)
 		)
-		.leaguesRangeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	/*
 	crystal armor
@@ -880,8 +842,6 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 			)
 		)
-		.leaguesMageRelic()
-		.leaguesAnimationIssue(false)
 	),
 	/**
 	 * Only used to access settings. Lots of things in the blowpipe are handled specially because it holds two kinds of
@@ -891,8 +851,6 @@ public enum ChargedWeapon
 		.chargedItemIds(12926 /*TOXIC_BLOWPIPE*/, 28688 /*blazing blowpipe*/)
 		.name("Toxic blowpipe")
 		.settingsConfigKey("blowpipe")
-		.leaguesRangeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	VENATOR_BOW(new ChargedWeaponBuilder()
 		.chargedItemIds(27610 /*ItemID.VENATOR_BOW*/)
@@ -913,15 +871,10 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 			)
 		)
-		.leaguesRangeRelic()
-		.leaguesAnimationIssue(false)
 	),
 	;
 
 	public static final List<ChargedWeapon> CRYSTAL_SHARD_RECHARGABLE_ITEMS = Arrays.asList(CRYSTAL_BOW, CRYSTAL_HELM, CRYSTAL_BODY, CRYSTAL_LEGS, BOW_OF_FAERDHINEN, CRYSTAL_HALBERD);
-	public static final int MELEE_RELIC = 2;
-	public static final int RANGE_RELIC = 1;
-	public static final int MAGE_RELIC = 3;
 
 	@Getter
 	private static final List<ChargesMessage> nonUniqueCheckChargesRegexes = Arrays.asList(
@@ -1043,24 +996,6 @@ public enum ChargedWeapon
 			this.defaultLowChargeThreshold = defaultLowChargeThreshold;
 			return this;
 		}
-		int leaguesRelicType = -1;
-		public ChargedWeaponBuilder leaguesMeleeRelic() {
-			this.leaguesRelicType = MELEE_RELIC;
-			return this;
-		}
-		public ChargedWeaponBuilder leaguesRangeRelic() {
-			this.leaguesRelicType = RANGE_RELIC;
-			return this;
-		}
-		public ChargedWeaponBuilder leaguesMageRelic() {
-			this.leaguesRelicType = MAGE_RELIC;
-			return this;
-		}
-		boolean leaguesAnimationIssue = false;
-		public ChargedWeaponBuilder leaguesAnimationIssue(boolean leaguesAnimationIssue) {
-			this.leaguesAnimationIssue = leaguesAnimationIssue;
-			return this;
-		}
 		public List<Integer> graphicIds = Collections.emptyList();
 		public ChargedWeaponBuilder graphicIds(Integer... graphicIds) {
 			this.graphicIds = Arrays.asList(graphicIds);
@@ -1085,8 +1020,6 @@ public enum ChargedWeapon
 	private final List<ChargesMessage> checkChargesRegexes;
 	private final List<ChargesMessage> updateMessageChargesRegexes;
 	private final List<ChargesDialogHandler> dialogHandlers;
-	public final int leaguesRelicType;
-	public final boolean leaguesAnimationIssue;
 
 	ChargedWeapon(ChargedWeaponBuilder builder) {
 		this.itemIds = builder.chargedItemIds;
@@ -1102,8 +1035,6 @@ public enum ChargedWeapon
 		this.checkChargesRegexes = builder.checkChargesRegexes;
 		this.updateMessageChargesRegexes = builder.updateMessageChargesRegexes;
 		this.dialogHandlers = builder.dialogHandlers;
-		this.leaguesAnimationIssue = builder.leaguesAnimationIssue;
-		this.leaguesRelicType = builder.leaguesRelicType;
 	}
 
 	public static ChargedWeapon getChargedWeaponFromId(int itemId)
