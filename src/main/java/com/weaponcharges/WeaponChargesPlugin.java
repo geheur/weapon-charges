@@ -979,6 +979,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				&& "Examine".equals(entry.getOption()) && entry.getIdentifier() == 10)
 			{
 				w = w.getChild(1);
+				if (w == null) continue;
 				itemId = w.getItemId();
 			}
 			else
