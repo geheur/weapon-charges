@@ -76,18 +76,18 @@ public enum ChargedWeapon
 		.defaultLowChargeThreshold(250)
 		.configKeyName("ibans_staff")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("You have ([\\d,]+) charges left on the staff.", 1),
-			ChargesMessage.staticChargeMessage("You have a charge left on the staff.", 1),
-			ChargesMessage.staticChargeMessage("You have no charges left on the staff.", 0)
+			ChargesMessage.matcherGroupChargeMessage("You have ([\\d,]+) charges left on the staff\\.", 1),
+			ChargesMessage.staticChargeMessage("You have a charge left on the staff\\.", 1),
+			ChargesMessage.staticChargeMessage("You have no charges left on the staff\\.", 0)
 		)
 		.updateMessageChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your staff only has ([\\d,]+) charges left.</col>"), 1),
-			ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your staff has run out of charges.</col>"), 0),
-			ChargesMessage.staticChargeMessage("You need to recharge your staff to use this spell.", 0)
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your staff only has ([\\d,]+) charges left\\.</col>"), 1),
+			ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your staff has run out of charges\\.</col>"), 0),
+			ChargesMessage.staticChargeMessage("You need to recharge your staff to use this spell\\.", 0)
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You hold the staff above the well and feel the power of Zamorak flow through you."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You hold the staff above the well and feel the power of Zamorak flow through you\\."), null),
 				ChargesDialogHandler.genericSpriteDialogFullChargeMessage()
 			)
 		)
@@ -145,9 +145,9 @@ public enum ChargedWeapon
 		.rechargeAmount(2500)
 		.configKeyName("trident_of_the_seas")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas has ([\\d,]+) charges.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the seas has one charge.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the seas has no charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas has ([\\d,]+) charges\\.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas has one charge\\.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas has no charges\\.", 0)
 		)
 	),
 	TRIDENT_OF_THE_SWAMP(new ChargedWeaponBuilder()
@@ -158,13 +158,13 @@ public enum ChargedWeapon
 		.rechargeAmount(2500)
 		.configKeyName("trident_of_the_swamp")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp has ([\\d,]+) charges.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the swamp has one charge.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the swamp has no charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp has ([\\d,]+) charges\\.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp has one charge\\.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp has no charges\\.", 0)
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp?"), null, Pattern.compile("Okay, uncharge it.")),
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp\\?"), null, Pattern.compile("Okay, uncharge it\\.")),
 				ChargesDialogHandler.genericUnchargeDialog()
 			)
 		)
@@ -177,9 +177,9 @@ public enum ChargedWeapon
 		.rechargeAmount(10_000)
 		.configKeyName("trident_of_the_seas_e")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas \\(e\\) has ([\\d,]+) charges.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has one charge.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has no charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas \\(e\\) has ([\\d,]+) charges\\.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has one charge\\.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has no charges\\.", 0)
 		)
 	),
 	TRIDENT_OF_THE_SWAMP_E(new ChargedWeaponBuilder()
@@ -190,13 +190,13 @@ public enum ChargedWeapon
 		.rechargeAmount(10_000)
 		.configKeyName("trident_of_the_swamp_e")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp \\(e\\) has ([\\d,]+) charges.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has one charge.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has no charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp \\(e\\) has ([\\d,]+) charges\\.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has one charge\\.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has no charges\\.", 0)
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp (e)?"), null, Pattern.compile("Okay, uncharge it.")),
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp \\(e\\)\\?"), null, Pattern.compile("Okay, uncharge it\\.")),
 				ChargesDialogHandler.genericUnchargeDialog()
 			)
 		)
@@ -240,7 +240,7 @@ public enum ChargedWeapon
 		.rechargeAmount(10_000)
 		.configKeyName("abyssal_tentacle")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your abyssal tentacle can perform ([\\d,]+) more attacks.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your abyssal tentacle can perform ([\\d,]+) more attacks\\.", 1)
 		)
 	),
 	/* chally
@@ -271,7 +271,7 @@ public enum ChargedWeapon
 		.defaultLowChargeThreshold(25)
 		.configKeyName("crystal_halberd")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your crystal halberd has ([\\d,]+) charges remaining.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your crystal halberd has ([\\d,]+) charges remaining\\.", 1)
 		)
 	),
 
@@ -305,7 +305,7 @@ public enum ChargedWeapon
 		.rechargeAmount(20_000)
 		.configKeyName("tome_of_fire")
 		.updateMessageChargesRegexes(
-			ChargesMessage.staticChargeMessage("Your Tome of Fire is now empty.", 0)
+			ChargesMessage.staticChargeMessage("Your Tome of Fire is now empty\\.", 0)
 		)
 	),
 	/* Tome of water:
@@ -331,7 +331,7 @@ public enum ChargedWeapon
 		.rechargeAmount(20_000)
 		.configKeyName("tome_of_water")
 		.updateMessageChargesRegexes(
-			ChargesMessage.staticChargeMessage("Your Tome of Water is now empty.", 0)
+			ChargesMessage.staticChargeMessage("Your Tome of Water is now empty\\.", 0)
 		)
 	),
 	/* scythe
@@ -370,7 +370,7 @@ public enum ChargedWeapon
 		.rechargeAmount(20_000)
 		.configKeyName("scythe_of_vitur")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your (Sanguine s|Holy s|S)cythe of vitur has ([\\d,]+) charges remaining.", 2)
+			ChargesMessage.matcherGroupChargeMessage("Your (Sanguine s|Holy s|S)cythe of vitur has ([\\d,]+) charges remaining\\.", 2)
 		)
 		.updateMessageChargesRegexes( // TODO one of these would be really good.
 			ChargesMessage.matcherGroupChargeMessage("Your scythe has ([\\d,]+) charges remaining.", 1)
@@ -401,7 +401,7 @@ public enum ChargedWeapon
 //				ChargesDialogHandler.genericSpriteDialogChargesMessage(false, 1)
 //			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.spriteOptionSelected(Pattern.compile("If you uncharge your scythe into the well, ([\\d,]+) charges will be added to the well."), null /* TODO find out what this should be */),
+				DialogStateMatcher.spriteOptionSelected(Pattern.compile("If you uncharge your scythe into the well, ([\\d,]+) charges will be added to the well\\."), null /* TODO find out what this should be */),
 				ChargesDialogHandler.genericSpriteDialogUnchargeMessage()
 			)
 		)
@@ -474,18 +474,18 @@ public enum ChargedWeapon
 		.rechargeAmount(20_000)
 		.configKeyName("sanguinesti_staff")
 		.checkChargesRegexes(
-			ChargesMessage.staticChargeMessage("Your (Holy s|S)anguinesti staff is already fully charged.", 20000)
+			ChargesMessage.staticChargeMessage("Your (Holy s|S)anguinesti staff is already fully charged\\.", 20000)
 			// Some check messages omitted because they are the same as update messages.
 		)
 		.updateMessageChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your (Holy s|S)anguinesti staff has ([\\d,]+) charges remaining.", 2),
+			ChargesMessage.matcherGroupChargeMessage("Your (Holy s|S)anguinesti staff has ([\\d,]+) charges remaining\\.", 2),
 			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your (Holy s|S)anguinesti staff only has ([\\d,]+) charges left!</col>"), 2),
-			ChargesMessage.staticChargeMessage("Your (Holy s|S)anguinesti staff has run out of charges.", 0)
+			ChargesMessage.staticChargeMessage("Your (Holy s|S)anguinesti staff has run out of charges\\.", 0)
 			// ChargesMessage.staticChargeMessage("Your sanguinesti staff has no charges! You need to charge it with blood runes.", 0) // (sic) sang is not capitalized. bug report sent to os team
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge your staff for all its charges\\? \\(regaining [\\d,]+ blood runes\\)"), null, Pattern.compile("Proceed.")),
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge your staff for all its charges\\? \\(regaining [\\d,]+ blood runes\\)"), null, Pattern.compile("Proceed\\.")),
 				ChargesDialogHandler.genericUnchargeDialog()
 			),
 			new ChargesDialogHandler(
@@ -493,11 +493,11 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericInputChargeMessage()
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your (Holy s|S)anguinesti staff."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your (Holy s|S)anguinesti staff\\."), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your (Holy s|S)anguinesti staff. It now has ([\\d,]+) charges in total."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your (Holy s|S)anguinesti staff\\. It now has ([\\d,]+) charges in total\\."), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 3)
 			)
 		)
@@ -533,7 +533,7 @@ public enum ChargedWeapon
 		.rechargeAmount(10_000)
 		.configKeyName("arclight")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your arclight has ([\\d,]+) charges left.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your arclight has ([\\d,]+) charges left\\.", 1)
 		)
 	),
 	/* Ether Weapon common
@@ -648,7 +648,7 @@ public enum ChargedWeapon
 		.name("Crystal bow")
 		.configKeyName("crystal_bow")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your crystal bow has ([\\d,]+) charges remaining.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your crystal bow has ([\\d,]+) charges remaining\\.", 1)
 		)
 	),
 	/*
@@ -664,10 +664,10 @@ public enum ChargedWeapon
 		.name("Bow of faerdhinen")
 		.configKeyName("bow_of_faerdhinen")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your bow of Faerdhinen has ([\\d,]+) charges remaining.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your bow of Faerdhinen has ([\\d,]+) charges remaining\\.", 1)
 		)
 		.updateMessageChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ff0000>Your bow of Faerdhinen has ([\\d,]+) charges remaining.</col>"), 1)
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ff0000>Your bow of Faerdhinen has ([\\d,]+) charges remaining\\.</col>"), 1)
 		)
 	),
 	/*
@@ -684,7 +684,7 @@ public enum ChargedWeapon
 		.configKeyName("crystal_helm")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your crystal helm has ([\\d,]+) charges remaining.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your crystal helm has ([\\d,]+) charges remaining\\.", 1)
 		)
 	),
 	CRYSTAL_BODY(new ChargedWeaponBuilder()
@@ -694,7 +694,7 @@ public enum ChargedWeapon
 		.configKeyName("crystal_body")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your crystal body has ([\\d,]+) charges remaining.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your crystal body has ([\\d,]+) charges remaining\\.", 1)
 		)
 	),
 	CRYSTAL_LEGS(new ChargedWeaponBuilder()
@@ -704,7 +704,7 @@ public enum ChargedWeapon
 		.configKeyName("crystal_legs")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your crystal legs has ([\\d,]+) charges remaining.", 1)
+			ChargesMessage.matcherGroupChargeMessage("Your crystal legs has ([\\d,]+) charges remaining\\.", 1)
 		)
 	),
 	/* Serpentine Helmet:
@@ -750,12 +750,12 @@ public enum ChargedWeapon
 		.rechargeAmount(11_000)
 		.configKeyName("serpentine_helm")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("^Scales: <col=007f00>([\\d,]+) (\\(\\d+[.]?\\d%\\))</col>$"), 1)
+			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("^Scales: <col=007f00>([\\d,]+) (\\(\\d+[\\.]?\\d%\\))</col>$"), 1)
 		)
 		.updateMessageChargesRegexes(
-			ChargesMessage.staticChargeMessage("Your serpentine helm has run out of Zulrah's scales.", 0),
-			ChargesMessage.staticChargeMessage("Your tanzanite helm has run out of Zulrah's scales.", 0),
-			ChargesMessage.staticChargeMessage("Your magma helm has run out of Zulrah's scales.", 0)
+			ChargesMessage.staticChargeMessage("Your serpentine helm has run out of Zulrah's scales\\.", 0),
+			ChargesMessage.staticChargeMessage("Your tanzanite helm has run out of Zulrah's scales\\.", 0),
+			ChargesMessage.staticChargeMessage("Your magma helm has run out of Zulrah's scales\\.", 0)
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
@@ -816,17 +816,17 @@ public enum ChargedWeapon
 		.rechargeAmount(20_000)
 		.configKeyName("tumekens_shadow")
 		.checkChargesRegexes(
-			ChargesMessage.staticChargeMessage("Your Tumeken's shadow is already fully charged.", 20000) // I guessed this one.
+			ChargesMessage.staticChargeMessage("Your Tumeken's shadow is already fully charged\\.", 20000) // I guessed this one.
 			// Some check messages omitted because they are the same as update messages.
 		)
 		.updateMessageChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Tumeken's shadow has ([\\d,]+) charges remaining.", 1),
+			ChargesMessage.matcherGroupChargeMessage("Tumeken's shadow has ([\\d,]+) charges remaining\\.", 1),
 			ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=e00a19>Tumeken's shadow only has ([\\d,]+) charges left!</col>"), 1),
-			ChargesMessage.staticChargeMessage("Tumeken's shadow has run out of charges.", 0)
+			ChargesMessage.staticChargeMessage("Tumeken's shadow has run out of charges\\.", 0)
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge all the charges from your staff?"), null, Pattern.compile("Proceed.")),
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge all the charges from your staff\\?"), null, Pattern.compile("Proceed\\.")),
 				ChargesDialogHandler.genericUnchargeDialog()
 			),
 			new ChargesDialogHandler(
@@ -834,11 +834,11 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericInputChargeMessage()
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Tumeken's shadow."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Tumeken's shadow\\."), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your Tumeken's shadow. It now has ([\\d,]+) charges in total."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your Tumeken's shadow\\. It now has ([\\d,]+) charges in total\\."), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 			)
 		)
@@ -879,42 +879,42 @@ public enum ChargedWeapon
 	@Getter
 	private static final List<ChargesMessage> nonUniqueCheckChargesRegexes = Arrays.asList(
 		// ether weapons
-		ChargesMessage.matcherGroupChargeMessage("Your weapon has ([\\d,]+) charges.", 1),
-		ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it.", 1),
-		ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it.", 1),
-		ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it.", 1),
-		//ChargesMessage.staticChargeMessage("You require at least 1000 revenant ether to activate this weapon.", 0),
-		ChargesMessage.staticChargeMessage("You use 1000 ether to activate the weapon.", 0),
-		ChargesMessage.matcherGroupChargeMessage("You add (a further )?([\\d,]+) revenant ether to your weapon, giving it a total of ([\\d,]+) charges?.", 3),
+		ChargesMessage.matcherGroupChargeMessage("Your weapon has ([\\d,]+) charges\\.", 1),
+		ChargesMessage.matcherGroupChargeMessage("Your bow has ([\\d,]+) charges? left powering it\\.", 1),
+		ChargesMessage.matcherGroupChargeMessage("Your chainmace has ([\\d,]+) charges? left powering it\\.", 1),
+		ChargesMessage.matcherGroupChargeMessage("Your sceptre has ([\\d,]+) charges? left powering it\\.", 1),
+		//ChargesMessage.staticChargeMessage("You require at least 1000 revenant ether to activate this weapon\\.", 0),
+		ChargesMessage.staticChargeMessage("You use 1000 ether to activate the weapon\\.", 0),
+		ChargesMessage.matcherGroupChargeMessage("You add (a further )?([\\d,]+) revenant ether to your weapon, giving it a total of ([\\d,]+) charges?\\.", 3),
 		// elemental tomes
-		ChargesMessage.matcherGroupChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds ([\\d,]+) charges.", 2),
-		ChargesMessage.staticChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds one charge.", 1),
-		ChargesMessage.staticChargeMessage("You empty your book of pages.", 0)
+		ChargesMessage.matcherGroupChargeMessage("(You remove [\\S]+ pages? from the book\\. )?Your tome currently holds ([\\d,]+) charges\\.", 2),
+		ChargesMessage.staticChargeMessage("(You remove [\\S]+ pages? from the book\\. )?Your tome currently holds one charge\\.", 1),
+		ChargesMessage.staticChargeMessage("You empty your book of pages\\.", 0)
 	);
 	@Getter
 	private static final List<ChargesMessage> nonUniqueUpdateMessageChargesRegexes = Arrays.asList(
 		// trident
 		ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your trident only has ([\\d,]+) charges left!</col>"), 1),
-		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your trident has run out of charges.</col>"), 0),
+		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your trident has run out of charges\\.</col>"), 0),
 		// ether weapons
-		ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your weapon only has ([\\d,]+) charges left.</col>"), 1),
-		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your weapon has run out of revenant ether.</col>"), 0),
-		ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow.", 0)
+		ChargesMessage.matcherGroupChargeMessage(Text.removeTags("<col=ef1020>Your weapon only has ([\\d,]+) charges left\\.</col>"), 1),
+		ChargesMessage.staticChargeMessage(Text.removeTags("<col=ef1020>Your weapon has run out of revenant ether\\.</col>"), 0),
+		ChargesMessage.staticChargeMessage("There is not enough revenant ether left powering your bow\\.", 0)
 	);
 
 	@Getter
 	private static final List<ChargesDialogHandler> nonUniqueDialogHandlers = Arrays.asList(
 		// trident
 		new ChargesDialogHandler(
-			DialogStateMatcher.sprite(Pattern.compile("You add [\\S]+ [\\S]+ to the weapon. New total: ([\\d,]+)"), null),
+			DialogStateMatcher.sprite(Pattern.compile("You add [\\S]+ [\\S]+ to the weapon\\. New total: ([\\d,]+)"), null),
 			ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 		),
 		new ChargesDialogHandler(
-			DialogStateMatcher.sprite(Pattern.compile("Your weapon is already fully charged."), null),
+			DialogStateMatcher.sprite(Pattern.compile("Your weapon is already fully charged\\."), null),
 			ChargesDialogHandler.genericSpriteDialogFullChargeMessage()
 		),
 		new ChargesDialogHandler( // This one is entirely redundant, I think. Haven't checked (e) tridents though wrt the message they show in the uncharging options dialog.
-			DialogStateMatcher.sprite(Pattern.compile("You uncharge your weapon."), null),
+			DialogStateMatcher.sprite(Pattern.compile("You uncharge your weapon\\."), null),
 			ChargesDialogHandler.genericSpriteDialogUnchargeMessage()
 		),
 		new ChargesDialogHandler(
@@ -922,11 +922,11 @@ public enum ChargedWeapon
 			ChargesDialogHandler.genericInputChargeMessage()
 		),
 		new ChargesDialogHandler(
-			DialogStateMatcher.optionsOptionSelected(Pattern.compile("You will NOT get the coins back."), null, Pattern.compile("Okay, uncharge it.")),
+			DialogStateMatcher.optionsOptionSelected(Pattern.compile("You will NOT get the coins back\\."), null, Pattern.compile("Okay, uncharge it\\.")),
 			ChargesDialogHandler.genericUnchargeDialog()
 		),
 		new ChargesDialogHandler(
-			DialogStateMatcher.optionsOptionSelected(Pattern.compile("If you drop it, it will lose all its charges."), null, Pattern.compile("Drop it.")),
+			DialogStateMatcher.optionsOptionSelected(Pattern.compile("If you drop it, it will lose all its charges\\."), null, Pattern.compile("Drop it\\.")),
 			ChargesDialogHandler.genericUnchargeDialog()
 		),
 		// Crystal shard recharging.
