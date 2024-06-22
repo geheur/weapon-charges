@@ -37,6 +37,7 @@ import static com.weaponcharges.WeaponChargesConfig.SerpModes.SCALES;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -111,7 +112,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 {
 	public static final String CONFIG_GROUP_NAME = "weaponCharges";
 	public static final String DEV_MODE_CONFIG_KEY = "logData";
-	private static final int BLOWPIPE_ATTACK_ANIMATION = 5061;
+	private static final int[] BLOWPIPE_ATTACK_ANIMATIONS = new int[]{5061, 10656};
 
 	// TODO rename. This is used for when an item is used on a weapon, when a weapon is used on an item, and when "pages" is clicked.
 	ChargedWeapon lastUsedOnWeapon;
@@ -702,16 +703,17 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	public void onGameTick(GameTick tick)
 	{
 		bloodFuryAppliedThisTick = false;
+		int tickCount = client.getTickCount();
 
 		// This delay is necessary because equipped items are updated after onAnimationChanged, so with items that share
 		// a game message it will not be possible to tell which item the message is for.
 		// The order must be: check messages, animation, charge update messages.
 		// Runelite's order is: onChatMessage, onAnimationChanged, onGameTick.
 		// charge update messages must also be delayed due to equipment slot info not being current in onChatMessage.
-		checkAnimation(lastLocalPlayerAnimationChangedGameTick == client.getTickCount(), lastLocalPlayerGraphicChangedGameTick == client.getTickCount());
+		checkAnimation(lastLocalPlayerAnimationChangedGameTick == tickCount, lastLocalPlayerGraphicChangedGameTick == tickCount);
 
-		if (lastLocalPlayerAnimationChanged == BLOWPIPE_ATTACK_ANIMATION && checkBlowpipeGameTick == client.getTickCount() && client.getTickCount() >= blowpipeCooldownUp) {
-			blowpipeCooldownUp = client.getTickCount() +
+		if (checkBlowpipeGameTick == tickCount && tickCount >= blowpipeCooldownUp && Arrays.stream(BLOWPIPE_ATTACK_ANIMATIONS).anyMatch(id -> id == lastLocalPlayerAnimationChanged)) {
+			blowpipeCooldownUp = tickCount +
 				client.getVarpValue(VarPlayer.ATTACK_STYLE) == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM
 			;
 			consumeBlowpipeCharges();
