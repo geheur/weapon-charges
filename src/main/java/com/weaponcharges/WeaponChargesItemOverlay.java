@@ -19,6 +19,7 @@ import java.text.NumberFormat;
 import javax.inject.Inject;
 import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.WidgetItem;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 import net.runelite.client.ui.overlay.components.TextComponent;
@@ -38,6 +39,10 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 		showOnBank();
 		showOnInterfaces(InterfaceID.CHAMBERS_OF_XERIC_INVENTORY);
 		showOnInterfaces(InterfaceID.CHAMBERS_OF_XERIC_STORAGE_UNIT_PRIVATE);
+	}
+
+	@FunctionalInterface interface DrawAfter {
+		void drawAfter(TextComponent topText, TextComponent bottomText, ConfigManager configManager, int itemId);
 	}
 
 	@Override
@@ -95,6 +100,10 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 						}
 					}
 					if (isLowCharge) topText.setColor(config.chargesTextLowColor());
+
+					if (chargedWeapon.drawAfter != null) {
+						chargedWeapon.drawAfter.drawAfter(topText, bottomText, plugin.configManager, itemId);
+					}
 				}
 			}
 			else

@@ -149,6 +149,18 @@ public class TestMenuEntry implements MenuEntry
 	}
 
 	@Override
+	public int getWorldViewId()
+	{
+		return 0;
+	}
+
+	@Override
+	public MenuEntry setWorldViewId(int worldViewId)
+	{
+		return null;
+	}
+
+	@Override
 	public boolean isDeprioritized()
 	{
 		return type >= MenuAction.MENU_ACTION_DEPRIORITIZE_OFFSET;

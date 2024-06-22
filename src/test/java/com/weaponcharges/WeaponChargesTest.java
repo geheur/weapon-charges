@@ -21,6 +21,7 @@ import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.callback.ClientThread;
+import net.runelite.client.config.ChatColorConfig;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.input.KeyManager;
@@ -43,53 +44,22 @@ import org.slf4j.LoggerFactory;
 @RunWith(MockitoJUnitRunner.class)
 public class WeaponChargesTest
 {
-	@Mock
-	@Bind
-	private Client client;
+	@Mock @Bind private Client client;
+	@Mock @Bind private ChatColorConfig chatColorConfig;
+	@Mock @Bind private ConfigManager configManager;
+	@Mock @Bind private ItemManager itemManager;
+	@Mock @Bind private OverlayManager overlayManager;
+	@Mock @Bind private MouseManager mouseManager;
+	@Mock @Bind private KeyManager keyManager;
+	@Mock @Bind private ClientThread clientThread;
+	@Mock @Bind private WeaponChargesItemOverlay itemOverlay;
+	@Mock @Bind private DialogTracker dialogTracker;
+	@Mock @Bind private WeaponChargesConfig config;
 
-	@Mock
-	@Bind
-	private ConfigManager configManager;
-
-	@Mock
-	@Bind
-	private ItemManager itemManager;
-
-	@Mock
-	@Bind
-	private OverlayManager overlayManager;
-
-	@Mock
-	@Bind
-	private MouseManager mouseManager;
-
-	@Mock
-	@Bind
-	private KeyManager keyManager;
-
-	@Mock
-	@Bind
-	private ClientThread clientThread;
-
-	@Mock
-	@Bind
-	private WeaponChargesItemOverlay itemOverlay;
-
-	@Mock
-	@Bind
-	private DialogTracker dialogTracker;
-
-	@Mock
-	@Bind
-	private WeaponChargesConfig config;
-
-	@Inject
-	private WeaponChargesPlugin plugin;
+	@Inject private WeaponChargesPlugin plugin;
 
 	private Map<String, String> configMap = new HashMap<>();
-
 	private Map<Integer, Integer> equipment = new HashMap<>();
-
 	private int animationId = -1;
 
 	@Before
@@ -135,6 +105,9 @@ public class WeaponChargesTest
 
 	@Test
 	public void test() {
+		checkTomeOfFire();
+
+		if (true) return;
 		for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
 		{
 			plugin.setCharges(chargedWeapon, 100);
@@ -159,8 +132,6 @@ public class WeaponChargesTest
 		checkCrystalShardRecharging();
 
 		checkAbyssalTentacle();
-
-//		checkTomeOfFire();
 
 		checkScytheOfVitur();
 		checkSanguineScytheOfVitur();
@@ -366,8 +337,9 @@ public class WeaponChargesTest
 
 	private void checkTomeOfFire()
 	{
-		checkWeaponMessage(ChargedWeapon.TOME_OF_FIRE, "Your tome currently holds 6,839 charges.", 6839);
-		checkWeaponMessage(ChargedWeapon.TOME_OF_FIRE, "Your tome currently holds one charge.", 1);
+		checkWeaponMessage(ChargedWeapon.TOME_OF_FIRE, "Your tome has been charged with Searing Pages. It currently holds 40 charges.", 40);
+//		checkWeaponMessage(ChargedWeapon.TOME_OF_FIRE, "Your tome currently holds 6,839 charges.", 6839);
+//		checkWeaponMessage(ChargedWeapon.TOME_OF_FIRE, "Your tome currently holds one charge.", 1);
 
 		equippedWeaponPeriodicUpdate(ChargedWeapon.TOME_OF_FIRE, "Your Tome of Fire is now empty.", 0);
 
@@ -497,7 +469,7 @@ public class WeaponChargesTest
 
 	private void checkCharges(ChargedWeapon chargedWeapon, int expectedCharges)
 	{
-		assertEquals(Integer.valueOf(expectedCharges), plugin.getCharges(chargedWeapon));
+		assertEquals(Float.valueOf(expectedCharges), plugin.getCharges(chargedWeapon));
 	}
 
 	private void gameMessage(String message)

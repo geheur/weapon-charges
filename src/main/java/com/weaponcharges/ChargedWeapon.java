@@ -1,12 +1,17 @@
 package com.weaponcharges;
 
 import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
+import com.weaponcharges.WeaponChargesItemOverlay.DrawAfter;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import lombok.Getter;
+import net.runelite.api.MenuEntry;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
 
 @Getter
@@ -278,8 +283,8 @@ public enum ChargedWeapon
 	/* Tome of fire:
 		checking:
 			// cannot check empty book, there is no such menu option.
-			"Your tome currently holds 6,839 charges."
-			"Your tome currently holds one charge."
+			2024-06-21 18:09:44 PDT [Client] DEBUG client-patch - Chat message type GAMEMESSAGE: Your tome has been charged with Burnt Pages. It currently holds 200 charges.
+			2024-06-21 18:10:00 PDT [Client] DEBUG client-patch - Chat message type GAMEMESSAGE: Your tome has been charged with Searing Pages. It currently holds 60 charges.
 
 		periodic updates:
 			"Your Tome of Fire is now empty."
@@ -293,9 +298,8 @@ public enum ChargedWeapon
 			2021-08-26 16:36:44 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - GAMEMESSAGE "You empty your book of pages."
 			"You remove 299 pages from the book. Your tome currently holds one charge."
 
-		message overlap: definitely overlaps with the tome of water.
-
-		The tome of fire needs an additional check for fire spells being cast, which is done in onClientTick by checking for a gfx value.
+		message overlap:
+			tome of water: 2024-06-21 18:09:58 PDT [Client] DEBUG client-patch - Chat message type GAMEMESSAGE: You empty your book of pages.
 	 */
 	TOME_OF_FIRE(new ChargedWeaponBuilder()
 		.chargedItemIds(20714 /*TOME_OF_FIRE*/)
@@ -304,13 +308,39 @@ public enum ChargedWeapon
 		.name("Tome of fire")
 		.rechargeAmount(20_000)
 		.configKeyName("tome_of_fire")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("You remove [\\S]+ pages? from the book. Your tome currently holds ([\\d,]+|one) charges?.", 1),
+			ChargesMessage.matcherGroupChargeMessage("Your tome has been charged with (Burnt|Searing) Pages. It currently holds ([\\d,]+|one) charges?.", 2, (matcher, chargeCount, configManager) -> {
+				configManager.setRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_page_type", matcher.group(1).contains("Searing") ? "searing" : "burnt");
+				return chargeCount;
+			})
+		)
 		.updateMessageChargesRegexes(
 			ChargesMessage.staticChargeMessage("Your Tome of Fire is now empty.", 0)
 		)
+		.drawAfter((topText, bottomText, configManager, itemId) -> {
+			if (itemId == 20716) return; // empty.
+			Boolean hidePageType = Boolean.valueOf(configManager.getRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_hide_page_type"));
+			if (hidePageType) return;
+			String tome_of_fire_page_type = configManager.getRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_page_type");
+			if (tome_of_fire_page_type == null) return;
+			boolean searing = tome_of_fire_page_type.equals("searing");
+			bottomText.setText(searing ? "Sear" : "Burnt");
+			bottomText.setColor(searing ? Color.ORANGE : Color.GRAY);
+		})
+		.configMenuEntries((plugin, submenuEntry) -> {
+			plugin.addSubmenu(ColorUtil.wrapWithColorTag("Display style", Color.decode("#ff9040")),
+				submenuEntry);
+			Boolean hidePageType = Boolean.valueOf(plugin.configManager.getRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_hide_page_type"));
+			plugin.addSubmenuCheckboxStyle(!hidePageType, "Show page type",
+				e -> plugin.configManager.setRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_hide_page_type", !hidePageType),
+				submenuEntry);
+		})
 	),
 	/* Tome of water:
 		checking:
-			same as ToF
+			"Your tome currently holds 6,839 charges."
+			"Your tome currently holds one charge."
 
 		periodic updates:
 			"Your Tome of Water is now empty."
@@ -320,8 +350,6 @@ public enum ChargedWeapon
 			same as ToF
 
 		message overlap: definitely overlaps with the Tome of fire.
-
-		The Tome of water needs an additional check for water and curse spells being cast, which is done in onClientTick by checking for a gfx value.
 	 */
 	TOME_OF_WATER(new ChargedWeaponBuilder()
 		.chargedItemIds(25574 /*TOME_OF_WATER*/)
@@ -330,6 +358,10 @@ public enum ChargedWeapon
 		.name("Tome of water")
 		.rechargeAmount(20_000)
 		.configKeyName("tome_of_water")
+		.checkChargesRegexes(
+			ChargesMessage.matcherGroupChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds ([\\d,]+) charges.", 2),
+			ChargesMessage.staticChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds one charge.", 1)
+		)
 		.updateMessageChargesRegexes(
 			ChargesMessage.staticChargeMessage("Your Tome of Water is now empty.", 0)
 		)
@@ -887,8 +919,6 @@ public enum ChargedWeapon
 		ChargesMessage.staticChargeMessage("You use 1000 ether to activate the weapon.", 0),
 		ChargesMessage.matcherGroupChargeMessage("You add (a further )?([\\d,]+) revenant ether to your weapon, giving it a total of ([\\d,]+) charges?.", 3),
 		// elemental tomes
-		ChargesMessage.matcherGroupChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds ([\\d,]+) charges.", 2),
-		ChargesMessage.staticChargeMessage("(You remove [\\S]+ pages? from the book. )?Your tome currently holds one charge.", 1),
 		ChargesMessage.staticChargeMessage("You empty your book of pages.", 0)
 	);
 	@Getter
@@ -1001,12 +1031,24 @@ public enum ChargedWeapon
 			this.graphicIds = Arrays.asList(graphicIds);
 			return this;
 		}
+		DrawAfter drawAfter;
+		public ChargedWeaponBuilder drawAfter(DrawAfter drawAfter) {
+			this.drawAfter = drawAfter;
+			return this;
+		}
+		BiConsumer<WeaponChargesPlugin, MenuEntry> addMenuEntries;
+		public ChargedWeaponBuilder configMenuEntries(BiConsumer<WeaponChargesPlugin, MenuEntry> addMenuEntries) {
+			this.addMenuEntries = addMenuEntries;
+			return this;
+		}
 	}
 
 	public final List<Integer> itemIds;
 	public final List<Integer> unchargedIds;
 	public final List<Integer> animationIds;
 	public final List<Integer> graphicIds;
+	public final DrawAfter drawAfter;
+	public final BiConsumer<WeaponChargesPlugin, MenuEntry> addMenuEntries;
 	public final String name;
 	public final Integer rechargeAmount;
 	public final int defaultLowChargeThreshold;
@@ -1026,6 +1068,8 @@ public enum ChargedWeapon
 		this.unchargedIds = builder.unchargedItemIds;
 		this.animationIds = builder.animationIds;
 		this.graphicIds = builder.graphicIds;
+		this.drawAfter = builder.drawAfter;
+		this.addMenuEntries = builder.addMenuEntries;
 		if (builder.name == null) throw new IllegalStateException("cannot have a null name for charged weapon.");
 		this.name = builder.name;
 		this.rechargeAmount = builder.rechargeAmount;
@@ -1087,6 +1131,10 @@ public enum ChargedWeapon
 	public void setLowCharge(ConfigManager configManager, int charges)
 	{
 		configManager.setConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, settingsConfigKey + LOW_CHARGE_CONFIG_KEY_SUFFIX, charges);
+	}
+
+	public void addMenuEntries(WeaponChargesPlugin plugin, MenuEntry submenuEntry) {
+		if (addMenuEntries != null) addMenuEntries.accept(plugin, submenuEntry);
 	}
 
 	private static ChargedWeapon get_scythe_circumvent_illegal_self_reference() {
