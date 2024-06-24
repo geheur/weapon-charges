@@ -420,7 +420,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 		if (checkBlowpipeUnload == client.getTickCount() || checkBlowpipeUnload + 1 == client.getTickCount()) {
 			setDartsLeft(0);
-			setDartType(DartType.UNKNOWN);
 		}
 
 		if (checkSingleCrystalShardUse == client.getTickCount() || checkSingleCrystalShardUse + 1 == client.getTickCount()) {
@@ -562,79 +561,85 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	private void chatMessageBlowpipe(String chatMsg)
 	{
-		Matcher matcher = DARTS_AND_SCALE_CHECK_PATTERN.matcher(chatMsg);
-		if (matcher.find())
-		{
-			setDartsLeft(Integer.parseInt(matcher.group(2).replace(",", "")));
-			setScalesLeft(Integer.parseInt(matcher.group(3).replace(",", "")));
-			setDartType(DartType.getDartTypeByName(matcher.group(1)));
-		}
+		if (chatMsg.startsWith("Darts")) {
+			Matcher matcher = DARTS_AND_SCALE_CHECK_PATTERN.matcher(chatMsg);
+			if (matcher.find()) {
+				setDartsLeft(Integer.parseInt(matcher.group(2).replace(",", "")));
+				setScalesLeft(Integer.parseInt(matcher.group(3).replace(",", "")));
+				setDartType(DartType.getDartTypeByName(matcher.group(1)));
+				return;
+			}
 
-		matcher = NO_DARTS_CHECK_PATTERN.matcher(chatMsg);
-		if (matcher.find())
-		{
-			setDartsLeft(0);
-			setScalesLeft(Integer.parseInt(matcher.group(1).replace(",", "")));
-			setDartType(DartType.UNKNOWN);
-		}
-
-		matcher = USE_SCALES_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
-		if (matcher.find()) {
-			setScalesLeft(MAX_SCALES_BLOWPIPE);
-		}
-
-		matcher = USE_DARTS_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
-		if (matcher.find()) {
-			setDartsLeft(MAX_DARTS);
-		}
-
-		matcher = UNLOAD_EMPTY_BLOWPIPE_PATTERN.matcher(chatMsg);
-		if (matcher.find()) {
-			setDartsLeft(0);
-			setDartType(DartType.UNKNOWN);
-		}
-
-		matcher = NO_DARTS_PATTERN.matcher(chatMsg);
-		if (matcher.find()) {
-			delayChargeUpdateUntilAfterAnimations.add(() -> {
+			matcher = NO_DARTS_CHECK_PATTERN.matcher(chatMsg);
+			if (matcher.find()) {
 				setDartsLeft(0);
-				setDartType(DartType.UNKNOWN);
-			});
-		}
+				setScalesLeft(Integer.parseInt(matcher.group(1).replace(",", "")));
+				return;
+			}
+		} else if (chatMsg.startsWith("The blowpipe")) {
+			Matcher matcher = USE_SCALES_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
+			if (matcher.find()) {
+				setScalesLeft(MAX_SCALES_BLOWPIPE);
+				return;
+			}
 
-		matcher = NO_SCALES_PATTERN.matcher(chatMsg);
-		if (matcher.find())
-		{
-			delayChargeUpdateUntilAfterAnimations.add(() -> setScalesLeft(0));
-		}
+			matcher = USE_DARTS_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
+			if (matcher.find()) {
+				setDartsLeft(MAX_DARTS);
+				return;
+			}
 
-		matcher = NO_DARTS_OR_SCALES_PATTERN.matcher(chatMsg);
-		if (matcher.find())
-		{
-			delayChargeUpdateUntilAfterAnimations.add(() -> {
-				setScalesLeft(0);
+			matcher = UNLOAD_EMPTY_BLOWPIPE_PATTERN.matcher(chatMsg);
+			if (matcher.find()) {
 				setDartsLeft(0);
-				setDartType(DartType.UNKNOWN);
-			});
+				return;
+			}
 		}
 
-		matcher = NO_DARTS_PATTERN_2.matcher(chatMsg);
-		if (matcher.find())
-		{
-			delayChargeUpdateUntilAfterAnimations.add(() -> {
-				setDartsLeft(0);
-				setDartType(DartType.UNKNOWN);
-			});
-		}
+		if (chatMsg.startsWith("Your blowpipe")) {
+			Matcher matcher = NO_DARTS_PATTERN.matcher(chatMsg);
+			if (matcher.find()) {
+				delayChargeUpdateUntilAfterAnimations.add(() -> {
+					setDartsLeft(0);
+				});
+				return;
+			}
 
-		matcher = NO_DARTS_OR_SCALES_PATTERN_2.matcher(chatMsg);
-		if (matcher.find())
-		{
-			delayChargeUpdateUntilAfterAnimations.add(() -> {
-				setScalesLeft(0);
-				setDartsLeft(0);
-				setDartType(DartType.UNKNOWN);
-			});
+			matcher = NO_SCALES_PATTERN.matcher(chatMsg);
+			if (matcher.find())
+			{
+				delayChargeUpdateUntilAfterAnimations.add(() -> setScalesLeft(0));
+				return;
+			}
+
+			matcher = NO_DARTS_OR_SCALES_PATTERN.matcher(chatMsg);
+			if (matcher.find())
+			{
+				delayChargeUpdateUntilAfterAnimations.add(() -> {
+					setScalesLeft(0);
+					setDartsLeft(0);
+				});
+				return;
+			}
+
+			matcher = NO_DARTS_PATTERN_2.matcher(chatMsg);
+			if (matcher.find())
+			{
+				delayChargeUpdateUntilAfterAnimations.add(() -> {
+					setDartsLeft(0);
+				});
+				return;
+			}
+
+			matcher = NO_DARTS_OR_SCALES_PATTERN_2.matcher(chatMsg);
+			if (matcher.find())
+			{
+				delayChargeUpdateUntilAfterAnimations.add(() -> {
+					setScalesLeft(0);
+					setDartsLeft(0);
+				});
+				return;
+			}
 		}
 	}
 
@@ -845,6 +850,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 
 	private void setDartsLeft(float dartsLeft, boolean logChange)
 	{
+		if (dartsLeft == 0) setDartType(DartType.UNKNOWN);
 		configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "blowpipeDarts", dartsLeft);
 		if (logChange)
 		{
