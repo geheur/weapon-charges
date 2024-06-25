@@ -64,7 +64,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 
 			Rectangle bounds = itemWidget.getCanvasBounds();
 			TextComponent topText = new TextComponent();
-			topText.setPosition(new java.awt.Point(bounds.x - 1, bounds.y + 10));
+			topText.setPosition(new java.awt.Point(bounds.x, bounds.y + (itemWidget.getQuantity() > 1 ? 20 : 10)));
 			topText.setText("");
 			topText.setColor(config.chargesTextRegularColor());
 			TextComponent bottomText = new TextComponent();
