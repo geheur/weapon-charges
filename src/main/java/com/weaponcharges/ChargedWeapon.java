@@ -1,6 +1,9 @@
 package com.weaponcharges;
 
 import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
+import static com.weaponcharges.WeaponChargesConfig.SerpModes.BOTH;
+import static com.weaponcharges.WeaponChargesConfig.SerpModes.PERCENT;
+import static com.weaponcharges.WeaponChargesConfig.SerpModes.SCALES;
 import com.weaponcharges.WeaponChargesItemOverlay.DrawAfter;
 import java.awt.Color;
 import java.util.Arrays;
@@ -318,11 +321,11 @@ public enum ChargedWeapon
 		.updateMessageChargesRegexes(
 			ChargesMessage.staticChargeMessage("Your Tome of Fire is now empty.", 0)
 		)
-		.drawAfter((topText, bottomText, configManager, itemId) -> {
+		.drawAfter((chargedWeapon, topText, bottomText, charges, plugin, itemId, isLowCharge) -> {
 			if (itemId == 20716) return; // empty.
-			Boolean hidePageType = Boolean.valueOf(configManager.getRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_hide_page_type"));
+			Boolean hidePageType = Boolean.valueOf(plugin.configManager.getRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_hide_page_type"));
 			if (hidePageType) return;
-			String tome_of_fire_page_type = configManager.getRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_page_type");
+			String tome_of_fire_page_type = plugin.configManager.getRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_page_type");
 			if (tome_of_fire_page_type == null) return;
 			boolean searing = tome_of_fire_page_type.equals("searing");
 			bottomText.setText(searing ? "Sear" : "Burnt");
@@ -795,6 +798,31 @@ public enum ChargedWeapon
 				ChargesDialogHandler.genericInputChargeMessage()
 			)
 		)
+		.drawAfter(((chargedWeapon, topText, bottomText, charges, plugin, itemId, isLowCharge) -> {
+			String scalesLeftPercentDisplay = WeaponChargesItemOverlay.formatPercentage(charges, chargedWeapon.rechargeAmount);
+			WeaponChargesConfig.SerpModes displayStyle = getSerpHelmDisplayStyle(plugin.configManager);
+			if (displayStyle == PERCENT) {
+				topText.setText(scalesLeftPercentDisplay);
+			} else if (displayStyle == BOTH) {
+				topText.setText(charges.toString());
+				bottomText.setText(scalesLeftPercentDisplay);
+				if (isLowCharge) bottomText.setColor(plugin.config.chargesTextLowColor());
+			}
+		}))
+		.configMenuEntries(((plugin, menuEntry) -> {
+			plugin.addSubmenu(ColorUtil.wrapWithColorTag("Display style", Color.decode("#ff9040")),
+				menuEntry);
+			WeaponChargesConfig.SerpModes serpMode = getSerpHelmDisplayStyle(plugin.configManager);
+			plugin.addSubmenuRadioButtonStyle(serpMode == PERCENT, "Percent",
+				e -> setSerpHelmDisplayStyle(PERCENT, plugin.configManager),
+				menuEntry);
+			plugin.addSubmenuRadioButtonStyle(serpMode == SCALES, "Scales",
+				e -> setSerpHelmDisplayStyle(SCALES, plugin.configManager),
+				menuEntry);
+			plugin.addSubmenuRadioButtonStyle(serpMode == BOTH, "Both",
+				e -> setSerpHelmDisplayStyle(BOTH, plugin.configManager),
+				menuEntry);
+		}))
 	),
 	/* Tumeken's shadow
 		https://github.com/geheur/weapon-charges/issues/14 log here.
@@ -1140,4 +1168,21 @@ public enum ChargedWeapon
 	private static ChargedWeapon get_scythe_circumvent_illegal_self_reference() {
 		return SCYTHE_OF_VITUR;
 	}
+
+	private static void setSerpHelmDisplayStyle(WeaponChargesConfig.SerpModes percent, ConfigManager configManager)
+	{
+		configManager.setConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "serpentine_helm_display_style", percent);
+	}
+
+	private static WeaponChargesConfig.SerpModes getSerpHelmDisplayStyle(ConfigManager configManager)
+	{
+		String serpentine_helm_display_style = configManager.getConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "serpentine_helm_display_style");
+		try
+		{
+			return WeaponChargesConfig.SerpModes.valueOf(serpentine_helm_display_style);
+		} catch (IllegalArgumentException | NullPointerException e) {
+			return PERCENT;
+		}
+	}
+
 }

@@ -30,10 +30,6 @@ import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.ALWAYS;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.LOW_CHARGE;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.NEVER;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.USE_DEFAULT;
-import com.weaponcharges.WeaponChargesConfig.SerpModes;
-import static com.weaponcharges.WeaponChargesConfig.SerpModes.BOTH;
-import static com.weaponcharges.WeaponChargesConfig.SerpModes.PERCENT;
-import static com.weaponcharges.WeaponChargesConfig.SerpModes.SCALES;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -119,16 +115,16 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	ChargedWeapon lastUnchargeClickedWeapon;
 
 	@Inject Client client;
-	@Inject private WeaponChargesItemOverlay itemOverlay;
-	@Inject private ItemManager itemManager;
-	@Inject private WeaponChargesConfig config;
-	@Inject private ClientThread clientThread;
-	@Inject private EventBus eventBus;
-	@Inject private OverlayManager overlayManager;
-	@Inject private KeyManager keyManager;
-	@Inject private DialogTracker dialogTracker;
-	@Inject private ChatboxPanelManager chatboxPanelManager;
-	@Inject private ChatMessageManager chatMessageManager;
+	@Inject WeaponChargesItemOverlay itemOverlay;
+	@Inject ItemManager itemManager;
+	@Inject WeaponChargesConfig config;
+	@Inject ClientThread clientThread;
+	@Inject EventBus eventBus;
+	@Inject OverlayManager overlayManager;
+	@Inject KeyManager keyManager;
+	@Inject DialogTracker dialogTracker;
+	@Inject ChatboxPanelManager chatboxPanelManager;
+	@Inject ChatMessageManager chatMessageManager;
 
 	private Devtools devtools;
 
@@ -988,39 +984,9 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				addSubmenuRadioButtonStyle(displayWhen == NEVER, "Never",
 					e -> chargedWeapon.setDisplayWhen(configManager, NEVER),
 					submenuEntry);
-				if (chargedWeapon == ChargedWeapon.SERPENTINE_HELM) {
-					addSubmenu(ColorUtil.wrapWithColorTag("Display style", Color.decode("#ff9040")),
-						submenuEntry);
-					SerpModes serpMode = getSerpHelmDisplayStyle();
-					addSubmenuRadioButtonStyle(serpMode == PERCENT, "Percent",
-						e -> setSerpHelmDisplayStyle(PERCENT),
-						submenuEntry);
-					addSubmenuRadioButtonStyle(serpMode == SCALES, "Scales",
-						e -> setSerpHelmDisplayStyle(SCALES),
-						submenuEntry);
-					addSubmenuRadioButtonStyle(serpMode == BOTH, "Both",
-						e -> setSerpHelmDisplayStyle(BOTH),
-						submenuEntry);
-				}
 				chargedWeapon.addMenuEntries(this, submenuEntry);
 				break;
 			}
-		}
-	}
-
-	public void setSerpHelmDisplayStyle(SerpModes percent)
-	{
-		configManager.setConfiguration(CONFIG_GROUP_NAME, "serpentine_helm_display_style", percent);
-	}
-
-	public SerpModes getSerpHelmDisplayStyle()
-	{
-		String serpentine_helm_display_style = configManager.getConfiguration(CONFIG_GROUP_NAME, "serpentine_helm_display_style");
-		try
-		{
-			return SerpModes.valueOf(serpentine_helm_display_style);
-		} catch (IllegalArgumentException | NullPointerException e) {
-			return PERCENT;
 		}
 	}
 

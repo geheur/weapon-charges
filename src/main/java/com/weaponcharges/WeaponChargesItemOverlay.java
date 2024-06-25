@@ -1,13 +1,9 @@
 package com.weaponcharges;
 
-import static com.weaponcharges.ChargedWeapon.SERPENTINE_HELM;
 import com.weaponcharges.WeaponChargesConfig.DisplayWhen;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.LOW_CHARGE;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhen.NEVER;
 import static com.weaponcharges.WeaponChargesConfig.DisplayWhenNoDefault;
-import com.weaponcharges.WeaponChargesConfig.SerpModes;
-import static com.weaponcharges.WeaponChargesConfig.SerpModes.BOTH;
-import static com.weaponcharges.WeaponChargesConfig.SerpModes.PERCENT;
 import static com.weaponcharges.WeaponChargesPlugin.MAX_SCALES_BLOWPIPE;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -19,7 +15,6 @@ import java.text.NumberFormat;
 import javax.inject.Inject;
 import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.WidgetItem;
-import net.runelite.client.config.ConfigManager;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 import net.runelite.client.ui.overlay.components.TextComponent;
@@ -42,7 +37,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 	}
 
 	@FunctionalInterface interface DrawAfter {
-		void drawAfter(TextComponent topText, TextComponent bottomText, ConfigManager configManager, int itemId);
+		void drawAfter(ChargedWeapon chargedWeapon, TextComponent topText, TextComponent bottomText, Integer charges, WeaponChargesPlugin plugin, int itemId, boolean isLowCharge);
 	}
 
 	@Override
@@ -85,25 +80,14 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 					if (charges == 0 && config.emptyNotZero()) {
 						topText.setText("Empty");
 					} else {
-						if (chargedWeapon != SERPENTINE_HELM) {
-							String prefix = ""; // This used to be used to show "~". Keeping in case I want this later.
-							topText.setText(prefix + ((charges >= 10000) ? (charges / 1000) + "k" : charges));
-						} else {
-							String scalesLeftPercentDisplay = formatPercentage(charges, SERPENTINE_HELM.rechargeAmount);
-							SerpModes displayStyle = plugin.getSerpHelmDisplayStyle();
-							if (displayStyle == PERCENT) {
-								topText.setText(scalesLeftPercentDisplay);
-							} else if (displayStyle == BOTH) {
-								topText.setText(charges.toString());
-								bottomText.setText(scalesLeftPercentDisplay);
-								if (isLowCharge) bottomText.setColor(config.chargesTextLowColor());
-							}
-						}
+						String prefix = ""; // This used to be used to show "~". Keeping in case I want this later.
+						topText.setText(prefix + ((charges >= 10000) ? (charges / 1000) + "k" : charges));
 					}
+
 					if (isLowCharge) topText.setColor(config.chargesTextLowColor());
 
 					if (chargedWeapon.drawAfter != null) {
-						chargedWeapon.drawAfter.drawAfter(topText, bottomText, plugin.configManager, itemId);
+						chargedWeapon.drawAfter.drawAfter(chargedWeapon, topText, bottomText, charges, plugin, itemId, isLowCharge);
 					}
 				}
 			}
