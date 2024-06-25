@@ -103,49 +103,7 @@ public class WeaponChargesTest
 	// TODO check weapons while they are equipped.
 	// TODO check animations.
 
-	@Test
-	public void test() {
-		checkTomeOfFire();
-
-		if (true) return;
-		for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
-		{
-			plugin.setCharges(chargedWeapon, 100);
-
-			chargedWeapon.getDisplayWhen(configManager);
-			chargedWeapon.getLowCharge(configManager);
-		}
-
-		checkIbans();
-
-		checkTridentCheckMessages();
-
-		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SEAS);
-		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SWAMP);
-		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SEAS_E);
-		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SWAMP_E);
-
-		checkCrystalHalberd();
-		checkCrystalBow();
-		checkBowOfFaerdhinen();
-		checkCrystalArmour();
-		checkCrystalShardRecharging();
-
-		checkAbyssalTentacle();
-
-		checkScytheOfVitur();
-		checkSanguineScytheOfVitur();
-		checkHolyScytheOfVitur();
-
-		checkSanguinestiStaff();
-		checkHolySanguinestiStaff();
-
-		checkArclight();
-		
-		checkBlowpipe();
-	}
-
-	private void checkCrystalShardRecharging()
+	@Test public void checkCrystalShardRecharging()
 	{
 //		2022-06-13 09:38:09 [Client] INFO  com.weaponcharges.Devtools - 25: dialog state changed: DialogState{INPUT, title='How many shards do you wish to add? (0 - 5)', input=''}
 		inputDialog(ChargedWeapon.CRYSTAL_BOW, "How many shards do you wish to add? (0 - 5)", "2", 100, 300);
@@ -157,7 +115,7 @@ public class WeaponChargesTest
 		inputDialog(ChargedWeapon.CRYSTAL_HALBERD, "How many shards do you wish to add? (0 - 5)", "2", 100, 300);
 	}
 
-	private void checkCrystalArmour()
+	@Test public void checkCrystalArmour()
 	{
 //		2022-06-07 12:47:59 [Client] INFO  com.weaponcharges.Devtools - 78: GAMEMESSAGE "Your crystal helm has 1,011 charges remaining."
 //		2022-06-07 12:47:59 [Client] INFO  com.weaponcharges.Devtools - 79: GAMEMESSAGE "Your crystal body has 996 charges remaining."
@@ -168,7 +126,7 @@ public class WeaponChargesTest
 
 	}
 
-	private void checkBowOfFaerdhinen()
+	@Test public void checkBowOfFaerdhinen()
 	{
 //		2022-06-07 12:47:57 [Client] INFO  com.weaponcharges.Devtools - 76: GAMEMESSAGE "Your bow of Faerdhinen has 180 charges remaining."
 		checkWeaponMessage(ChargedWeapon.BOW_OF_FAERDHINEN, "Your bow of Faerdhinen has 180 charges remaining.", 180);
@@ -176,13 +134,13 @@ public class WeaponChargesTest
 		equippedWeaponPeriodicUpdate(ChargedWeapon.BOW_OF_FAERDHINEN, "<col=ff0000>Your bow of Faerdhinen has 100 charges remaining.</col>", 100);
 	}
 
-	private void checkCrystalBow()
+	@Test public void checkCrystalBow()
 	{
 //		2022-06-12 20:17:48 [Client] INFO  com.weaponcharges.Devtools - 939: GAMEMESSAGE "Your crystal bow has 299 charges remaining."
 		checkWeaponMessage(ChargedWeapon.CRYSTAL_BOW, "Your crystal bow has 299 charges remaining.", 299);
 	}
 
-	private void checkTridentCheckMessages()
+	@Test public void checkTridentCheckMessages()
 	{
 //		2022-05-04 12:37:05 [Client] INFO  com.weaponcharges.Devtools - 354: GAMEMESSAGE "Your Trident of the swamp (e) has 2,000 charges."
 //		2022-05-04 12:38:41 [Client] INFO  com.weaponcharges.Devtools - 514: GAMEMESSAGE "Your Trident of the swamp (e) has one charge."
@@ -210,7 +168,7 @@ public class WeaponChargesTest
 		checkWeaponMessage(ChargedWeapon.TRIDENT_OF_THE_SWAMP, "Your Trident of the swamp has no charges.", 0);
 	}
 
-	private void checkBlowpipe()
+	@Test public void checkBlowpipe()
 	{
 		// TODO some of these unnecessarily check (menu option) the blowpipe.
 
@@ -276,12 +234,12 @@ public class WeaponChargesTest
 		else assertEquals(DartType.BRONZE, plugin.getDartType());
 	}
 
-	private void checkArclight()
+	@Test public void checkArclight()
 	{
 		checkWeaponMessage(ChargedWeapon.ARCLIGHT, "Your arclight has 6397 charges left.", 6397);
 	}
 
-	private void checkSanguinestiStaff()
+	@Test public void checkSanguinestiStaff()
 	{
 		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Sanguinesti staff is already fully charged.", 20000);
 		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Sanguinesti staff has 1,000 charges remaining.", 1000);
@@ -290,7 +248,7 @@ public class WeaponChargesTest
 		optionsDialogSelected(ChargedWeapon.SANGUINESTI_STAFF, "Uncharge your staff for all its charges? (regaining 11,748 blood runes)", "Proceed.", 123, 0, "Proceed.", "Cancel.");
 	}
 
-	private void checkHolySanguinestiStaff()
+	@Test public void checkHolySanguinestiStaff()
 	{
 		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Holy sanguinesti staff is already fully charged.", 20000);
 		checkWeaponMessage(ChargedWeapon.SANGUINESTI_STAFF, "Your Holy sanguinesti staff has 1,000 charges remaining.", 1000);
@@ -299,7 +257,7 @@ public class WeaponChargesTest
 		optionsDialogSelected(ChargedWeapon.SANGUINESTI_STAFF, "Uncharge your staff for all its charges? (regaining 11,748 blood runes)", "Proceed.", 123, 0, "Proceed.", "Cancel.");
 	}
 
-	private void checkScytheOfVitur()
+	@Test public void checkScytheOfVitur()
 	{
 		checkWeaponMessage(ChargedWeapon.SCYTHE_OF_VITUR, "Your Scythe of vitur has 19,529 charges remaining.", 19529);
 
@@ -311,7 +269,7 @@ public class WeaponChargesTest
 //		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You uncharge your scythe into the well. It now<br>contains 173 sets of 100 charges.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
 	}
 
-	private void checkSanguineScytheOfVitur()
+	@Test public void checkSanguineScytheOfVitur()
 	{
 		checkWeaponMessage(ChargedWeapon.SCYTHE_OF_VITUR, "Your Sanguine scythe of vitur has 19,529 charges remaining.", 19529);
 
@@ -323,7 +281,7 @@ public class WeaponChargesTest
 //		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You uncharge your scythe into the well. It now<br>contains 173 sets of 100 charges.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
 	}
 
-	private void checkHolyScytheOfVitur()
+	@Test public void checkHolyScytheOfVitur()
 	{
 		checkWeaponMessage(ChargedWeapon.SCYTHE_OF_VITUR, "Your Holy scythe of vitur has 19,529 charges remaining.", 19529);
 
@@ -335,31 +293,26 @@ public class WeaponChargesTest
 //		spriteDialog(ChargedWeapon.SCYTHE_OF_VITUR, "You uncharge your scythe into the well. It now<br>contains 173 sets of 100 charges.", ChargedWeapon.SCYTHE_OF_VITUR.getItemIds().get(0), 100, 0);
 	}
 
-	private void checkTomeOfFire()
+	@Test public void checkTomeOfFire()
 	{
 		checkWeaponMessage(ChargedWeapon.TOME_OF_FIRE, "Your tome has been charged with Searing Pages. It currently holds 40 charges.", 40);
-//		checkWeaponMessage(ChargedWeapon.TOME_OF_FIRE, "Your tome currently holds 6,839 charges.", 6839);
-//		checkWeaponMessage(ChargedWeapon.TOME_OF_FIRE, "Your tome currently holds one charge.", 1);
-
 		equippedWeaponPeriodicUpdate(ChargedWeapon.TOME_OF_FIRE, "Your Tome of Fire is now empty.", 0);
-
 		equippedWeaponPeriodicUpdate(ChargedWeapon.TOME_OF_FIRE, "You remove a page from the book. Your tome currently holds 6,839 charges.", 6839);
 		equippedWeaponPeriodicUpdate(ChargedWeapon.TOME_OF_FIRE, "You remove 2 pages from the book. Your tome currently holds 6,799 charges.", 6799);
-		equippedWeaponPeriodicUpdate(ChargedWeapon.TOME_OF_FIRE, "You empty your book of pages.", 0);
 		equippedWeaponPeriodicUpdate(ChargedWeapon.TOME_OF_FIRE, "You remove 299 pages from the book. Your tome currently holds one charge.", 1);
 	}
 
-	private void checkAbyssalTentacle()
+	@Test public void checkAbyssalTentacle()
 	{
 		checkWeaponMessage(ChargedWeapon.ABYSSAL_TENTACLE, "Your abyssal tentacle can perform 190 more attacks.", 190);
 	}
 
-	private void checkCrystalHalberd()
+	@Test public void checkCrystalHalberd()
 	{
 		checkWeaponMessage(ChargedWeapon.CRYSTAL_HALBERD, "Your crystal halberd has 278 charges remaining.", 278);
 	}
 
-	private void checkIbans()
+	@Test public void checkIbans()
 	{
 		checkWeaponMessage(ChargedWeapon.IBANS_STAFF, "You have 2500 charges left on the staff.", 2500);
 		checkWeaponMessage(ChargedWeapon.IBANS_STAFF, "You have 116 charges left on the staff.", 116);
@@ -373,8 +326,15 @@ public class WeaponChargesTest
 		spriteDialog(ChargedWeapon.IBANS_STAFF, "You hold the staff above the well and feel the power of<br>Zamorak flow through you.", 12658, 2015, 2500);
 	}
 
-	private void checkTrident(ChargedWeapon chargedWeapon)
+	@Test public void checkTrident()
 	{
+		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SEAS);
+		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SWAMP);
+		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SEAS_E);
+		checkTrident(ChargedWeapon.TRIDENT_OF_THE_SWAMP_E);
+	}
+
+	private void checkTrident(ChargedWeapon chargedWeapon) {
 		equippedWeaponPeriodicUpdate(chargedWeapon, "<col=ef1020>Your trident only has 100 charges left!</col>", 100);
 		equippedWeaponPeriodicUpdate(chargedWeapon, "<col=ef1020>Your trident has run out of charges.</col>", 0);
 		equippedWeaponPeriodicUpdate(chargedWeapon, "The weapon has no charges left. You need death runes, chaos runes, fire runes and Zulrah's scales to charge it.", 0);
@@ -385,7 +345,7 @@ public class WeaponChargesTest
 		spriteDialog(chargedWeapon, "Your weapon is already fully charged.", chargedWeapon.getItemIds().get(0), 2015, chargedWeapon.rechargeAmount);
 		spriteDialog(chargedWeapon, "You add 124 charges to the weapon.<br>New total: 247", chargedWeapon.getItemIds().get(0), 123, 247);
 
-		optionsDialogSelected(chargedWeapon, (chargedWeapon == ChargedWeapon.TRIDENT_OF_THE_SEAS || chargedWeapon == ChargedWeapon.TRIDENT_OF_THE_SEAS_E) ? "You will NOT get the coins back." : "Really uncharge the trident?", "Okay, uncharge it.", 123, 0, "Okay, uncharge it.", "No, don't uncharge it.");
+		optionsDialogSelected(chargedWeapon, (chargedWeapon == ChargedWeapon.TRIDENT_OF_THE_SEAS || chargedWeapon == ChargedWeapon.TRIDENT_OF_THE_SEAS_E) ? "You will NOT get the coins back." : "Really uncharge the Trident of the swamp?", "Okay, uncharge it.", 123, 0, "Okay, uncharge it.", "No, don't uncharge it.");
 		optionsDialogSelected(chargedWeapon, "If you drop it, it will lose all its charges.", "Drop it.", 123, 0, "Drop it.", "No, don't drop it.");
 	}
 

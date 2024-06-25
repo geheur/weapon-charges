@@ -28,6 +28,7 @@ public final class ChargesDialogHandler
 	public boolean handleDialogOptionSelected(DialogTracker.DialogState dialogState, String optionSelected, WeaponChargesPlugin plugin)
 	{
 		DialogStateMatcher.DialogStateMatchers matchers = dialogStateMatcher.matchDialogOptionSelected(dialogState, optionSelected);
+		System.out.println(dialogStateMatcher.getTextMatch());
 		boolean matched = matchers != null;
 		if (matched)
 		{

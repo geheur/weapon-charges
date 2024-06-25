@@ -442,7 +442,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		for (ChargesMessage checkMessage : ChargedWeapon.getNonUniqueCheckChargesRegexes())
 		{
 			Matcher matcher = checkMessage.getPattern().matcher(message);
-			if (matcher.find()) {
+			if (matcher.matches()) {
 				ChargedWeapon chargedWeapon = removeLastWeaponChecked();
 				// TODO possible to mess stuff up by checking a weapon immediately after the tome of water/fire dialog?
 				if (chargedWeapon != null) {
@@ -460,7 +460,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		for (ChargesMessage checkMessage : ChargedWeapon.getNonUniqueUpdateMessageChargesRegexes())
 		{
 			Matcher matcher = checkMessage.getPattern().matcher(message);
-			if (matcher.find()) {
+			if (matcher.matches()) {
 				int chargeCount = checkMessage.getChargesLeft(matcher, configManager);
 				delayChargeUpdateUntilAfterAnimations.add(() -> {
 					ChargedWeapon equippedWeapon = getEquippedChargedWeapon(EquipmentInventorySlot.WEAPON);
@@ -482,7 +482,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			for (ChargesMessage checkMessage : chargedWeapon.getCheckChargesRegexes())
 			{
 				Matcher matcher = checkMessage.getPattern().matcher(message);
-				if (matcher.find()) {
+				if (matcher.matches()) {
 					setCharges(chargedWeapon, checkMessage.getChargesLeft(matcher, configManager));
 					break outer_loop;
 				}
@@ -491,7 +491,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			for (ChargesMessage checkMessage : chargedWeapon.getUpdateMessageChargesRegexes())
 			{
 				Matcher matcher = checkMessage.getPattern().matcher(message);
-				if (matcher.find()) {
+				if (matcher.matches()) {
 					delayChargeUpdateUntilAfterAnimations.add(() -> setCharges(chargedWeapon, checkMessage.getChargesLeft(matcher, configManager)));
 					break outer_loop;
 				}
@@ -563,7 +563,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	{
 		if (chatMsg.startsWith("Darts")) {
 			Matcher matcher = DARTS_AND_SCALE_CHECK_PATTERN.matcher(chatMsg);
-			if (matcher.find()) {
+			if (matcher.matches()) {
 				setDartsLeft(Integer.parseInt(matcher.group(2).replace(",", "")));
 				setScalesLeft(Integer.parseInt(matcher.group(3).replace(",", "")));
 				setDartType(DartType.getDartTypeByName(matcher.group(1)));
@@ -571,74 +571,30 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			}
 
 			matcher = NO_DARTS_CHECK_PATTERN.matcher(chatMsg);
-			if (matcher.find()) {
+			if (matcher.matches()) {
 				setDartsLeft(0);
 				setScalesLeft(Integer.parseInt(matcher.group(1).replace(",", "")));
 				return;
 			}
 		} else if (chatMsg.startsWith("The blowpipe")) {
-			Matcher matcher = USE_SCALES_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
-			if (matcher.find()) {
+			if (USE_SCALES_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg).matches()) {
 				setScalesLeft(MAX_SCALES_BLOWPIPE);
-				return;
-			}
-
-			matcher = USE_DARTS_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg);
-			if (matcher.find()) {
+			} else if (USE_DARTS_ON_FULL_BLOWPIPE_PATTERN.matcher(chatMsg).matches()) {
 				setDartsLeft(MAX_DARTS);
-				return;
-			}
-
-			matcher = UNLOAD_EMPTY_BLOWPIPE_PATTERN.matcher(chatMsg);
-			if (matcher.find()) {
+			} else if (UNLOAD_EMPTY_BLOWPIPE_PATTERN.matcher(chatMsg).matches()) {
 				setDartsLeft(0);
-				return;
 			}
-		}
-
-		if (chatMsg.startsWith("Your blowpipe")) {
-			Matcher matcher = NO_DARTS_PATTERN.matcher(chatMsg);
-			if (matcher.find()) {
-				delayChargeUpdateUntilAfterAnimations.add(() -> {
-					setDartsLeft(0);
-				});
-				return;
-			}
-
-			matcher = NO_SCALES_PATTERN.matcher(chatMsg);
-			if (matcher.find())
-			{
+		} else if (chatMsg.startsWith("Your blowpipe")) {
+			if (NO_DARTS_PATTERN.matcher(chatMsg).matches()) {
+				delayChargeUpdateUntilAfterAnimations.add(() -> setDartsLeft(0));
+			} else if (NO_SCALES_PATTERN.matcher(chatMsg).matches()) {
 				delayChargeUpdateUntilAfterAnimations.add(() -> setScalesLeft(0));
-				return;
-			}
-
-			matcher = NO_DARTS_OR_SCALES_PATTERN.matcher(chatMsg);
-			if (matcher.find())
-			{
-				delayChargeUpdateUntilAfterAnimations.add(() -> {
-					setScalesLeft(0);
-					setDartsLeft(0);
-				});
-				return;
-			}
-
-			matcher = NO_DARTS_PATTERN_2.matcher(chatMsg);
-			if (matcher.find())
-			{
-				delayChargeUpdateUntilAfterAnimations.add(() -> {
-					setDartsLeft(0);
-				});
-				return;
-			}
-
-			matcher = NO_DARTS_OR_SCALES_PATTERN_2.matcher(chatMsg);
-			if (matcher.find())
-			{
-				delayChargeUpdateUntilAfterAnimations.add(() -> {
-					setScalesLeft(0);
-					setDartsLeft(0);
-				});
-				return;
+			} else if (NO_DARTS_OR_SCALES_PATTERN.matcher(chatMsg).matches()) {
+				delayChargeUpdateUntilAfterAnimations.add(() -> { setScalesLeft(0); setDartsLeft(0); });
+			} else if (NO_DARTS_PATTERN_2.matcher(chatMsg).matches()) {
+				delayChargeUpdateUntilAfterAnimations.add(() -> setDartsLeft(0));
+			} else if (NO_DARTS_OR_SCALES_PATTERN_2.matcher(chatMsg).matches()) {
+				delayChargeUpdateUntilAfterAnimations.add(() -> { setScalesLeft(0); setDartsLeft(0); });
 			}
 		}
 	}
