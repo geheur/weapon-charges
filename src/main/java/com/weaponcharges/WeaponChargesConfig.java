@@ -77,10 +77,21 @@ public interface WeaponChargesConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "showOnUncharged",
+		name = "Show on uncharged items.",
+		description = "When the charged item has an uncharged version that is separate, do not draw \"0\" or \"Empty\" on it.",
+		position = 4
+	)
+	default boolean showOnUncharged()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = WeaponChargesPlugin.DEV_MODE_CONFIG_KEY,
 		name = "log data",
 		description = "fills your logs with stuff, if you're collecting game messages/dialogs that have to do with weapon charges.",
-		position = 4
+		position = 5
 	)
 	default boolean devMode()
 	{
@@ -91,7 +102,7 @@ public interface WeaponChargesConfig extends Config
 		keyName = "showOnHotkey",
 		name = "Always show charge when held",
 		description = "When this key is held, show charges on all tracked weapons.",
-		position = 5
+		position = 6
 	)
 	default Keybind showOnHotkey()
 	{
@@ -108,7 +119,7 @@ public interface WeaponChargesConfig extends Config
 	@ConfigSection(
 		name = "Vorkath's head ammo saving",
 		description = "Instructions for setting vorkath's head ammo saving status.",
-		position = 6,
+		position = 7,
 		closedByDefault = true
 	)
 	String VORKATHS_HEAD_AMMO_SAVING_INSTRUCTIONS = "vorkathsHeadAmmoSavingInstructionsSection";

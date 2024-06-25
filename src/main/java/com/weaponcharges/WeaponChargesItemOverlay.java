@@ -54,6 +54,7 @@ public class WeaponChargesItemOverlay extends WidgetItemOverlay
 				Float c = plugin.getCharges(chargedWeapon);
 				charges = c == null ? null : (int) (float) c;
 			} else if (chargedWeapon.getUnchargedIds().contains(itemId)) {
+				if (!config.showOnUncharged()) return;
 				charges = 0;
 			} else {
 				continue;
