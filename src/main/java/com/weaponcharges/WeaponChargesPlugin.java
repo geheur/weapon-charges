@@ -320,12 +320,17 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				itemId == ItemID.MAX_CAPE
 			) {
 				boolean vorkathsHeadUsed = Boolean.valueOf(configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed"));
-				client.createMenuEntry(0)
-					.setOption("Weapon Charges Plugin vorkath's head ammo saving is " + (vorkathsHeadUsed ? "on" : "off"))
-					.setTarget(ColorUtil.wrapWithColorTag("Click to turn " + (vorkathsHeadUsed ? "off" : "on"), Color.ORANGE))
-					.onClick(entry -> {
-						configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed", !vorkathsHeadUsed);
-					});
+				MenuEntry submenuEntry = client.createMenuEntry(1)
+					.setOption("Weapon charges plugin")
+					.setType(MenuAction.RUNELITE_SUBMENU);
+				addSubmenu(ColorUtil.wrapWithColorTag("Vorkath's head ammo saving", Color.decode("#ff9040")),
+					submenuEntry);
+				addSubmenuRadioButtonStyle(vorkathsHeadUsed, ColorUtil.wrapWithColorTag("80%", Color.decode("#49afd6")),
+					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed", true),
+					submenuEntry);
+				addSubmenuRadioButtonStyle(!vorkathsHeadUsed, ColorUtil.wrapWithColorTag("72%", Color.decode("#5e855a")),
+					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed", false),
+					submenuEntry);
 				break;
 			} else if (
 				itemId == ItemID.DIZANAS_MAX_CAPE ||
