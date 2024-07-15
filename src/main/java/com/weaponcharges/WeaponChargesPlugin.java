@@ -327,6 +327,33 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 						configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed", !vorkathsHeadUsed);
 					});
 				break;
+			} else if (
+				itemId == ItemID.DIZANAS_MAX_CAPE ||
+				itemId == ItemID.DIZANAS_MAX_CAPE_L ||
+				itemId == ItemID.DIZANAS_QUIVER ||
+				itemId == ItemID.DIZANAS_QUIVER_L ||
+				itemId == ItemID.BLESSED_DIZANAS_QUIVER ||
+				itemId == ItemID.BLESSED_DIZANAS_QUIVER_L ||
+				itemId == ItemID.DIZANAS_QUIVER_UNCHARGED ||
+				itemId == ItemID.DIZANAS_QUIVER_UNCHARGED_L
+			) {
+				String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving");
+				int dizanasQuiverAmmoSaving = configString == null ? 0 : Integer.parseInt(configString);
+				MenuEntry submenuEntry = client.createMenuEntry(1)
+					.setOption("Weapon charges plugin")
+					.setType(MenuAction.RUNELITE_SUBMENU);
+				addSubmenu(ColorUtil.wrapWithColorTag("Dizana's quiver ammo saving", Color.decode("#ff9040")),
+					submenuEntry);
+				addSubmenuRadioButtonStyle(dizanasQuiverAmmoSaving == 0, ColorUtil.wrapWithColorTag("80%", Color.decode("#49afd6")),
+					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving", 0),
+					submenuEntry);
+				addSubmenuRadioButtonStyle(dizanasQuiverAmmoSaving == 1, ColorUtil.wrapWithColorTag("72%", Color.decode("#5e855a")),
+					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving", 1),
+					submenuEntry);
+				addSubmenuRadioButtonStyle(dizanasQuiverAmmoSaving == 2, ColorUtil.wrapWithColorTag("60%", Color.decode("#3d5885")),
+					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving", 2),
+					submenuEntry);
+				break;
 			}
 		}
 	}
@@ -800,7 +827,9 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			case ItemID.BLESSED_DIZANAS_QUIVER_L:
 			case ItemID.DIZANAS_QUIVER_UNCHARGED:
 			case ItemID.DIZANAS_QUIVER_UNCHARGED_L:
-				return 0.2f;
+				String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving");
+				int dizanasQuiverAmmoSaving = configString == null ? 0 : Integer.parseInt(configString);
+				return dizanasQuiverAmmoSaving == 0 ? 0.2f : dizanasQuiverAmmoSaving == 1 ? 0.28f : 0.4f;
 			default:
 				// no ammo-saving thing equipped.
 				return 1f;

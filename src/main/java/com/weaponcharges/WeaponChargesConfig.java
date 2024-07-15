@@ -117,30 +117,35 @@ public interface WeaponChargesConfig extends Config
 	}
 
 	@ConfigSection(
-		name = "Vorkath's head ammo saving",
+		name = "Ammo saving capes",
 		description = "Instructions for setting vorkath's head ammo saving status.",
 		position = 7,
 		closedByDefault = true
 	)
-	String VORKATHS_HEAD_AMMO_SAVING_INSTRUCTIONS = "vorkathsHeadAmmoSavingInstructionsSection";
+	String AMMO_SAVING_CAPES_SECTION = "vorkathsHeadAmmoSavingInstructionsSection";
 
 	@ConfigItem(
 		keyName = "vorkathsHeadInstructions",
-		name = "Set vorkath's head ammo saving",
-		description = "When the Blowpipe should show the charge counter.",
-		section = VORKATHS_HEAD_AMMO_SAVING_INSTRUCTIONS,
+		name = "<html>" +
+			   "The ranging skillcape and dizana's<br>" +
+			   "quiver have variable ammo saving<br>" +
+			   "changes. Shift-right-click these to<br>" +
+			   "choose what ammo saving you have on<br>" +
+			   "it. This setting is per account." +
+		       "</html>",
+		description = "",
+		section = AMMO_SAVING_CAPES_SECTION,
 		position = 1
 	)
-	default String vorkathsHeadInstructions()
+	default void vorkathsHeadInstructions()
 	{
-		return "If you have used vorkath's head on your ranged or max cape, shift-right-click the cape and select that you have done so, so that this plugin will know the correct ammo saving chance.";
 	}
 
 	@ConfigItem(
 		keyName = "vorkathsHeadMenuOptionDisabled",
 		name = "Never show option on cape",
-		description = "When enabled, the option to select vorkath's head status is never shown. Normally it is shown when holding shift and right-clicking the cape.",
-		section = VORKATHS_HEAD_AMMO_SAVING_INSTRUCTIONS,
+		description = "When enabled, the option to select ammo saving status is never shown. Normally it is shown when holding shift and right-clicking the cape.",
+		section = AMMO_SAVING_CAPES_SECTION,
 		position = 2
 	)
 	default boolean vorkathsHeadMenuOptionDisabled()
