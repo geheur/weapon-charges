@@ -796,6 +796,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			case ItemID.DIZANAS_MAX_CAPE_L:
 			case ItemID.DIZANAS_QUIVER:
 			case ItemID.DIZANAS_QUIVER_L:
+			case ItemID.BLESSED_DIZANAS_QUIVER:
+			case ItemID.BLESSED_DIZANAS_QUIVER_L:
 			case ItemID.DIZANAS_QUIVER_UNCHARGED:
 			case ItemID.DIZANAS_QUIVER_UNCHARGED_L:
 				return 0.2f;
