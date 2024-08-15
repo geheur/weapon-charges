@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import lombok.Getter;
-import net.runelite.api.MenuEntry;
+import net.runelite.api.Menu;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
@@ -328,13 +328,13 @@ public enum ChargedWeapon
 			bottomText.setText(searing ? "Sear" : "Burnt");
 			bottomText.setColor(searing ? Color.ORANGE : Color.GRAY);
 		})
-		.configMenuEntries((plugin, submenuEntry) -> {
+		.configMenuEntries((plugin, submenu) -> {
 			plugin.addSubmenu(ColorUtil.wrapWithColorTag("Display style", Color.decode("#ff9040")),
-				submenuEntry);
+				submenu);
 			Boolean hidePageType = Boolean.valueOf(plugin.configManager.getRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_hide_page_type"));
 			plugin.addSubmenuCheckboxStyle(!hidePageType, "Show page type",
 				e -> plugin.configManager.setRSProfileConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, "tome_of_fire_hide_page_type", !hidePageType),
-				submenuEntry);
+				submenu);
 		})
 	),
 	/* Tome of water:
@@ -1036,8 +1036,8 @@ public enum ChargedWeapon
 			this.drawAfter = drawAfter;
 			return this;
 		}
-		BiConsumer<WeaponChargesPlugin, MenuEntry> addMenuEntries;
-		public ChargedWeaponBuilder configMenuEntries(BiConsumer<WeaponChargesPlugin, MenuEntry> addMenuEntries) {
+		BiConsumer<WeaponChargesPlugin, Menu> addMenuEntries;
+		public ChargedWeaponBuilder configMenuEntries(BiConsumer<WeaponChargesPlugin, Menu> addMenuEntries) {
 			this.addMenuEntries = addMenuEntries;
 			return this;
 		}
@@ -1048,7 +1048,7 @@ public enum ChargedWeapon
 	public final List<Integer> animationIds;
 	public final List<Integer> graphicIds;
 	public final DrawAfter drawAfter;
-	public final BiConsumer<WeaponChargesPlugin, MenuEntry> addMenuEntries;
+	public final BiConsumer<WeaponChargesPlugin, Menu> addMenuEntries;
 	public final String name;
 	public final Integer rechargeAmount;
 	public final int defaultLowChargeThreshold;
@@ -1133,8 +1133,8 @@ public enum ChargedWeapon
 		configManager.setConfiguration(WeaponChargesPlugin.CONFIG_GROUP_NAME, settingsConfigKey + LOW_CHARGE_CONFIG_KEY_SUFFIX, charges);
 	}
 
-	public void addMenuEntries(WeaponChargesPlugin plugin, MenuEntry submenuEntry) {
-		if (addMenuEntries != null) addMenuEntries.accept(plugin, submenuEntry);
+	public void addMenuEntries(WeaponChargesPlugin plugin, Menu submenu) {
+		if (addMenuEntries != null) addMenuEntries.accept(plugin, submenu);
 	}
 
 	private static ChargedWeapon get_scythe_circumvent_illegal_self_reference() {

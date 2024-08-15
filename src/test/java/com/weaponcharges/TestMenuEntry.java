@@ -25,11 +25,13 @@
 package com.weaponcharges;
 
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Actor;
+import net.runelite.api.Menu;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.NPC;
@@ -193,6 +195,12 @@ public class TestMenuEntry implements MenuEntry
 	}
 
 	@Override
+	public Consumer<MenuEntry> onClick()
+	{
+		return null;
+	}
+
+	@Override
 	public boolean isItemOp()
 	{
 		return itemOp != -1;
@@ -244,10 +252,23 @@ public class TestMenuEntry implements MenuEntry
 		return actor;
 	}
 
+	@Nullable
 	@Override
-	public MenuEntry setParent(MenuEntry parent)
+	public Menu getSubMenu()
 	{
-		this.parent = parent;
-		return this;
+		return null;
+	}
+
+	@Nonnull
+	@Override
+	public Menu createSubMenu()
+	{
+		return null;
+	}
+
+	@Override
+	public void deleteSubMenu()
+	{
+
 	}
 }

@@ -57,6 +57,7 @@ import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.ItemID;
 import net.runelite.api.KeyCode;
+import net.runelite.api.Menu;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.Player;
@@ -320,17 +321,15 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				itemId == ItemID.MAX_CAPE
 			) {
 				boolean vorkathsHeadUsed = Boolean.valueOf(configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed"));
-				MenuEntry submenuEntry = client.createMenuEntry(1)
-					.setOption("Weapon charges plugin")
-					.setType(MenuAction.RUNELITE_SUBMENU);
+				Menu submenu = createSubmenu();
 				addSubmenu(ColorUtil.wrapWithColorTag("Vorkath's head ammo saving", Color.decode("#ff9040")),
-					submenuEntry);
+					submenu);
 				addSubmenuRadioButtonStyle(vorkathsHeadUsed, ColorUtil.wrapWithColorTag("80%", Color.decode("#49afd6")),
 					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed", true),
-					submenuEntry);
+					submenu);
 				addSubmenuRadioButtonStyle(!vorkathsHeadUsed, ColorUtil.wrapWithColorTag("72%", Color.decode("#5e855a")),
 					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "vorkathsHeadUsed", false),
-					submenuEntry);
+					submenu);
 				break;
 			} else if (
 				itemId == ItemID.DIZANAS_MAX_CAPE ||
@@ -344,20 +343,18 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			) {
 				String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving");
 				int dizanasQuiverAmmoSaving = configString == null ? 0 : Integer.parseInt(configString);
-				MenuEntry submenuEntry = client.createMenuEntry(1)
-					.setOption("Weapon charges plugin")
-					.setType(MenuAction.RUNELITE_SUBMENU);
+				Menu submenu = createSubmenu();
 				addSubmenu(ColorUtil.wrapWithColorTag("Dizana's quiver ammo saving", Color.decode("#ff9040")),
-					submenuEntry);
+					submenu);
 				addSubmenuRadioButtonStyle(dizanasQuiverAmmoSaving == 0, ColorUtil.wrapWithColorTag("80%", Color.decode("#49afd6")),
 					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving", 0),
-					submenuEntry);
+					submenu);
 				addSubmenuRadioButtonStyle(dizanasQuiverAmmoSaving == 1, ColorUtil.wrapWithColorTag("72%", Color.decode("#5e855a")),
 					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving", 1),
-					submenuEntry);
+					submenu);
 				addSubmenuRadioButtonStyle(dizanasQuiverAmmoSaving == 2, ColorUtil.wrapWithColorTag("60%", Color.decode("#3d5885")),
 					e -> configManager.setRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving", 2),
-					submenuEntry);
+					submenu);
 				break;
 			}
 		}
@@ -1033,9 +1030,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				}
 
 				// I want to insert the menu entry underneath everything else (except "Cancel"), such as the runelite MES left and shift click swap options, and inventory tags, because those are more useful to people.
-				MenuEntry submenuEntry = client.createMenuEntry(1)
-					.setOption("Weapon charges plugin")
-					.setType(MenuAction.RUNELITE_SUBMENU);
+				Menu submenu = createSubmenu();
 				/*
 				Set low charge threshold (500)
 				Show charge count on item
@@ -1046,40 +1041,47 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				 */
 				addSubmenu("Set low charge threshold (" + chargedWeapon.getLowCharge(configManager) + ")",
 					e -> openChangeLowChargeDialog(chargedWeapon, chargedWeapon.getLowCharge(configManager)),
-					submenuEntry);
+					submenu);
 				addSubmenu(ColorUtil.wrapWithColorTag("Show charge count on item", Color.decode("#ff9040")),
-					submenuEntry);
+					submenu);
 				DisplayWhen displayWhen = chargedWeapon.getDisplayWhen(configManager);
 				addSubmenuRadioButtonStyle(displayWhen == USE_DEFAULT, "Use default settings",
 					e -> chargedWeapon.setDisplayWhen(configManager, USE_DEFAULT),
-					submenuEntry);
+					submenu);
 				addSubmenuRadioButtonStyle(displayWhen == LOW_CHARGE, "When low",
 					e -> chargedWeapon.setDisplayWhen(configManager, LOW_CHARGE),
-					submenuEntry);
+					submenu);
 				addSubmenuRadioButtonStyle(displayWhen == ALWAYS, "Always",
 					e -> chargedWeapon.setDisplayWhen(configManager, ALWAYS),
-					submenuEntry);
+					submenu);
 				addSubmenuRadioButtonStyle(displayWhen == NEVER, "Never",
 					e -> chargedWeapon.setDisplayWhen(configManager, NEVER),
-					submenuEntry);
+					submenu);
 				if (chargedWeapon == ChargedWeapon.SERPENTINE_HELM) {
 					addSubmenu(ColorUtil.wrapWithColorTag("Display style", Color.decode("#ff9040")),
-						submenuEntry);
+						submenu);
 					SerpModes serpMode = getSerpHelmDisplayStyle();
 					addSubmenuRadioButtonStyle(serpMode == PERCENT, "Percent",
 						e -> setSerpHelmDisplayStyle(PERCENT),
-						submenuEntry);
+						submenu);
 					addSubmenuRadioButtonStyle(serpMode == SCALES, "Scales",
 						e -> setSerpHelmDisplayStyle(SCALES),
-						submenuEntry);
+						submenu);
 					addSubmenuRadioButtonStyle(serpMode == BOTH, "Both",
 						e -> setSerpHelmDisplayStyle(BOTH),
-						submenuEntry);
+						submenu);
 				}
-				chargedWeapon.addMenuEntries(this, submenuEntry);
+				chargedWeapon.addMenuEntries(this, submenu);
 				break;
 			}
 		}
+	}
+
+	private Menu createSubmenu() {
+		MenuEntry submenuEntry = client.createMenuEntry(1)
+			.setOption("Weapon charges plugin")
+			.setType(MenuAction.RUNELITE);
+		return submenuEntry.createSubMenu();
 	}
 
 	public void setSerpHelmDisplayStyle(SerpModes percent)
@@ -1126,32 +1128,31 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			.build();
 	}
 
-	void addSubmenu(String option, MenuEntry submenuEntry)
+	void addSubmenu(String option, Menu submenu)
 	{
-		addSubmenu(option, e -> {}, submenuEntry);
+		addSubmenu(option, e -> {}, submenu);
 	}
 
-	void addSubmenuRadioButtonStyle(boolean selected, String option, Consumer<MenuEntry> callback, MenuEntry submenuEntry)
+	void addSubmenuRadioButtonStyle(boolean selected, String option, Consumer<MenuEntry> callback, Menu submenu)
 	{
 		addSubmenu("(" + (selected ? "x" : "  ") + ") " + option,
 			callback,
-			submenuEntry);
+			submenu);
 	}
 
-	void addSubmenuCheckboxStyle(boolean selected, String option, Consumer<MenuEntry> callback, MenuEntry submenuEntry)
+	void addSubmenuCheckboxStyle(boolean selected, String option, Consumer<MenuEntry> callback, Menu submenu)
 	{
 		addSubmenu("[" + (selected ? "x" : "  ") + "] " + option,
 			callback,
-			submenuEntry);
+			submenu);
 	}
 
-	void addSubmenu(String option, Consumer<MenuEntry> callback, MenuEntry submenuEntry)
+	void addSubmenu(String option, Consumer<MenuEntry> callback, Menu submenu)
 	{
-		client.createMenuEntry(0)
+		submenu.createMenuEntry(0)
 			.setOption(option)
 			.setType(MenuAction.RUNELITE)
-			.onClick(callback)
-			.setParent(submenuEntry);
+			.onClick(callback);
 	}
 
 	private boolean bloodFuryAppliedThisTick = false;
