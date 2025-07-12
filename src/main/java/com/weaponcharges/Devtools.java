@@ -41,12 +41,12 @@ public class Devtools
 		if ("setcharges".equals(commandExecuted.getCommand())) {
 			String weapon = commandExecuted.getArguments()[0];
 			String key = getKey(weapon);
-			System.out.println("setting " + key + " to " + commandExecuted.getArguments()[1]);
+			plugin.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "setting " + key + " to " + commandExecuted.getArguments()[1], "");
 			plugin.configManager.setRSProfileConfiguration(plugin.CONFIG_GROUP_NAME, key, commandExecuted.getArguments()[1]);
 		} else if ("unsetcharges".equals(commandExecuted.getCommand())) {
 			String weapon = commandExecuted.getArguments()[0];
 			String key = getKey(weapon);
-			System.out.println("unsetting " + key);
+			plugin.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "unsetting " + key, "");
 			plugin.configManager.unsetRSProfileConfiguration(plugin.CONFIG_GROUP_NAME, key);
 		}
 	}
