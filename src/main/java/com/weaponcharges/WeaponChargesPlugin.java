@@ -60,12 +60,7 @@ import net.runelite.api.KeyCode;
 import net.runelite.api.Menu;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
-import net.runelite.api.Player;
-import net.runelite.api.Projectile;
 import net.runelite.api.Skill;
-import net.runelite.api.VarPlayer;
-import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.FocusChanged;
@@ -75,7 +70,6 @@ import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.ProjectileMoved;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.widgets.InterfaceID;
@@ -113,6 +107,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 {
 	public static final String CONFIG_GROUP_NAME = "weaponCharges";
 	public static final String DEV_MODE_CONFIG_KEY = "logData";
+	public static final int MAX_SCALES_BLOWPIPE = 16383;
+	public static final int MAX_DARTS = 16383;
 	private static final int[] BLOWPIPE_ATTACK_ANIMATIONS = new int[]{5061, 10656};
 
 	// TODO rename. This is used for when an item is used on a weapon, when a weapon is used on an item, and when "pages" is clicked.
@@ -676,7 +672,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	private int lastLocalPlayerGraphicChangedGameTick = -1;
 	// I record the graphic id so that graphic changing plugins that change the graphic can't interfere.
 	private int lastLocalPlayerGraphicChanged = -1;
-	private int checkBlowpipeGameTick = -1;
 
 	@Subscribe(priority = 10.0f) // I want to get ahead of those pesky animation modifying plugins.
 	public void onAnimationChanged(AnimationChanged event)
@@ -698,36 +693,6 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		lastLocalPlayerGraphicChanged = actor.getGraphic();
 	}
 
-	@Subscribe(priority = 10.0f)
-	public void onProjectileMoved(ProjectileMoved event)
-	{
-		Projectile projectile = event.getProjectile();
-		if (client.getGameCycle() >= projectile.getStartCycle()) return; // skip already seen projectiles.
-
-		// This is the player's actual location which is what projectiles use as their start position. Player#getX, #getSceneX, etc., do not work here.
-		Player player = client.getLocalPlayer();
-		final WorldPoint playerPos = player.getWorldLocation();
-		if (playerPos == null) return;
-		final LocalPoint playerPosLocal = LocalPoint.fromWorld(client, playerPos);
-		if (playerPosLocal == null) return;
-
-		if (projectile.getX1() != playerPosLocal.getX() || projectile.getY1() != playerPosLocal.getY()) return;
-
-		int id = projectile.getId();
-		if (id == 1122 || id == 1936 || (id >= 226 && id <= 231)) {
-			checkBlowpipeGameTick = client.getTickCount();
-		}
-	}
-
-	private static final int TICKS_RAPID_PVM = 2;
-//	private static final int TICKS_RAPID_PVP = 3;
-	private static final int TICKS_NORMAL_PVM = 3;
-//	private static final int TICKS_NORMAL_PVP = 4;
-	public static final int MAX_SCALES_BLOWPIPE = 16383;
-	public static final int MAX_DARTS = 16383;
-
-	private int blowpipeCooldownUp = 0;
-
 	@Subscribe
 	public void onGameTick(GameTick tick)
 	{
@@ -741,10 +706,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		// charge update messages must also be delayed due to equipment slot info not being current in onChatMessage.
 		checkAnimation(lastLocalPlayerAnimationChangedGameTick == tickCount, lastLocalPlayerGraphicChangedGameTick == tickCount);
 
-		if (checkBlowpipeGameTick == tickCount && tickCount >= blowpipeCooldownUp && Arrays.stream(BLOWPIPE_ATTACK_ANIMATIONS).anyMatch(id -> id == lastLocalPlayerAnimationChanged)) {
-			blowpipeCooldownUp = tickCount +
-				client.getVarpValue(VarPlayer.ATTACK_STYLE) == 1 ? TICKS_RAPID_PVM : TICKS_NORMAL_PVM
-			;
+		if (Arrays.stream(BLOWPIPE_ATTACK_ANIMATIONS).anyMatch(id -> id == lastLocalPlayerAnimationChanged) && client.getLocalPlayer().getAnimationFrame() == 0) {
 			consumeBlowpipeCharges();
 		}
 
