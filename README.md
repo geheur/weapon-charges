@@ -9,6 +9,7 @@ Currently Tracked are:
 - Iban's Staff
 - Tridents
 - Sanguinesti Staff
+- Eye of ayak
 - Tumeken's shadow
 - Crystal Halberd
 - Crystal Bow

@@ -107,7 +107,6 @@ public class WeaponChargesTest
 	public void test() {
 		checkTomeOfFire();
 
-		if (true) return;
 		for (ChargedWeapon chargedWeapon : ChargedWeapon.values())
 		{
 			plugin.setCharges(chargedWeapon, 100);
@@ -387,6 +386,32 @@ public class WeaponChargesTest
 
 		optionsDialogSelected(chargedWeapon, (chargedWeapon == ChargedWeapon.TRIDENT_OF_THE_SEAS || chargedWeapon == ChargedWeapon.TRIDENT_OF_THE_SEAS_E) ? "You will NOT get the coins back." : "Really uncharge the trident?", "Okay, uncharge it.", 123, 0, "Okay, uncharge it.", "No, don't uncharge it.");
 		optionsDialogSelected(chargedWeapon, "If you drop it, it will lose all its charges.", "Drop it.", 123, 0, "Drop it.", "No, don't drop it.");
+	}
+
+	@Test
+	public void checkEyeOfAyak()
+	{
+		ChargedWeapon w = ChargedWeapon.EYE_OF_AYAK;
+		plugin.setCharges(w, 100);
+
+		checkWeaponMessage(w, "The Eye of Ayak has been charged with runes. It currently has 1 charge.", 1);
+		checkWeaponMessage(w, "The Eye of Ayak has been charged with runes. It currently has 1,000 charges.", 1000);
+		checkWeaponMessage(w, "The Eye of Ayak has been charged with runes. It currently has 50,000 charges.", 50000);
+
+		checkWeaponMessage(w, "The Eye of Ayak has been charged with demon tears. It currently has 1 charge.", 1);
+		checkWeaponMessage(w, "The Eye of Ayak has been charged with demon tears. It currently has 1,000 charges.", 1000);
+		checkWeaponMessage(w, "The Eye of Ayak has been charged with demon tears. It currently has 50,000 charges.", 50000);
+
+		checkWeaponMessage(w, "You uncharge the Eye of Ayak.", 0);
+		checkWeaponMessage(w, "The Eye of Ayak cannot hold any more charges.", 50000);
+
+		equippedWeaponPeriodicUpdate(w, "The Eye of Ayak has run out of charges!", 0);
+		equippedWeaponPeriodicUpdate(w, "The Eye of Ayak only has 100 charges left!", 100);
+		equippedWeaponPeriodicUpdate(w, "The Eye of Ayak has 200 charges remaining.", 200);
+		equippedWeaponPeriodicUpdate(w, "The Eye of Ayak has 1,000 charges remaining.", 1000);
+		equippedWeaponPeriodicUpdate(w, "The Eye of Ayak has 45,200 charges remaining.", 45200);
+
+		inputDialog(w, "How many charges do you wish to add? (0-50,000)", "500", 50, 50 + 500);
 	}
 
 	private void optionsDialogSelected(ChargedWeapon chargedWeapon, String text, String optionSelected, int initialCharges, int charges, String... options)
