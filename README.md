@@ -4,22 +4,27 @@ Interested in collecting chat messages/dialogs to improve this plugin's charge t
 Estimates how many charges your weapons have left.
 
 Currently Tracked are:
- - Toxic Blowpipe
- - Iban's Staff
- - Tridents
- - Crystal Halberd
- - Crystal Bow
- - Crystal Armor
- - Bow of Faerdhinen
- - Tome of Fire / Water
- - Arclight
- - Craws Bow
- - Viggora's Chainmace
- - Thammaron's Sceptre
- - Tentacle Whip
- - Scythe of Vitur
- - Sanguinesti Staff
- - Serpentine Helm (and Tanzanite / Magma Variants)
+- Toxic Blowpipe
+- Warped sceptre
+- Iban's Staff
+- Tridents
+- Sanguinesti Staff
+- Tumeken's shadow
+- Crystal Halberd
+- Crystal Bow
+- Crystal Armor
+- Bow of Faerdhinen
+- Blade of saeldor
+- Tome of Fire / Water
+- Arclight
+- Craws Bow
+- Viggora's Chainmace
+- Thammaron's Sceptre
+- Tentacle Whip
+- Serpentine Helm (and Tanzanite / Magma Variants)
+- Venator bow
+- Blood fury
+- Scythe of Vitur
 
 Some are better tracked than others, and many are untested because I don't have these weapons.
 
@@ -27,8 +32,6 @@ Thanks to [Blackberry0Pie](https://github.com/Blackberry0Pie) for adding tome of
 
 ## Weapon status
 Still need more information for:
-
-(e) tridents.
 
 chally
 
@@ -40,28 +43,13 @@ tent
     periodic update message
     charging/uncharging
 
-scythe
-
-    periodic update message
-
 arclight
 
     periodic update message
     charging/uncharging.
 
-blood fury
-
-    periodic update message
-    charging/uncharging.
-
-crystal armor, crystal shield
+crystal shield
 
 blessed sara sword
-
-Crystal bow
-
-saeldor
-
-fbow
 
 Anything else I missed.

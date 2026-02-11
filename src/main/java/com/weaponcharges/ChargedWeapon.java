@@ -405,7 +405,7 @@ public enum ChargedWeapon
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your (Sanguine s|Holy s|S)cythe of vitur has ([\\d,]+) charges remaining.", 2)
 		)
-		.updateMessageChargesRegexes( // TODO one of these would be really good.
+		.updateMessageChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your scythe has ([\\d,]+) charges remaining.", 1)
 		)
 		.dialogHandlers(
