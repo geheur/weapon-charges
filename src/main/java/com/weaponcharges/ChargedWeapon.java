@@ -921,8 +921,8 @@ public enum ChargedWeapon
 	EYE_OF_AYAK(new ChargedWeaponBuilder()
 		.chargedItemIds(31113 /*ItemID.EYE_OF_AYAK*/)
 		.unchargedItemIds(31115 /*ItemID.EYE_OF_AYAK_UNCHARGED*/)
-		.animationIds(12397, 12394)
-//		.graphicIds(3366)
+//		.animationIds(12397, 12394) // too fast to use animations
+		.graphicIds(3366, 3364)
 		.name("Eye of ayak")
 		.rechargeAmount(50_000)
 		.configKeyName("eye_of_ayak")
@@ -934,7 +934,6 @@ public enum ChargedWeapon
 		.updateMessageChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("The Eye of Ayak only has ([\\d,]+) charges left!", 1),
 			ChargesMessage.matcherGroupChargeMessage("The Eye of Ayak has ([\\d,]+) charges remaining.", 1),
-			ChargesMessage.staticChargeMessage("The Eye of Ayak cannot hold any more charges.", 50000),
 			ChargesMessage.staticChargeMessage("The Eye of Ayak has run out of charges!", 0)
 		)
 		.dialogHandlers(
