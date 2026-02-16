@@ -239,6 +239,23 @@ public enum ChargedWeapon
 			)
 	),
 
+    EYE_OF_AYAK(new ChargedWeaponBuilder()
+        .chargedItemIds(31113) /*EYE_OF_AYAK*/
+        .unchargedItemIds(31115) /*UNCHARGED_EYE_OF_AYAK*/
+        .animationIds(12397)
+        .graphicIds(3366)
+        .name("Eye of Ayak")
+        .rechargeAmount(50_000)
+        .configKeyName("eye_of_ayak")
+        .checkChargesRegexes(
+            ChargesMessage.matcherGroupChargeMessage("The Eye of Ayak has been charged with ([\\w ]+). It currently has ([\\d,]+) charges.", 2),
+            //ChargesMessage.matcherGroupChargeMessage("The Eye of Ayak only has ([\\d,]+) charges left!", 1),
+            //ChargesMessage.matcherGroupChargeMessage("The Eye of Ayak has ([\\d,]+) charges remaining.", 1),
+            ChargesMessage.staticChargeMessage("The Eye of Ayak has run out of charges!", 0),
+            ChargesMessage.staticChargeMessage("You uncharge the Eye of Ayak.", 0)
+        )
+    ),
+
 	ABYSSAL_TENTACLE(new ChargedWeaponBuilder()
 		.chargedItemIds(12006 /*ABYSSAL_TENTACLE*/, 26484 /*ABYSSAL_TENTACLE_OR*/)
 		.animationIds(1658)
