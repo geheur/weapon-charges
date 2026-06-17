@@ -335,7 +335,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 				itemId == ItemID.BLESSED_DIZANAS_QUIVER ||
 				itemId == ItemID.BLESSED_DIZANAS_QUIVER_L ||
 				itemId == ItemID.DIZANAS_QUIVER_UNCHARGED ||
-				itemId == ItemID.DIZANAS_QUIVER_UNCHARGED_L
+				itemId == ItemID.DIZANAS_QUIVER_L_UNCHARGED
 			) {
 				String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving");
 				int dizanasQuiverAmmoSaving = configString == null ? 0 : Integer.parseInt(configString);
@@ -790,7 +790,7 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 			case ItemID.BLESSED_DIZANAS_QUIVER:
 			case ItemID.BLESSED_DIZANAS_QUIVER_L:
 			case ItemID.DIZANAS_QUIVER_UNCHARGED:
-			case ItemID.DIZANAS_QUIVER_UNCHARGED_L:
+			case ItemID.DIZANAS_QUIVER_L_UNCHARGED:
 				String configString = configManager.getRSProfileConfiguration(CONFIG_GROUP_NAME, "dizanasQuiverAmmoSaving");
 				int dizanasQuiverAmmoSaving = configString == null ? 0 : Integer.parseInt(configString);
 				return dizanasQuiverAmmoSaving == 0 ? 0.2f : dizanasQuiverAmmoSaving == 1 ? 0.28f : 0.4f;
