@@ -144,8 +144,8 @@ public enum ChargedWeapon
 		message overlap: all 4 tridents use the same messages except for the check messages.
 	 */
 	TRIDENT_OF_THE_SEAS(new ChargedWeaponBuilder()
-		.chargedItemIds(11907 /*TRIDENT_OF_THE_SEAS*/)
-		.unchargedItemIds(11908 /*UNCHARGED_TRIDENT*/)
+		.chargedItemIds(11907 /*TRIDENT_OF_THE_SEAS*/, 33322 /*TRIDENT_OF_THE_SEAS_O*/)
+		.unchargedItemIds(11908 /*UNCHARGED_TRIDENT*/, 33434 /*UNCHARGED_TRIDENT_O*/)
 		.animationIds(11430)
 		.name("Trident of the seas")
 		.rechargeAmount(2500)
@@ -157,8 +157,8 @@ public enum ChargedWeapon
 		)
 	),
 	TRIDENT_OF_THE_SWAMP(new ChargedWeaponBuilder()
-		.chargedItemIds(12899 /*TRIDENT_OF_THE_SWAMP*/)
-		.unchargedItemIds(12900 /*UNCHARGED_TOXIC_TRIDENT*/)
+		.chargedItemIds(12899 /*TRIDENT_OF_THE_SWAMP*/, 33314 /*TRIDENT_OF_THE_SWAMP_O*/)
+		.unchargedItemIds(12900 /*UNCHARGED_TOXIC_TRIDENT*/, 33316 /*UNCHARGED_TOXIC_TRIDENT_O*/)
 		.animationIds(11430)
 		.name("Trident of the swamp")
 		.rechargeAmount(2500)
@@ -176,8 +176,8 @@ public enum ChargedWeapon
 		)
 	),
 	TRIDENT_OF_THE_SEAS_E(new ChargedWeaponBuilder()
-		.chargedItemIds(22288 /*TRIDENT_OF_THE_SEAS_E*/)
-		.unchargedItemIds(22290 /*UNCHARGED_TRIDENT_E*/)
+		.chargedItemIds(22288 /*TRIDENT_OF_THE_SEAS_E*/, 33326 /*TRIDENT_OF_THE_SEAS_E_O*/)
+		.unchargedItemIds(22290 /*UNCHARGED_TRIDENT_E*/, 33328 /*UNCHARGED_TRIDENT_E_O*/)
 		.animationIds(11430)
 		.name("Trident of the seas (e)")
 		.rechargeAmount(10_000)
@@ -189,8 +189,8 @@ public enum ChargedWeapon
 		)
 	),
 	TRIDENT_OF_THE_SWAMP_E(new ChargedWeaponBuilder()
-		.chargedItemIds(22292 /*TRIDENT_OF_THE_SWAMP_E*/)
-		.unchargedItemIds(22294 /*UNCHARGED_TOXIC_TRIDENT_E*/)
+		.chargedItemIds(22292 /*TRIDENT_OF_THE_SWAMP_E*/, 33318 /*TRIDENT_OF_THE_SWAMP_E_O*/)
+		.unchargedItemIds(22294 /*UNCHARGED_TOXIC_TRIDENT_E*/, 33320 /*UNCHARGED_TOXIC_TRIDENT_E_O*/)
 		.animationIds(11430)
 		.name("Trident of the swamp (e)")
 		.rechargeAmount(10_000)
