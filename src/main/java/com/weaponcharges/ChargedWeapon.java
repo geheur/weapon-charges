@@ -93,7 +93,7 @@ public enum ChargedWeapon
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You hold the staff above the well and feel the power of Zamorak flow through you."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You hold the staff above the well and feel the power of Zamorak flow through you.", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericSpriteDialogFullChargeMessage()
 			)
 		)
@@ -151,9 +151,9 @@ public enum ChargedWeapon
 		.rechargeAmount(2500)
 		.configKeyName("trident_of_the_seas")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas has ([\\d,]+) charges.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the seas has one charge.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the seas has no charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas(?: \\(o\\))? has ([\\d,]+) charges.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas(?: \\(o\\))? has one charge.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas(?: \\(o\\))? has no charges.", 0)
 		)
 	),
 	TRIDENT_OF_THE_SWAMP(new ChargedWeaponBuilder()
@@ -164,13 +164,13 @@ public enum ChargedWeapon
 		.rechargeAmount(2500)
 		.configKeyName("trident_of_the_swamp")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp has ([\\d,]+) charges.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the swamp has one charge.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the swamp has no charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp(?: \\(o\\))? has ([\\d,]+) charges.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp(?: \\(o\\))? has one charge.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp(?: \\(o\\))? has no charges.", 0)
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp?"), null, Pattern.compile("Okay, uncharge it.")),
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp(?: \\(o\\))?\\?", Pattern.CASE_INSENSITIVE), null, Pattern.compile("Okay, uncharge it.", Pattern.CASE_INSENSITIVE)),
 				ChargesDialogHandler.genericUnchargeDialog()
 			)
 		)
@@ -183,9 +183,9 @@ public enum ChargedWeapon
 		.rechargeAmount(10_000)
 		.configKeyName("trident_of_the_seas_e")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas \\(e\\) has ([\\d,]+) charges.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has one charge.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\) has no charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the seas \\(e\\)(?: \\(o\\))? has ([\\d,]+) charges.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\)(?: \\(o\\))? has one charge.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the seas \\(e\\)(?: \\(o\\))? has no charges.", 0)
 		)
 	),
 	TRIDENT_OF_THE_SWAMP_E(new ChargedWeaponBuilder()
@@ -196,13 +196,13 @@ public enum ChargedWeapon
 		.rechargeAmount(10_000)
 		.configKeyName("trident_of_the_swamp_e")
 		.checkChargesRegexes(
-			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp \\(e\\) has ([\\d,]+) charges.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has one charge.", 1),
-			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\) has no charges.", 0)
+			ChargesMessage.matcherGroupChargeMessage("Your Trident of the swamp \\(e\\)(?: \\(o\\))? has ([\\d,]+) charges.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\)(?: \\(o\\))? has one charge.", 1),
+			ChargesMessage.staticChargeMessage("Your Trident of the swamp \\(e\\)(?: \\(o\\))? has no charges.", 0)
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp (e)?"), null, Pattern.compile("Okay, uncharge it.")),
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Really uncharge the Trident of the swamp \\(e\\)(?: \\(o\\))?\\?", Pattern.CASE_INSENSITIVE), null, Pattern.compile("Okay, uncharge it.", Pattern.CASE_INSENSITIVE)),
 				ChargesDialogHandler.genericUnchargeDialog()
 			)
 		)
@@ -221,19 +221,19 @@ public enum ChargedWeapon
 			)
 			.dialogHandlers(
 					new ChargesDialogHandler(
-							DialogStateMatcher.optionsOptionSelected(Pattern.compile("Fully uncharge your warped sceptre\\?"), null, Pattern.compile("Yes\\.")),
+							DialogStateMatcher.optionsOptionSelected(Pattern.compile("Fully uncharge your warped sceptre\\?", Pattern.CASE_INSENSITIVE), null, Pattern.compile("Yes\\.", Pattern.CASE_INSENSITIVE)),
 							ChargesDialogHandler.genericUnchargeDialog()
 					),
 					new ChargesDialogHandler(
-							DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to add\\? \\(0 - ([\\d,]+)\\)"), null),
+							DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to add\\? \\(0 - ([\\d,]+)\\)", Pattern.CASE_INSENSITIVE), null),
 							ChargesDialogHandler.genericInputChargeMessage()
 					),
 					new ChargesDialogHandler(
-							DialogStateMatcher.sprite(Pattern.compile("You add ([\\d,]+) charges? to your warped sceptre\\."), null),
+							DialogStateMatcher.sprite(Pattern.compile("You add ([\\d,]+) charges? to your warped sceptre\\.", Pattern.CASE_INSENSITIVE), null),
 							ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 					),
 					new ChargesDialogHandler(
-							DialogStateMatcher.sprite(Pattern.compile("You add an additional ([\\d,]+) charges to your warped sceptre\\. It now has ([\\d,]+) charges in total\\."), null),
+							DialogStateMatcher.sprite(Pattern.compile("You add an additional ([\\d,]+) charges to your warped sceptre\\. It now has ([\\d,]+) charges in total\\.", Pattern.CASE_INSENSITIVE), null),
 							ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 					)
 			)
@@ -410,7 +410,7 @@ public enum ChargedWeapon
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many sets of 100 charges do you wish to apply\\? \\(Up to ([\\d,]+)\\)"), null),
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many sets of 100 charges do you wish to apply\\? \\(Up to ([\\d,]+)\\)", Pattern.CASE_INSENSITIVE), null),
 				(matchers, dialogState, optionSelected, plugin) -> {
 					String chargeCountString = matchers.getNameMatcher().group(1).replaceAll(",", "");
 					int maxChargeCount = Integer.parseInt(chargeCountString);
@@ -434,7 +434,7 @@ public enum ChargedWeapon
 //				ChargesDialogHandler.genericSpriteDialogChargesMessage(false, 1)
 //			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.spriteOptionSelected(Pattern.compile("If you uncharge your scythe into the well, ([\\d,]+) charges will be added to the well."), null /* TODO find out what this should be */),
+				DialogStateMatcher.spriteOptionSelected(Pattern.compile("If you uncharge your scythe into the well, ([\\d,]+) charges will be added to the well.", Pattern.CASE_INSENSITIVE), null /* TODO find out what this should be */),
 				ChargesDialogHandler.genericSpriteDialogUnchargeMessage()
 			)
 		)
@@ -518,19 +518,19 @@ public enum ChargedWeapon
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge your staff for all its charges\\? \\(regaining [\\d,]+ blood runes\\)"), null, Pattern.compile("Proceed.")),
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge your staff for all its charges\\? \\(regaining [\\d,]+ blood runes\\)", Pattern.CASE_INSENSITIVE), null, Pattern.compile("Proceed.", Pattern.CASE_INSENSITIVE)),
 				ChargesDialogHandler.genericUnchargeDialog()
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to apply\\? \\(Up to ([\\d,]+)\\)"), null),
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to apply\\? \\(Up to ([\\d,]+)\\)", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericInputChargeMessage()
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your (Holy s|S)anguinesti staff."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your (Holy s|S)anguinesti staff.", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your (Holy s|S)anguinesti staff. It now has ([\\d,]+) charges in total."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your (Holy s|S)anguinesti staff. It now has ([\\d,]+) charges in total.", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 3)
 			)
 		)
@@ -805,7 +805,7 @@ public enum ChargedWeapon
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many scales would you like to use\\? \\(0 - ([\\d,]+)\\)"), null),
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many scales would you like to use\\? \\(0 - ([\\d,]+)\\)", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericInputChargeMessage()
 			)
 		)
@@ -872,19 +872,19 @@ public enum ChargedWeapon
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge all the charges from your staff?"), null, Pattern.compile("Proceed.")),
+				DialogStateMatcher.optionsOptionSelected(Pattern.compile("Uncharge all the charges from your staff?", Pattern.CASE_INSENSITIVE), null, Pattern.compile("Proceed.", Pattern.CASE_INSENSITIVE)),
 				ChargesDialogHandler.genericUnchargeDialog()
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to apply\\? \\(Up to ([\\d,]+)\\)"), null),
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you want to apply\\? \\(Up to ([\\d,]+)\\)", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericInputChargeMessage()
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Tumeken's shadow."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply ([\\d,]+) charges to your Tumeken's shadow.", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 			),
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your Tumeken's shadow. It now has ([\\d,]+) charges in total."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You apply an additional ([\\d,]+) charges to your Tumeken's shadow. It now has ([\\d,]+) charges in total.", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 			)
 		)
@@ -913,7 +913,7 @@ public enum ChargedWeapon
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.sprite(Pattern.compile("You use ([\\d,]+) ancient essence to charge your venator bow. It now has ([\\d,]+) charges."), null),
+				DialogStateMatcher.sprite(Pattern.compile("You use ([\\d,]+) ancient essence to charge your venator bow. It now has ([\\d,]+) charges.", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 2)
 			)
 		)
@@ -938,7 +938,7 @@ public enum ChargedWeapon
 		)
 		.dialogHandlers(
 			new ChargesDialogHandler(
-				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you wish to add\\? \\(0-([\\d,]+)\\)"), null),
+				DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges do you wish to add\\? \\(0-([\\d,]+)\\)", Pattern.CASE_INSENSITIVE), null),
 				ChargesDialogHandler.genericInputChargeMessage()
 			)
 		)
@@ -975,33 +975,33 @@ public enum ChargedWeapon
 	private static final List<ChargesDialogHandler> nonUniqueDialogHandlers = Arrays.asList(
 		// trident
 		new ChargesDialogHandler(
-			DialogStateMatcher.sprite(Pattern.compile("You add [\\S]+ [\\S]+ to the weapon. New total: ([\\d,]+)"), null),
+			DialogStateMatcher.sprite(Pattern.compile("You add [\\S]+ [\\S]+ to the weapon. New total: ([\\d,]+)", Pattern.CASE_INSENSITIVE), null),
 			ChargesDialogHandler.genericSpriteDialogChargesMessage(true, 1)
 		),
 		new ChargesDialogHandler(
-			DialogStateMatcher.sprite(Pattern.compile("Your weapon is already fully charged."), null),
+			DialogStateMatcher.sprite(Pattern.compile("Your weapon is already fully charged.", Pattern.CASE_INSENSITIVE), null),
 			ChargesDialogHandler.genericSpriteDialogFullChargeMessage()
 		),
 		new ChargesDialogHandler( // This one is entirely redundant, I think. Haven't checked (e) tridents though wrt the message they show in the uncharging options dialog.
-			DialogStateMatcher.sprite(Pattern.compile("You uncharge your weapon."), null),
+			DialogStateMatcher.sprite(Pattern.compile("You uncharge your weapon.", Pattern.CASE_INSENSITIVE), null),
 			ChargesDialogHandler.genericSpriteDialogUnchargeMessage()
 		),
 		new ChargesDialogHandler(
-			DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges would you like to add\\? \\(0 - ([\\d,]+)\\)"), null),
+			DialogStateMatcher.inputOptionSelected(Pattern.compile("How many charges would you like to add\\? \\(0 - ([\\d,]+)\\)", Pattern.CASE_INSENSITIVE), null),
 			ChargesDialogHandler.genericInputChargeMessage()
 		),
 		new ChargesDialogHandler(
-			DialogStateMatcher.optionsOptionSelected(Pattern.compile("You will NOT get the coins back."), null, Pattern.compile("Okay, uncharge it.")),
+			DialogStateMatcher.optionsOptionSelected(Pattern.compile("You will NOT get the coins back.", Pattern.CASE_INSENSITIVE), null, Pattern.compile("Okay, uncharge it.", Pattern.CASE_INSENSITIVE)),
 			ChargesDialogHandler.genericUnchargeDialog()
 		),
 		new ChargesDialogHandler(
-			DialogStateMatcher.optionsOptionSelected(Pattern.compile("If you drop it, it will lose all its charges."), null, Pattern.compile("Drop it.")),
+			DialogStateMatcher.optionsOptionSelected(Pattern.compile("If you drop it, it will lose all its charges.", Pattern.CASE_INSENSITIVE), null, Pattern.compile("Drop it.", Pattern.CASE_INSENSITIVE)),
 			ChargesDialogHandler.genericUnchargeDialog()
 		),
 		// Crystal shard recharging.
 //		2022-06-13 09:38:09 [Client] INFO  com.weaponcharges.Devtools - 25: dialog state changed: DialogState{INPUT, title='How many shards do you wish to add? (0 - 5)', input=''}
 		new ChargesDialogHandler(
-			DialogStateMatcher.inputOptionSelected(Pattern.compile("How many shards do you wish to add\\? \\(0 - ([\\d,]+)\\)"), null),
+			DialogStateMatcher.inputOptionSelected(Pattern.compile("How many shards do you wish to add\\? \\(0 - ([\\d,]+)\\)", Pattern.CASE_INSENSITIVE), null),
 			ChargesDialogHandler.genericInputChargeMessage(100)
 		)
 	);
