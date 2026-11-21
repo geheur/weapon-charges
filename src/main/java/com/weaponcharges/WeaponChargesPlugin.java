@@ -572,8 +572,8 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 	 */
 
 	// check messages.
-	private static final Pattern NO_DARTS_CHECK_PATTERN = Pattern.compile("Darts: None. Scales: ([\\d,]+) \\(\\d+[.]?\\d%\\).", Pattern.CASE_INSENSITIVE);
-	private static final Pattern DARTS_AND_SCALE_CHECK_PATTERN = Pattern.compile("Darts: (\\S*)(?: dart)? x ([\\d,]+). Scales: ([\\d,]+) \\(\\d+[.]?\\d%\\).", Pattern.CASE_INSENSITIVE);
+	private static final Pattern NO_DARTS_CHECK_PATTERN = Pattern.compile("Darts: None. Scales: ([\\d,]+) \\([^\\(]*\\).", Pattern.CASE_INSENSITIVE);
+	private static final Pattern DARTS_AND_SCALE_CHECK_PATTERN = Pattern.compile("Darts: (\\S*)(?: dart)? x ([\\d,]+). Scales: ([\\d,]+) \\([^\\(]*\\).", Pattern.CASE_INSENSITIVE);
 	private static final Pattern USE_SCALES_ON_FULL_BLOWPIPE_PATTERN = Pattern.compile("The blowpipe can't hold any more scales.", Pattern.CASE_INSENSITIVE);
 	private static final Pattern USE_DARTS_ON_FULL_BLOWPIPE_PATTERN = Pattern.compile("The blowpipe can't hold any more darts.", Pattern.CASE_INSENSITIVE);
 	private static final Pattern UNLOAD_EMPTY_BLOWPIPE_PATTERN = Pattern.compile("The blowpipe has no darts in it.", Pattern.CASE_INSENSITIVE);
