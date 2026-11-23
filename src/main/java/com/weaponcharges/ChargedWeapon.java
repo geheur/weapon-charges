@@ -141,6 +141,8 @@ public enum ChargedWeapon
 			dropping: 2021-08-29 19:03:59 [Client] INFO  n.r.c.plugins.weaponcharges.Devtools - 5862: option selected: "Drop it." from NpcDialogState{OPTIONS, text='If you drop it, it will lose all its charges.', options=[Drop it., No, don't drop it.]} TODO unimplemented
 				(the charge loss happens when you select "Drop it.".
 
+			GAMEMESSAGE "The banker charges your Trident of the swamp using 100x Death rune, 100x Chaos rune, 500x Fire rune, and 100x Zulrah's scales."
+
 		message overlap: all 4 tridents use the same messages except for the check messages.
 	 */
 	TRIDENT_OF_THE_SEAS(new ChargedWeaponBuilder()
@@ -212,6 +214,7 @@ public enum ChargedWeapon
 			.unchargedItemIds(28583 /*UNCHARGED_WARPED_SCEPTRE*/)
 			.animationIds(10501)
 			.name("Warped sceptre")
+			.bankerChargeFactor(0.5f)
 			.rechargeAmount(20_000)
 			.configKeyName("warped_sceptre")
 			.checkChargesRegexes(
@@ -273,6 +276,7 @@ public enum ChargedWeapon
 		.unchargedItemIds() // TODO add proper empty halberd ID oh God help me
 		.animationIds(428, 440, 1203)
 		.name("Crystal halberd")
+		.bankerChargeFactor(100f)
 		.rechargeAmount(10_000/*TODO is this correct?*/)
 		.defaultLowChargeThreshold(25)
 		.configKeyName("crystal_halberd")
@@ -307,6 +311,7 @@ public enum ChargedWeapon
 		.unchargedItemIds(20716 /*TOME_OF_FIRE_EMPTY*/)
 		.graphicIds(99, 126, 129, 155, 1464)
 		.name("Tome of fire")
+		.bankerChargeFactor(20f)
 		.rechargeAmount(20_000)
 		.configKeyName("tome_of_fire")
 		.checkChargesRegexes(
@@ -357,6 +362,7 @@ public enum ChargedWeapon
 		.unchargedItemIds(25576 /*TOME_OF_WATER_EMPTY*/)
 		.graphicIds(177, 102, 105, 108, 167, 170, 173, 93, 120, 135, 161, 1458)
 		.name("Tome of water")
+		.bankerChargeFactor(20f)
 		.rechargeAmount(20_000)
 		.configKeyName("tome_of_water")
 		.checkChargesRegexes(
@@ -458,6 +464,7 @@ public enum ChargedWeapon
 	BLOOD_FURY(new ChargedWeaponBuilder()
 		.chargedItemIds(24780 /*ItemID.AMULET_OF_BLOOD_FURY*/)
 		.name("Amulet of blood fury")
+		.bankerChargeFactor(10_000f)
 		.rechargeAmount(10_000)
 		.configKeyName("amulet_of_blood_fury")
 		.checkChargesRegexes(
@@ -504,6 +511,7 @@ public enum ChargedWeapon
 		.unchargedItemIds(22481 /*SANGUINESTI_STAFF_UNCHARGED*/, 25733 /*HOLY_SANGUINESTI_STAFF_UNCHARGED*/)
 		.animationIds(11430)
 		.name("Sanguinesti staff")
+		.bankerChargeFactor(0.5f)
 		.rechargeAmount(20_000)
 		.configKeyName("sanguinesti_staff")
 		.checkChargesRegexes(
@@ -563,6 +571,7 @@ public enum ChargedWeapon
 		.chargedItemIds(19675 /*ARCLIGHT*/)
 		.animationIds(386, 390)
 		.name("Arclight")
+		.bankerChargeFactor(333f)
 		.rechargeAmount(10_000)
 		.configKeyName("arclight")
 		.checkChargesRegexes(
@@ -679,6 +688,7 @@ public enum ChargedWeapon
 		.chargedItemIds(23983 /*CRYSTAL_BOW*/)
 		.animationIds(426)
 		.name("Crystal bow")
+		.bankerChargeFactor(100f)
 		.configKeyName("crystal_bow")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your crystal bow has ([\\d,]+) charges remaining.", 1)
@@ -695,6 +705,7 @@ public enum ChargedWeapon
 		.unchargedItemIds(25862 /*BOW_OF_FAERDHINEN_INACTIVE*/)
 		.animationIds(426)
 		.name("Bow of faerdhinen")
+		.bankerChargeFactor(100f)
 		.configKeyName("bow_of_faerdhinen")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your bow of Faerdhinen has ([\\d,]+) charges remaining.", 1)
@@ -708,6 +719,7 @@ public enum ChargedWeapon
 		.unchargedItemIds(23997 /*BLADE_OF_SAELDOR_INACTIVE*/)
 		.animationIds(390, 386)
 		.name("Blade of saeldor")
+		.bankerChargeFactor(100f)
 		.configKeyName("blade_of_saeldor")
 		.checkChargesRegexes(
 			ChargesMessage.matcherGroupChargeMessage("Your blade of Saeldor has ([\\d,]+) charges remaining.", 1)
@@ -727,6 +739,7 @@ public enum ChargedWeapon
 		.chargedItemIds(23971 /*CRYSTAL_HELM*/, 27705 /*CRYSTAL_HELM_27705*/, 27717 /*CRYSTAL_HELM_27717*/, 27729 /*CRYSTAL_HELM_27729*/, 27741 /*CRYSTAL_HELM_27741*/, 27753 /*CRYSTAL_HELM_27753*/, 27765 /*CRYSTAL_HELM_27765*/, 27777 /*CRYSTAL_HELM_27777*/)
 		.unchargedItemIds(23973 /*CRYSTAL_HELM_INACTIVE*/, 27707 /*CRYSTAL_HELM_INACTIVE_27707*/, 27719 /*CRYSTAL_HELM_INACTIVE_27719*/, 27731 /*CRYSTAL_HELM_INACTIVE_27731*/, 27743 /*CRYSTAL_HELM_INACTIVE_27743*/, 27755 /*CRYSTAL_HELM_INACTIVE_27755*/, 27767 /*CRYSTAL_HELM_INACTIVE_27767*/, 27779 /*CRYSTAL_HELM_INACTIVE_27779*/)
 		.name("Crystal armour")
+		.bankerChargeFactor(100f)
 		.configKeyName("crystal_helm")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
@@ -737,6 +750,7 @@ public enum ChargedWeapon
 		.chargedItemIds(23975 /*CRYSTAL_BODY*/, 27697 /*CRYSTAL_BODY_27697*/, 27709 /*CRYSTAL_BODY_27709*/, 27721 /*CRYSTAL_BODY_27721*/, 27733 /*CRYSTAL_BODY_27733*/, 27745 /*CRYSTAL_BODY_27745*/, 27757 /*CRYSTAL_BODY_27757*/, 27769 /*CRYSTAL_BODY_27769*/)
 		.unchargedItemIds(23977 /*CRYSTAL_BODY_INACTIVE*/, 27699 /*CRYSTAL_BODY_INACTIVE_27699*/, 27711 /*CRYSTAL_BODY_INACTIVE_27711*/, 27723 /*CRYSTAL_BODY_INACTIVE_27723*/, 27735 /*CRYSTAL_BODY_INACTIVE_27735*/, 27747 /*CRYSTAL_BODY_INACTIVE_27747*/, 27759 /*CRYSTAL_BODY_INACTIVE_27759*/, 27771 /*CRYSTAL_BODY_INACTIVE_27771*/)
 		.name("Crystal armour")
+		.bankerChargeFactor(100f)
 		.configKeyName("crystal_body")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
@@ -747,6 +761,7 @@ public enum ChargedWeapon
 		.chargedItemIds(23979 /*CRYSTAL_LEGS*/, 27701 /*CRYSTAL_LEGS_27701*/, 27713 /*CRYSTAL_LEGS_27713*/, 27725 /*CRYSTAL_LEGS_27725*/, 27737 /*CRYSTAL_LEGS_27737*/, 27749 /*CRYSTAL_LEGS_27749*/, 27761 /*CRYSTAL_LEGS_27761*/, 27773 /*CRYSTAL_LEGS_27773*/)
 		.unchargedItemIds(23981 /*CRYSTAL_LEGS_INACTIVE*/, 27703 /*CRYSTAL_LEGS_INACTIVE_27703*/, 27715 /*CRYSTAL_LEGS_INACTIVE_27715*/, 27727 /*CRYSTAL_LEGS_INACTIVE_27727*/, 27739 /*CRYSTAL_LEGS_INACTIVE_27739*/, 27751 /*CRYSTAL_LEGS_INACTIVE_27751*/, 27763 /*CRYSTAL_LEGS_INACTIVE_27763*/, 27775 /*CRYSTAL_LEGS_INACTIVE_27775*/)
 		.name("Crystal armour")
+		.bankerChargeFactor(100f)
 		.configKeyName("crystal_legs")
 		.settingsConfigKey("crystal_armour")
 		.checkChargesRegexes(
@@ -860,6 +875,7 @@ public enum ChargedWeapon
 		.graphicIds(2125)
 		.name("Tumeken's shadow")
 		.rechargeAmount(20_000)
+		.bankerChargeFactor(0.5f)
 		.configKeyName("tumekens_shadow")
 		.checkChargesRegexes(
 			ChargesMessage.staticChargeMessage("Your Tumeken's shadow is already fully charged.", 20000) // I guessed this one.
@@ -924,6 +940,7 @@ public enum ChargedWeapon
 //		.animationIds(12397, 12394) // too fast to use animations
 		.graphicIds(3366, 3364)
 		.name("Eye of ayak")
+//		.bankerChargeFactor(/*implemented in code*/)
 		.rechargeAmount(50_000)
 		.configKeyName("eye_of_ayak")
 		.checkChargesRegexes(
@@ -1080,6 +1097,11 @@ public enum ChargedWeapon
 			this.addMenuEntries = addMenuEntries;
 			return this;
 		}
+		float bankerChargeFactor = 1.0f;
+		public ChargedWeaponBuilder bankerChargeFactor(float bankerChargeFactor) {
+			this.bankerChargeFactor = bankerChargeFactor;
+			return this;
+		}
 	}
 
 	public final List<Integer> itemIds;
@@ -1093,6 +1115,7 @@ public enum ChargedWeapon
 	public final int defaultLowChargeThreshold;
 	public final String configKeyName;
 	public final String settingsConfigKey;
+	public final float bankerChargeFactor;
 	// check messages are those produced by menu actions like "Check". update messages are those produced by the weapon
 	// being used (e.g. those that notify you it's empty, or has 100 charges left, etc.).
 	// These must be kept separate because the check messages [seem to always] have the charges of the weapon before
@@ -1118,6 +1141,7 @@ public enum ChargedWeapon
 		this.checkChargesRegexes = builder.checkChargesRegexes;
 		this.updateMessageChargesRegexes = builder.updateMessageChargesRegexes;
 		this.dialogHandlers = builder.dialogHandlers;
+		this.bankerChargeFactor = builder.bankerChargeFactor;
 	}
 
 	public static ChargedWeapon getChargedWeaponFromId(int itemId)

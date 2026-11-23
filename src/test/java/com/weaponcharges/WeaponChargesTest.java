@@ -103,6 +103,15 @@ public class WeaponChargesTest
 	// TODO check weapons while they are equipped.
 	// TODO check animations.
 
+	// GAMEMESSAGE "The banker charges your Trident of the swamp using 100x Death rune, 100x Chaos rune, 500x Fire rune, and 100x Zulrah's scales."
+
+	@Test
+	public void bankerChargeTest() {
+		plugin.setCharges(ChargedWeapon.TRIDENT_OF_THE_SEAS, 10);
+		gameMessage("The banker charges your Trident of the seas using 100x Death rune, 100x Chaos rune, 500x Fire rune, and 100x Zulrah's scales.");
+		checkCharges(ChargedWeapon.TRIDENT_OF_THE_SEAS, 110);
+	}
+
 	@Test
 	public void test() {
 		checkTomeOfFire();

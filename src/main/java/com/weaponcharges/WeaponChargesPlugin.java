@@ -96,7 +96,7 @@ import net.runelite.client.util.Text;
 
 @PluginDescriptor(
 	name = "Weapon Charges",
-	description = "Displays ibans blast and swamp trident charges on the inventory icon or as an infobox.",
+	description = "Tracks weapon charges.",
 	tags = {"iban", "trident", "charge"}
 )
 // TODO for midrif's weak math brain: https://github.com/runelite/runelite/pull/11044/files
@@ -525,6 +525,37 @@ public class WeaponChargesPlugin extends Plugin implements KeyListener
 		}
 
 		chatMessageBlowpipe(message);
+
+		if (message.startsWith("The banker charges your")) {
+			Pattern p = Pattern.compile("The banker charges your (.*) using (\\d*)x.*");
+			Matcher matcher = p.matcher(message);
+			if (matcher.matches()) {
+				String itemName = matcher.group(1);
+				String quantity = matcher.group(2);
+				m("banker charge message " + itemName + " " + quantity);
+				if ("Toxic blowpipe".equals(itemName)) {
+					addScalesLeft(Integer.parseInt(quantity), true);
+				} else if (itemManager.getItemComposition(31113).getMembersName().equals(itemName)) {
+					float chargeFactor = message.toLowerCase().contains("demon tear") ? 1.0f : 0.5f;
+					addCharges(ChargedWeapon.EYE_OF_AYAK, Integer.parseInt(quantity) * chargeFactor, true);
+				} else {
+					outer:
+					for (ChargedWeapon value : ChargedWeapon.values()) {
+						for (Integer itemId : value.getItemIds()) {
+							if (itemName.equals(itemManager.getItemComposition(itemId).getMembersName())) {
+								m("   found one " + value.getName());
+								addCharges(value, Integer.parseInt(quantity) * value.getBankerChargeFactor(), true);
+								break outer;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void m(String message) {
+		if (config.devMode()) client.addChatMessage(ChatMessageType.FRIENDSCHAT, "", message, "wc");
 	}
 
 	private ChargedWeapon removeLastWeaponChecked()
